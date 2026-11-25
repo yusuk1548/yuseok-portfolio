@@ -271,135 +271,215 @@ if (window.matchMedia) {
 }
 
 // =========================================================================
-// 2. PROCEDURAL ABSTRACT BLUE / INDIGO / WHITE INK-CLOUD FLUID CANVAS
-//    Aspect ratio 768x494 (1.555) matches 14" MacBook Pro display (1.557)
+// 2. APPLE-STYLE HIGH-RES (1280x800) "AI × EHS" PORTAL RING SCREEN CANVAS
+//    Matches page background (#f6f6f2 / #151517) seamlessly for zero-seam zoom
 // =========================================================================
-const fluidCanvas = document.createElement('canvas');
-fluidCanvas.width = 768;
-fluidCanvas.height = 494;
-const fCtx = fluidCanvas.getContext('2d');
+const portalCanvas = document.createElement('canvas');
+portalCanvas.width = 1280;
+portalCanvas.height = 800;
+const pCtx = portalCanvas.getContext('2d');
 
-const transitionCanvas = document.getElementById('fluid-transition-canvas');
-const tCtx = transitionCanvas.getContext('2d');
+// Physical MacBook Pro 14" display aspect ratio is 30.076 / 19.32 = 1.5567,
+// while canvas is 1280 / 800 = 1.60 -> subtle X scale keeps the ring a 100% true circle in 3D
+const SCREEN_ASPECT_COMP = (1280 / 800) / 1.5567;
 
-function resizeTransitionCanvas() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  transitionCanvas.width = Math.floor(window.innerWidth * dpr);
-  transitionCanvas.height = Math.floor(window.innerHeight * dpr);
-}
-resizeTransitionCanvas();
+let themeBlend = isDark ? 1 : 0;
 
-const inkShapes = [
-  { cx: 0.48, cy: 0.52, rx: 0.36, ry: 0.44, angle: -0.45, speed: 0.18, driftX: 0.04, driftY: 0.03, color: [16, 30, 50], alpha: 0.72, mode: 'multiply' },
-  { cx: 0.36, cy: 0.42, rx: 0.30, ry: 0.46, angle: 0.35, speed: -0.14, driftX: 0.05, driftY: 0.04, color: [42, 68, 102], alpha: 0.62, mode: 'multiply' },
-  { cx: 0.62, cy: 0.58, rx: 0.34, ry: 0.38, angle: -0.75, speed: 0.16, driftX: 0.04, driftY: 0.05, color: [76, 106, 146], alpha: 0.56, mode: 'multiply' },
-  { cx: 0.25, cy: 0.62, rx: 0.32, ry: 0.30, angle: 0.6, speed: 0.12, driftX: 0.06, driftY: 0.03, color: [98, 134, 178], alpha: 0.58, mode: 'multiply' },
-  { cx: 0.52, cy: 0.35, rx: 0.26, ry: 0.42, angle: -0.25, speed: -0.20, driftX: 0.03, driftY: 0.04, color: [22, 40, 68], alpha: 0.68, mode: 'multiply' },
-  { cx: 0.70, cy: 0.44, rx: 0.28, ry: 0.34, angle: 0.85, speed: 0.15, driftX: 0.05, driftY: 0.04, color: [122, 156, 198], alpha: 0.50, mode: 'multiply' },
-  { cx: 0.44, cy: 0.68, rx: 0.28, ry: 0.36, angle: -0.15, speed: -0.17, driftX: 0.04, driftY: 0.03, color: [12, 24, 42], alpha: 0.75, mode: 'multiply' },
-  { cx: 0.18, cy: 0.36, rx: 0.26, ry: 0.32, angle: 0.42, speed: 0.13, driftX: 0.04, driftY: 0.05, color: [110, 148, 194], alpha: 0.52, mode: 'multiply' },
-  { cx: 0.58, cy: 0.72, rx: 0.25, ry: 0.30, angle: -0.62, speed: 0.19, driftX: 0.05, driftY: 0.03, color: [52, 82, 120], alpha: 0.55, mode: 'multiply' }
-];
-
-const lightWisps = [
-  { cx: 0.88, cy: 0.18, r: 0.44, speed: 0.14, alpha: 0.92 },
-  { cx: 0.92, cy: 0.34, r: 0.32, speed: -0.11, alpha: 0.72 },
-  { cx: 0.14, cy: 0.86, r: 0.34, speed: 0.16, alpha: 0.65 },
-  { cx: 0.64, cy: 0.24, r: 0.22, speed: -0.18, alpha: 0.42 }
-];
-
-const grainCanvas = document.createElement('canvas');
-grainCanvas.width = 128;
-grainCanvas.height = 128;
-const gCtx = grainCanvas.getContext('2d');
-const gImg = gCtx.createImageData(128, 128);
-for (let i = 0; i < gImg.data.length; i += 4) {
-  const v = 120 + Math.floor(Math.random() * 60);
-  gImg.data[i] = v;
-  gImg.data[i + 1] = v + 8;
-  gImg.data[i + 2] = v + 18;
-  gImg.data[i + 3] = 16;
-}
-gCtx.putImageData(gImg, 0, 0);
-const grainPattern = fCtx.createPattern(grainCanvas, 'repeat');
-
-function drawInkFluid(t) {
-  const w = fluidCanvas.width;
-  const h = fluidCanvas.height;
-
-  const bgGrad = fCtx.createLinearGradient(0, h, w, 0);
-  bgGrad.addColorStop(0, '#c8daf0');
-  bgGrad.addColorStop(0.45, '#e8f1fa');
-  bgGrad.addColorStop(0.8, '#f7fbff');
-  bgGrad.addColorStop(1, '#ffffff');
-  fCtx.globalCompositeOperation = 'source-over';
-  fCtx.fillStyle = bgGrad;
-  fCtx.fillRect(0, 0, w, h);
-
-  for (let i = 0; i < inkShapes.length; i++) {
-    const s = inkShapes[i];
-    const phase = t * s.speed + i * 1.37;
-    const x = (s.cx + Math.sin(phase) * s.driftX) * w;
-    const y = (s.cy + Math.cos(phase * 0.85) * s.driftY) * h;
-    const rx = s.rx * w * (0.94 + 0.08 * Math.sin(phase * 1.1));
-    const ry = s.ry * h * (0.94 + 0.08 * Math.cos(phase * 0.9));
-    const rot = s.angle + Math.sin(phase * 0.6) * 0.22;
-
-    fCtx.save();
-    fCtx.translate(x, y);
-    fCtx.rotate(rot);
-    fCtx.globalCompositeOperation = s.mode;
-
-    const grad = fCtx.createRadialGradient(-rx * 0.15, -ry * 0.1, rx * 0.05, 0, 0, Math.max(rx, ry));
-    grad.addColorStop(0, `rgba(${s.color[0]}, ${s.color[1]}, ${s.color[2]}, ${s.alpha})`);
-    grad.addColorStop(0.55, `rgba(${s.color[0] + 18}, ${s.color[1] + 24}, ${s.color[2] + 32}, ${s.alpha * 0.72})`);
-    grad.addColorStop(0.88, `rgba(${s.color[0] + 45}, ${s.color[1] + 55}, ${s.color[2] + 68}, ${s.alpha * 0.26})`);
-    grad.addColorStop(1, `rgba(${s.color[0] + 60}, ${s.color[1] + 70}, ${s.color[2] + 85}, 0)`);
-
-    fCtx.fillStyle = grad;
-    fCtx.beginPath();
-    const w1 = rx * (0.9 + 0.12 * Math.sin(phase));
-    const h1 = ry * (0.95 + 0.1 * Math.cos(phase * 1.2));
-    fCtx.moveTo(0, -h1);
-    fCtx.bezierCurveTo(w1 * 0.95, -h1 * 0.7, w1 * 1.05, h1 * 0.45, w1 * 0.18, h1);
-    fCtx.bezierCurveTo(-w1 * 0.78, h1 * 0.85, -w1 * 1.05, -h1 * 0.35, 0, -h1);
-    fCtx.closePath();
-    fCtx.fill();
-    fCtx.restore();
-  }
-
-  fCtx.save();
-  fCtx.globalCompositeOperation = 'multiply';
-  const coreX = (0.47 + Math.sin(t * 0.21) * 0.03) * w;
-  const coreY = (0.56 + Math.cos(t * 0.17) * 0.03) * h;
-  const coreGrad = fCtx.createRadialGradient(coreX, coreY, w * 0.02, coreX, coreY, w * 0.28);
-  coreGrad.addColorStop(0, 'rgba(8, 16, 30, 0.82)');
-  coreGrad.addColorStop(0.5, 'rgba(20, 36, 58, 0.45)');
-  coreGrad.addColorStop(1, 'rgba(20, 36, 58, 0)');
-  fCtx.fillStyle = coreGrad;
-  fCtx.fillRect(0, 0, w, h);
-  fCtx.restore();
-
-  fCtx.globalCompositeOperation = 'screen';
-  for (let i = 0; i < lightWisps.length; i++) {
-    const lw = lightWisps[i];
-    const lx = (lw.cx + Math.sin(t * lw.speed + i) * 0.03) * w;
-    const ly = (lw.cy + Math.cos(t * lw.speed * 0.9 + i) * 0.03) * h;
-    const lr = lw.r * w;
-    const lg = fCtx.createRadialGradient(lx, ly, 0, lx, ly, lr);
-    lg.addColorStop(0, `rgba(255, 255, 255, ${lw.alpha})`);
-    lg.addColorStop(0.5, `rgba(232, 244, 255, ${lw.alpha * 0.55})`);
-    lg.addColorStop(1, 'rgba(232, 244, 255, 0)');
-    fCtx.fillStyle = lg;
-    fCtx.fillRect(0, 0, w, h);
-  }
-
-  fCtx.globalCompositeOperation = 'source-over';
-  fCtx.fillStyle = grainPattern;
-  fCtx.fillRect(0, 0, w, h);
+function mixChan(a, b, t) {
+  return Math.round(a + (b - a) * t);
 }
 
-drawInkFluid(0);
+function mixRgb(c1, c2, t) {
+  return `rgb(${mixChan(c1[0], c2[0], t)}, ${mixChan(c1[1], c2[1], t)}, ${mixChan(c1[2], c2[2], t)})`;
+}
+
+function mixRgba(c1, c2, t, a1, a2) {
+  const a = a1 + (a2 - a1) * t;
+  return `rgba(${mixChan(c1[0], c2[0], t)}, ${mixChan(c1[1], c2[1], t)}, ${mixChan(c1[2], c2[2], t)}, ${a.toFixed(4)})`;
+}
+
+const LIGHT_BG = [246, 246, 242]; // #f6f6f2 (matches :root --bg)
+const DARK_BG = [21, 21, 23];     // #151517 (matches [data-theme="dark"] --bg)
+const LIGHT_RING = [15, 31, 56];  // #0f1f38 deep Apple navy
+const DARK_RING = [232, 238, 248]; // #e8eef8 crisp silver-ice
+const LIGHT_RING_HI = [38, 69, 114];
+const DARK_RING_HI = [255, 255, 255];
+const LIGHT_RING_LO = [8, 18, 36];
+const DARK_RING_LO = [174, 192, 218];
+const LIGHT_ACCENT = [54, 96, 152];
+const DARK_ACCENT = [140, 180, 232];
+
+function drawPortalScreen(t, mx = 0, my = 0, expandP = 0) {
+  const w = portalCanvas.width;
+  const h = portalCanvas.height;
+  const tb = themeBlend;
+
+  // 1) Pure theme-matched background (1:1 identical to var(--bg) so perimeter is seamless)
+  pCtx.globalCompositeOperation = 'source-over';
+  pCtx.globalAlpha = 1;
+  pCtx.fillStyle = mixRgb(LIGHT_BG, DARK_BG, tb);
+  pCtx.fillRect(0, 0, w, h);
+
+  // Portal fade-out as camera flies through the ring into #about
+  const portalAlpha = Math.max(0, 1 - Math.pow(expandP, 1.35));
+  if (portalAlpha <= 0.002) return;
+
+  const parallaxFade = 1 - expandP;
+  const ringShiftX = mx * 16 * parallaxFade;
+  const ringShiftY = my * 11 * parallaxFade;
+  const textShiftX = mx * 24 * parallaxFade;
+  const textShiftY = my * 16 * parallaxFade;
+
+  const cx = w * 0.5 + ringShiftX;
+  const cy = h * 0.5 + ringShiftY;
+
+  const ringScale = 1 + expandP * 1.45;
+  const textScale = 1 + expandP * 0.72;
+  const baseRadius = 216 * ringScale;
+  const ringWidth = (18 + expandP * 6) * (0.92 + 0.08 * Math.sin(t * 1.1));
+
+  pCtx.save();
+  pCtx.globalAlpha = portalAlpha;
+
+  // Apply aspect compensation around portal center so circles are geometrically true in 3D
+  pCtx.translate(cx, cy);
+  pCtx.scale(SCREEN_ASPECT_COMP, 1);
+
+  // 2) Subtle outer atmospheric aura (fades well before screen edges -> zero edge seam)
+  const auraR = baseRadius * 1.52;
+  const auraGrad = pCtx.createRadialGradient(0, 0, baseRadius * 0.74, 0, 0, auraR);
+  auraGrad.addColorStop(0, mixRgba(LIGHT_ACCENT, DARK_ACCENT, tb, 0.0, 0.0));
+  auraGrad.addColorStop(0.42, mixRgba(LIGHT_ACCENT, DARK_ACCENT, tb, 0.085, 0.13));
+  auraGrad.addColorStop(0.72, mixRgba(LIGHT_ACCENT, DARK_ACCENT, tb, 0.03, 0.05));
+  auraGrad.addColorStop(1, mixRgba(LIGHT_ACCENT, DARK_ACCENT, tb, 0.0, 0.0));
+  pCtx.fillStyle = auraGrad;
+  pCtx.beginPath();
+  pCtx.arc(0, 0, auraR, 0, Math.PI * 2);
+  pCtx.fill();
+
+  // 3) Hairline precision outer & inner guide rings (Apple hardware minimalism)
+  pCtx.save();
+  pCtx.lineWidth = 1.4;
+  pCtx.strokeStyle = mixRgba(LIGHT_RING, DARK_RING, tb, 0.11, 0.14);
+  pCtx.beginPath();
+  pCtx.arc(0, 0, baseRadius + 30 * ringScale, 0, Math.PI * 2);
+  pCtx.stroke();
+
+  pCtx.lineWidth = 1.1;
+  pCtx.strokeStyle = mixRgba(LIGHT_RING, DARK_RING, tb, 0.09, 0.12);
+  pCtx.beginPath();
+  pCtx.arc(0, 0, baseRadius - 24 * ringScale, 0, Math.PI * 2);
+  pCtx.stroke();
+  pCtx.restore();
+
+  // 4) Main sculpted circular portal ring with soft dimensional drop shadow
+  pCtx.save();
+  pCtx.shadowColor = mixRgba([15, 31, 56], [0, 0, 0], tb, 0.20, 0.58);
+  pCtx.shadowBlur = 28;
+  pCtx.shadowOffsetX = -mx * 5 * parallaxFade;
+  pCtx.shadowOffsetY = 9 - my * 4 * parallaxFade;
+
+  const ringGrad = pCtx.createLinearGradient(-baseRadius, -baseRadius, baseRadius, baseRadius);
+  ringGrad.addColorStop(0, mixRgb(LIGHT_RING_HI, DARK_RING_HI, tb));
+  ringGrad.addColorStop(0.45, mixRgb(LIGHT_RING, DARK_RING, tb));
+  ringGrad.addColorStop(1, mixRgb(LIGHT_RING_LO, DARK_RING_LO, tb));
+
+  pCtx.strokeStyle = ringGrad;
+  pCtx.lineWidth = ringWidth;
+  pCtx.beginPath();
+  pCtx.arc(0, 0, baseRadius, 0, Math.PI * 2);
+  pCtx.stroke();
+  pCtx.restore();
+
+  // 5) Crisp inner bevel highlight along ring rim for refined optical depth
+  pCtx.save();
+  pCtx.strokeStyle = mixRgba([255, 255, 255], [255, 255, 255], tb, 0.24, 0.42);
+  pCtx.lineWidth = 1.6;
+  pCtx.beginPath();
+  pCtx.arc(0, 0, baseRadius - ringWidth * 0.42, 0, Math.PI * 2);
+  pCtx.stroke();
+  pCtx.restore();
+
+  // 6) Slowly orbiting specular light sweep gliding smoothly along the ring perimeter
+  const sweepAngle = t * 0.52 - Math.PI * 0.35;
+  const drawSpecularSweep = (centerAngle, arcSpan, peakAlpha, widthScale) => {
+    const steps = 22;
+    pCtx.save();
+    pCtx.lineCap = 'round';
+    pCtx.shadowColor = mixRgba([148, 192, 245], [255, 255, 255], tb, 0.55, 0.85);
+    pCtx.shadowBlur = 16;
+    for (let i = 0; i < steps; i++) {
+      const f0 = i / steps;
+      const f1 = (i + 1) / steps;
+      const mid = (f0 + f1) * 0.5;
+      // Smooth bell intensity peaked at center of arc
+      const intensity = Math.sin(mid * Math.PI);
+      const alpha = peakAlpha * intensity * intensity;
+      if (alpha < 0.01) continue;
+
+      const a0 = centerAngle - arcSpan * 0.5 + f0 * arcSpan;
+      const a1 = centerAngle - arcSpan * 0.5 + f1 * arcSpan + 0.012;
+      pCtx.strokeStyle = mixRgba([186, 214, 252], [255, 255, 255], tb, alpha, alpha * 1.12);
+      pCtx.lineWidth = ringWidth * widthScale * (0.45 + 0.55 * intensity);
+      pCtx.beginPath();
+      pCtx.arc(0, 0, baseRadius, a0, a1);
+      pCtx.stroke();
+    }
+    pCtx.restore();
+  };
+
+  drawSpecularSweep(sweepAngle, 1.05, 0.72, 0.46);
+  drawSpecularSweep(sweepAngle + Math.PI, 0.65, 0.28, 0.32);
+
+  pCtx.restore();
+
+  // 7) Bold crisp centered "AI × EHS" sans-serif typography with layered parallax
+  pCtx.save();
+  pCtx.globalAlpha = Math.max(0, 1 - Math.pow(expandP * 1.18, 1.35));
+  pCtx.translate(w * 0.5 + textShiftX, h * 0.5 + textShiftY);
+  pCtx.scale(SCREEN_ASPECT_COMP * textScale, textScale);
+
+  pCtx.textAlign = 'center';
+  pCtx.textBaseline = 'middle';
+
+  const fontStack = "'Pretendard', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif";
+  const fontMain = `700 66px ${fontStack}`;
+  const fontCross = `500 58px ${fontStack}`;
+
+  pCtx.font = fontMain;
+  const aiWidth = pCtx.measureText('AI').width;
+  const ehsWidth = pCtx.measureText('EHS').width;
+  pCtx.font = fontCross;
+  const crossWidth = pCtx.measureText('×').width;
+  const gap = 20;
+  const totalW = aiWidth + gap + crossWidth + gap + ehsWidth;
+  let cursorX = -totalW * 0.5;
+
+  pCtx.shadowColor = mixRgba([15, 31, 56], [0, 0, 0], tb, 0.09, 0.35);
+  pCtx.shadowBlur = 12;
+  pCtx.shadowOffsetY = 3;
+
+  // "AI"
+  pCtx.font = fontMain;
+  pCtx.fillStyle = mixRgb(LIGHT_RING, DARK_RING, tb);
+  pCtx.fillText('AI', cursorX + aiWidth * 0.5, 2);
+  cursorX += aiWidth + gap;
+
+  // "×"
+  pCtx.font = fontCross;
+  pCtx.fillStyle = mixRgb(LIGHT_ACCENT, DARK_ACCENT, tb);
+  pCtx.fillText('×', cursorX + crossWidth * 0.5, 0);
+  cursorX += crossWidth + gap;
+
+  // "EHS"
+  pCtx.font = fontMain;
+  pCtx.fillStyle = mixRgb(LIGHT_RING, DARK_RING, tb);
+  pCtx.fillText('EHS', cursorX + ehsWidth * 0.5, 2);
+
+  pCtx.restore();
+}
+
+drawPortalScreen(0, 0, 0, 0);
 
 // =========================================================================
 // 3. THREE.JS SCENE: HIGH-DETAIL MACBOOK PRO 14" + 1K STUDIO HDRI + WAVE
@@ -592,13 +672,14 @@ particleWave.rotation.set(0.14, 0.04, -0.46);
 scene.add(particleWave);
 
 // 3C. High-Detail 14" MacBook Pro (public/macbook.glb)
-const screenTexture = new THREE.CanvasTexture(fluidCanvas);
+const screenTexture = new THREE.CanvasTexture(portalCanvas);
 screenTexture.colorSpace = THREE.SRGBColorSpace;
-screenTexture.minFilter = THREE.LinearFilter;
+screenTexture.minFilter = THREE.LinearMipmapLinearFilter;
 screenTexture.magFilter = THREE.LinearFilter;
+screenTexture.generateMipmaps = true;
 screenTexture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
 // New macbook.glb display mesh ('Object_107') uses glTF UV convention (v=0 top, v=1 bottom),
-// so flipY = false renders the ink-cloud canvas upright and un-mirrored 1:1.
+// so flipY = false renders the portal ring canvas upright and un-mirrored 1:1.
 screenTexture.flipY = false;
 
 function createContactShadowTexture() {
@@ -1029,6 +1110,7 @@ function startSequence() {
   scrollIndicator.classList.remove('is-visible');
   heroCopy.style.opacity = '0';
   heroBottomBar.style.opacity = '0';
+  webglCanvas.style.opacity = '1';
   hexProgress.style.strokeDashoffset = String(HEX_LEN);
   if (lidPivot) {
     lidPivot.rotation.x = LID_CLOSED_X;
@@ -1108,7 +1190,6 @@ function handleViewportResize() {
   camera.updateProjectionMatrix();
   renderer.setSize(vw, vh);
   waveUniforms.uPixelRatio.value = Math.min(window.devicePixelRatio || 1, 2);
-  resizeTransitionCanvas();
   framing = computeResponsiveFraming();
   updateScrollState();
 }
@@ -1157,8 +1238,8 @@ function animate(now) {
 
   if (!isHeroInView && introState === 'ready') return;
 
-  drawInkFluid(elapsed);
-  screenTexture.needsUpdate = true;
+  // Smooth theme blend so MacBook screen background transitions seamlessly with CSS var(--bg)
+  themeBlend = lerp(themeBlend, isDark ? 1 : 0, 0.10);
 
   // Theme-synced wave, shadows & subtle exposure adaptation
   const targetWaveCol = isDark ? darkWaveColor : lightWaveColor;
@@ -1189,9 +1270,13 @@ function animate(now) {
   const enterT = easeOutCubic(clamp01(introElapsed / 1.0));
   const autoOpenP = easeInOutCubic(clamp01((introElapsed - 0.14) / 1.30));
 
-  // Scroll drives zoom straight into the open MacBook screen -> #about
-  const zoomP = easeInOutCubic(clamp01((currentHeroP - 0.08) / 0.86));
-  const fluidInP = easeInOutCubic(clamp01((currentHeroP - 0.68) / 0.28));
+  // Scroll drives pure 3D portal zoom straight into the "AI × EHS" ring -> clean var(--bg) -> #about
+  const zoomP = easeInOutCubic(clamp01((currentHeroP - 0.06) / 0.80));
+  const portalExpandP = easeInOutCubic(clamp01((currentHeroP - 0.56) / 0.34));
+  const stageFadeOutP = easeInOutCubic(clamp01((currentHeroP - 0.76) / 0.18));
+
+  drawPortalScreen(elapsed, smoothMouseX, smoothMouseY, portalExpandP);
+  screenTexture.needsUpdate = true;
 
   // Lid smoothly opens automatically, and levels to exact 90° vertical during zoom-in
   if (lidPivot) {
@@ -1238,9 +1323,9 @@ function animate(now) {
   particleWave.position.y = 0.12 + smoothMouseY * 0.22 * parallaxWeight;
   particleWave.rotation.x = 0.14 + smoothMouseY * 0.08 * parallaxWeight;
   particleWave.rotation.y = 0.04 + smoothMouseX * 0.09 * parallaxWeight;
-  waveUniforms.uOpacity.value = lerp(waveUniforms.uOpacity.value, targetWaveOpacity * (1 - zoomP * 0.92), 0.12);
+  waveUniforms.uOpacity.value = lerp(waveUniforms.uOpacity.value, targetWaveOpacity * (1 - zoomP * 0.96), 0.12);
 
-  // Compute exact world-space center of the real GLB screen mesh for dead-center zoom-in
+  // Compute exact world-space center of the real GLB screen mesh for dead-center portal zoom-in
   macbookGroup.updateMatrixWorld(true);
   if (screenMesh) {
     screenWorldCenter.copy(screenLocalCenter).applyMatrix4(screenMesh.matrixWorld);
@@ -1248,13 +1333,20 @@ function animate(now) {
     screenWorldCenter.set(0, macY + 1.0, -1.0);
   }
 
-  // Camera framing: clean eye-level Apple product perspective below headline, then zooms into screen center
+  // Camera framing: clean eye-level Apple product perspective, then flies through the portal ring center
   const openCamY = lerp(framing.openCamY + 0.12, framing.openCamY, autoOpenP);
   const openLookY = lerp(framing.openLookY - 0.06, framing.openLookY, autoOpenP);
   const openLookZ = -0.5;
 
-  // Distance in front of screen at full zoom so display fills 100% of viewport seamlessly on desktop & mobile
-  const zoomTargetZ = screenWorldCenter.z + 2.15 * framing.macScale;
+  // Exact bezel-clearing zoom distance for ANY aspect ratio (16:9 desktop AND 375x812 portrait mobile)
+  const tanHalfFov = Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5));
+  const scaledScreenW = 2.815 * framing.macScale;
+  const scaledScreenH = 1.808 * framing.macScale;
+  const dVertFill = scaledScreenH / (2 * tanHalfFov);
+  const dHorizFill = scaledScreenW / (2 * tanHalfFov * Math.max(0.35, camera.aspect));
+  const dBezelCleared = Math.min(dVertFill, dHorizFill);
+  const zoomTargetZ = screenWorldCenter.z + dBezelCleared * 0.44;
+
   const camX = lerp(0, screenWorldCenter.x, zoomP);
   const camY = lerp(openCamY, screenWorldCenter.y, zoomP);
   const camZ = lerp(baseZ, zoomTargetZ, zoomP);
@@ -1268,21 +1360,15 @@ function animate(now) {
 
   // Hero headline fades in smoothly as MacBook opens, fades out cleanly on scroll zoom
   const introCopyFade = easeOutCubic(clamp01((introElapsed - 0.12) / 0.65));
-  const zoomCopyFade = 1 - clamp01((currentHeroP - 0.10) / 0.28);
+  const zoomCopyFade = 1 - clamp01((currentHeroP - 0.08) / 0.26);
   const copyOpacity = introCopyFade * zoomCopyFade;
 
   heroCopy.style.opacity = copyOpacity.toFixed(3);
   heroCopy.style.transform = `translate(-50%, ${lerp(16, 0, introCopyFade) - zoomP * 32}px)`;
-  heroBottomBar.style.opacity = (introCopyFade * (1 - clamp01((currentHeroP - 0.08) / 0.22))).toFixed(3);
+  heroBottomBar.style.opacity = (introCopyFade * (1 - clamp01((currentHeroP - 0.06) / 0.20))).toFixed(3);
 
-  // Fullscreen glowing ink-cloud transition right into #about (ZERO blank void!)
-  transitionCanvas.style.opacity = fluidInP.toFixed(3);
-  if (fluidInP > 0.005) {
-    const scale = lerp(1.06, 1.0, fluidInP);
-    transitionCanvas.style.transform = `scale(${scale.toFixed(4)})`;
-    tCtx.clearRect(0, 0, transitionCanvas.width, transitionCanvas.height);
-    tCtx.drawImage(fluidCanvas, 0, 0, transitionCanvas.width, transitionCanvas.height);
-  }
+  // Seamless dissolve to pure var(--bg) before #about arrives (zero stretched overlay, zero top seam!)
+  webglCanvas.style.opacity = (1 - stageFadeOutP).toFixed(3);
 
   renderer.render(scene, camera);
 }
