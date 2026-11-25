@@ -1,0 +1,1290 @@
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+
+// =========================================================================
+// 0. PORTFOLIO WEB APPS DATA (100% preserved from portfolio.html)
+// =========================================================================
+const PROJECTS = [
+  {
+    id: 'health-hub',
+    kicker: 'WEB APP 01 · SMART EHS PLATFORM',
+    status: 'Live Service',
+    themeClass: 'theme-hub',
+    brand: 'HEALTH-HUB',
+    domain: 'health-hub-workspace.vercel.app',
+    url: 'https://health-hub-workspace.vercel.app',
+    title: 'HEALTH-HUB 스마트 보건관리 통합 플랫폼',
+    subtitle: '아날로그 보건관리 업무를 페이퍼리스로 전환한 통합 디지털 워크스페이스',
+    summary: 'MSDS 법적 규제대상 자동 분류와 기상청 API 연동 온열질환 실시간 모니터링을 하나의 플랫폼에 통합해 행정 오류와 검토 시간을 대폭 줄였습니다.',
+    problem: '제조업 위탁 사업장 보건관리 현장에서 방대한 MSDS 문서를 수작업으로 대조해 법적 규제 대상을 분류하고, 하절기 체감온도를 매번 개별 확인하는 과정에 많은 시간과 인적 오류 위험이 발생했습니다.',
+    solution: 'AI 코딩 협업과 React·Next.js 기반 웹앱 아키텍처를 결합해 MSDS 첨부 시 내부 알고리즘과 AI 분석으로 산안법·화관법 규제 물질을 자동 추출하도록 구현하고, 기상청 API를 연동해 현장별 온열질환 리스크를 실시간 수치화했습니다.',
+    features: [
+      'MSDS 문서 첨부 시 산안법·화관법 규제대상 물질 자동 분류',
+      '기상청 API 연동 현장별 실시간 체감온도 및 온열질환 모니터링',
+      '최신 산업안전보건법 및 KOSHA Guide 기반 컴플라이언스 검토 지원',
+      '아날로그 서류 중심 보건관리 업무의 페이퍼리스(Paperless) 통합 관리'
+    ],
+    stack: ['React', 'Next.js', 'TypeScript', 'AI Analysis', '기상청 API', 'Vercel'],
+    iconSvg: '<path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4"/>'
+  },
+  {
+    id: 'local-ventilation',
+    kicker: 'WEB APP 02 · ENGINEERING CALCULATOR',
+    status: 'Field Verified',
+    themeClass: 'theme-vent',
+    brand: 'Local Ventilation',
+    domain: 'localventilation.netlify.app',
+    url: 'https://localventilation.netlify.app/',
+    title: '산업환기 기술계산 웹앱',
+    subtitle: '현장에서 스마트폰으로 즉시 환기량과 산출 근거를 검증하는 공학 계산 도구',
+    summary: '복잡한 후드 유형별 환기량 수식을 엑셀 대신 모바일·PC 웹앱으로 옮겨, 출장 현장에서도 계산 결과와 산출 과정을 즉시 확인할 수 있게 구현했습니다.',
+    problem: '산업환기 기술지도 시 후드 유형별 제어풍속·필요환기량 계산식을 매번 엑셀에서 찾아 입력해야 했고, 출장 현장에서 즉각 결과를 확인하고 사업장 담당자에게 근거를 설명하기 어려웠습니다.',
+    solution: '코딩 경험 없이 생성형 AI와 협업해 시작한 첫 현장 혁신 프로젝트로, 후드 유형별 계산식·단위·표기 방식을 산업환기 원리와 직접 교차 검증하며 오류를 잡았고 결과값과 산출 과정을 함께 보여주도록 설계했습니다.',
+    features: [
+      '후드 유형별 필요환기량 및 제어풍속 정밀 기술계산 엔진',
+      '단순 결과값뿐 아니라 단계별 산출 공식과 계산 근거 투명 표시',
+      '출장 현장 모바일 환경과 사무실 PC 모두에 최적화된 반응형 UI',
+      '국소배기장치 성능 검증 및 공학적 개선안 제안 속도 획기적 단축'
+    ],
+    stack: ['JavaScript', 'Industrial Ventilation', 'Generative AI', 'Responsive UI', 'Netlify'],
+    iconSvg: '<path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/>'
+  },
+  {
+    id: 'kiha-safety',
+    kicker: 'WEB APP 03 · CONFINED SPACE SAFETY',
+    status: 'Live Service',
+    themeClass: 'theme-kiha',
+    brand: 'KIHA Safety Web',
+    domain: 'kiha-safety-web.vercel.app',
+    url: 'https://kiha-safety-web.vercel.app/',
+    title: '밀폐공간 위험성평가 & 안전조치 웹앱',
+    subtitle: '맨홀 등 고위험 밀폐공간 질식재해를 사전 통제하는 현장 점검 솔루션',
+    summary: '산소·유해가스 농도 측정, 환기팬 가동, 공기호흡기 비치, 감시인 배치 등 필수 안전작업허가(PTW) 요건을 현장에서 직관적으로 검증합니다.',
+    problem: '하절기 맨홀 등 밀폐공간 작업은 단 한 번의 절차 누락이 치명적인 질식사고로 이어지지만, 기존 서류 위주의 점검표는 현장에서 실시간 위험성평가와 필수 안전조치 확인에 한계가 있었습니다.',
+    solution: '고용노동부·안전보건공단 연계 밀폐공간 질식재해 예방 전문가로 현장을 점검하며 쌓은 실무 노하우를 AI 웹 개발로 시스템화해, 작업 전 적정공기 확인부터 안전작업허가 검증까지 체계적으로 수행할 수 있게 구현했습니다.',
+    features: [
+      '밀폐공간 작업 전 산소·유해가스 농도(적정공기) 기준 체크 및 평가',
+      '환기팬 가동·공기호흡기 비치·감시인 배치 등 필수 안전조치 검증',
+      '서류 점검을 대체하는 현장 밀착형 안전작업허가(PTW) 프로세스 지원',
+      '사고 후 대응이 아닌 작업 전 위험요인 선제 통제 중심의 UX 설계'
+    ],
+    stack: ['React', 'TypeScript', 'PTW Checklist', 'AI Workflow', 'Vercel'],
+    iconSvg: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'
+  },
+  {
+    id: 'sif-master',
+    kicker: 'WEB APP 04 · RISK ASSESSMENT PWA',
+    status: '부서 실무 도입',
+    themeClass: 'theme-sif',
+    brand: 'SIF Master PWA',
+    domain: 'sif-master-pwa.vercel.app',
+    url: 'https://sif-master-pwa.vercel.app/',
+    title: 'SIF Master 일반 위험성평가 PWA',
+    subtitle: '소속 부서 실제 업무에 도입되어 활용 중인 현장 중심 위험성평가 앱',
+    summary: '실무자가 실제 현장에서 업무를 수행하는 순서 그대로 화면을 설계해, 위험요인 발굴부터 개선대책 수립까지 매끄럽게 이어지는 PWA 웹앱입니다.',
+    problem: '기존 위험성평가 도구는 현장 동선과 동떨어진 복잡한 양식 중심이어서 실무자들이 현장에서 즉시 기록하고 개선조치로 연결하는 데 부담이 컸습니다.',
+    solution: '앞선 환기·밀폐공간 웹앱 개발 경험을 발전시켜 현장 실무자의 실제 작업 순서를 반영한 PWA(Progressive Web App)로 직접 기획·개발했고, 개인 학습을 넘어 소속 부서의 실제 업무 도구로 채택되었습니다.',
+    features: [
+      '현장 실무자 업무 흐름에 맞춘 단계별 위험성평가 입력 및 평가 인터페이스',
+      '중대재해 고위험요인(SIF) 중심의 체계적 위험도 판정 및 개선대책 관리',
+      '모바일 홈 화면 설치 및 현장 접근성을 높인 PWA 구조 적용',
+      '개인 프로젝트를 넘어 조직 내부 실제 업무 프로세스에 정식 적용'
+    ],
+    stack: ['React', 'Next.js', 'PWA', 'Supabase / Firebase', 'Vercel'],
+    iconSvg: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12l2 2 4-4"/><path d="M7 8h10"/>'
+  }
+];
+
+const projectsGrid = document.getElementById('projectsGrid');
+PROJECTS.forEach((proj, projIdx) => {
+  const card = document.createElement('button');
+  card.type = 'button';
+  card.className = 'project-card reveal';
+  card.style.setProperty('--reveal-delay', `${100 + projIdx * 90}ms`);
+  card.setAttribute('data-project-id', proj.id);
+  card.innerHTML = `
+    <div class="project-visual ${proj.themeClass}">
+      <div class="pv-top">
+        <span>${proj.kicker}</span>
+        <span class="pv-status">${proj.status}</span>
+      </div>
+      <div class="pv-mockup">
+        <div>
+          <div class="pv-brand">${proj.brand}</div>
+          <div class="pv-domain">${proj.domain}</div>
+        </div>
+        <div class="pv-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">${proj.iconSvg}</svg>
+        </div>
+      </div>
+    </div>
+    <div class="project-body">
+      <div class="project-title">${proj.title}</div>
+      <p class="project-summary">${proj.summary}</p>
+      <div class="project-footer">
+        <div class="project-tags">
+          ${proj.stack.slice(0, 3).map((t) => `<span class="project-tag">${t}</span>`).join('')}
+        </div>
+        <span class="project-cta">상세 보기 →</span>
+      </div>
+    </div>
+  `;
+  card.addEventListener('click', () => openProjectModal(proj));
+  projectsGrid.appendChild(card);
+});
+
+// Project Detail Modal
+const projectModal = document.getElementById('projectModal');
+const modalBanner = document.getElementById('modalBanner');
+const modalKicker = document.getElementById('modalKicker');
+const modalTitle = document.getElementById('modalTitle');
+const modalSubtitle = document.getElementById('modalSubtitle');
+const modalProblem = document.getElementById('modalProblem');
+const modalSolution = document.getElementById('modalSolution');
+const modalFeatures = document.getElementById('modalFeatures');
+const modalStack = document.getElementById('modalStack');
+const modalUrlText = document.getElementById('modalUrlText');
+const modalLiveLink = document.getElementById('modalLiveLink');
+const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+function openProjectModal(proj) {
+  modalBanner.className = 'modal-banner ' + proj.themeClass;
+  modalKicker.textContent = proj.kicker + ' · ' + proj.status;
+  modalTitle.textContent = proj.title;
+  modalSubtitle.textContent = proj.subtitle;
+  modalProblem.textContent = proj.problem;
+  modalSolution.textContent = proj.solution;
+  modalFeatures.innerHTML = proj.features.map((f) => `<li>${f}</li>`).join('');
+  modalStack.innerHTML = proj.stack.map((s) => `<span class="skill-pill">${s}</span>`).join('');
+  modalUrlText.textContent = proj.url;
+  modalLiveLink.href = proj.url;
+
+  projectModal.classList.add('is-open');
+  document.body.classList.add('modal-open');
+}
+
+function closeProjectModal() {
+  projectModal.classList.remove('is-open');
+  document.body.classList.remove('modal-open');
+}
+
+modalCloseBtn.addEventListener('click', closeProjectModal);
+projectModal.addEventListener('click', (e) => {
+  if (e.target === projectModal) closeProjectModal();
+});
+
+// Toast & Copy Email
+const toastEl = document.getElementById('toast');
+let toastTimer = null;
+function showToast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('is-visible');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toastEl.classList.remove('is-visible');
+  }, 2200);
+}
+
+const copyEmailBtn = document.getElementById('copyEmailBtn');
+copyEmailBtn.addEventListener('click', () => {
+  const email = 'yusuk1548@gmail.com';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(email)
+      .then(() => showToast('이메일 주소(yusuk1548@gmail.com)가 복사되었습니다.'))
+      .catch(() => fallbackCopy(email));
+  } else {
+    fallbackCopy(email);
+  }
+});
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast(`이메일 주소(${text})가 복사되었습니다.`);
+  } catch {
+    showToast(`이메일: ${text}`);
+  }
+  document.body.removeChild(ta);
+}
+
+// =========================================================================
+// 1. THEME STATE (Light / Dark mode + shortcut 'D' + OS sync)
+// =========================================================================
+const rootEl = document.documentElement;
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+const themeIconSun = document.getElementById('themeIconSun');
+const themeIconMoon = document.getElementById('themeIconMoon');
+const themeLabel = document.getElementById('themeLabel');
+
+let isDark = false;
+try {
+  const savedTheme = localStorage.getItem('portfolio_theme');
+  if (savedTheme === 'dark') isDark = true;
+} catch {}
+
+function applyTheme(dark) {
+  isDark = dark;
+  if (dark) {
+    rootEl.setAttribute('data-theme', 'dark');
+    themeIconSun.style.display = 'block';
+    themeIconMoon.style.display = 'none';
+    themeLabel.textContent = 'Light';
+  } else {
+    rootEl.removeAttribute('data-theme');
+    themeIconSun.style.display = 'none';
+    themeIconMoon.style.display = 'block';
+    themeLabel.textContent = 'Dark';
+  }
+  try {
+    localStorage.setItem('portfolio_theme', dark ? 'dark' : 'light');
+  } catch {}
+}
+
+applyTheme(isDark);
+
+themeToggleBtn.addEventListener('click', () => applyTheme(!isDark));
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && projectModal.classList.contains('is-open')) {
+    closeProjectModal();
+    return;
+  }
+  if (e.key === 'd' || e.key === 'D') {
+    if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+    applyTheme(!isDark);
+  }
+});
+
+if (window.matchMedia) {
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  if (mediaQuery.addEventListener) {
+    mediaQuery.addEventListener('change', (e) => applyTheme(e.matches));
+  }
+}
+
+// =========================================================================
+// 2. PROCEDURAL ABSTRACT BLUE / INDIGO / WHITE INK-CLOUD FLUID CANVAS
+//    Aspect ratio 768x494 (1.555) matches 14" MacBook Pro display (1.557)
+// =========================================================================
+const fluidCanvas = document.createElement('canvas');
+fluidCanvas.width = 768;
+fluidCanvas.height = 494;
+const fCtx = fluidCanvas.getContext('2d');
+
+const transitionCanvas = document.getElementById('fluid-transition-canvas');
+const tCtx = transitionCanvas.getContext('2d');
+
+function resizeTransitionCanvas() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  transitionCanvas.width = Math.floor(window.innerWidth * dpr);
+  transitionCanvas.height = Math.floor(window.innerHeight * dpr);
+}
+resizeTransitionCanvas();
+
+const inkShapes = [
+  { cx: 0.48, cy: 0.52, rx: 0.36, ry: 0.44, angle: -0.45, speed: 0.18, driftX: 0.04, driftY: 0.03, color: [16, 30, 50], alpha: 0.72, mode: 'multiply' },
+  { cx: 0.36, cy: 0.42, rx: 0.30, ry: 0.46, angle: 0.35, speed: -0.14, driftX: 0.05, driftY: 0.04, color: [42, 68, 102], alpha: 0.62, mode: 'multiply' },
+  { cx: 0.62, cy: 0.58, rx: 0.34, ry: 0.38, angle: -0.75, speed: 0.16, driftX: 0.04, driftY: 0.05, color: [76, 106, 146], alpha: 0.56, mode: 'multiply' },
+  { cx: 0.25, cy: 0.62, rx: 0.32, ry: 0.30, angle: 0.6, speed: 0.12, driftX: 0.06, driftY: 0.03, color: [98, 134, 178], alpha: 0.58, mode: 'multiply' },
+  { cx: 0.52, cy: 0.35, rx: 0.26, ry: 0.42, angle: -0.25, speed: -0.20, driftX: 0.03, driftY: 0.04, color: [22, 40, 68], alpha: 0.68, mode: 'multiply' },
+  { cx: 0.70, cy: 0.44, rx: 0.28, ry: 0.34, angle: 0.85, speed: 0.15, driftX: 0.05, driftY: 0.04, color: [122, 156, 198], alpha: 0.50, mode: 'multiply' },
+  { cx: 0.44, cy: 0.68, rx: 0.28, ry: 0.36, angle: -0.15, speed: -0.17, driftX: 0.04, driftY: 0.03, color: [12, 24, 42], alpha: 0.75, mode: 'multiply' },
+  { cx: 0.18, cy: 0.36, rx: 0.26, ry: 0.32, angle: 0.42, speed: 0.13, driftX: 0.04, driftY: 0.05, color: [110, 148, 194], alpha: 0.52, mode: 'multiply' },
+  { cx: 0.58, cy: 0.72, rx: 0.25, ry: 0.30, angle: -0.62, speed: 0.19, driftX: 0.05, driftY: 0.03, color: [52, 82, 120], alpha: 0.55, mode: 'multiply' }
+];
+
+const lightWisps = [
+  { cx: 0.88, cy: 0.18, r: 0.44, speed: 0.14, alpha: 0.92 },
+  { cx: 0.92, cy: 0.34, r: 0.32, speed: -0.11, alpha: 0.72 },
+  { cx: 0.14, cy: 0.86, r: 0.34, speed: 0.16, alpha: 0.65 },
+  { cx: 0.64, cy: 0.24, r: 0.22, speed: -0.18, alpha: 0.42 }
+];
+
+const grainCanvas = document.createElement('canvas');
+grainCanvas.width = 128;
+grainCanvas.height = 128;
+const gCtx = grainCanvas.getContext('2d');
+const gImg = gCtx.createImageData(128, 128);
+for (let i = 0; i < gImg.data.length; i += 4) {
+  const v = 120 + Math.floor(Math.random() * 60);
+  gImg.data[i] = v;
+  gImg.data[i + 1] = v + 8;
+  gImg.data[i + 2] = v + 18;
+  gImg.data[i + 3] = 16;
+}
+gCtx.putImageData(gImg, 0, 0);
+const grainPattern = fCtx.createPattern(grainCanvas, 'repeat');
+
+function drawInkFluid(t) {
+  const w = fluidCanvas.width;
+  const h = fluidCanvas.height;
+
+  const bgGrad = fCtx.createLinearGradient(0, h, w, 0);
+  bgGrad.addColorStop(0, '#c8daf0');
+  bgGrad.addColorStop(0.45, '#e8f1fa');
+  bgGrad.addColorStop(0.8, '#f7fbff');
+  bgGrad.addColorStop(1, '#ffffff');
+  fCtx.globalCompositeOperation = 'source-over';
+  fCtx.fillStyle = bgGrad;
+  fCtx.fillRect(0, 0, w, h);
+
+  for (let i = 0; i < inkShapes.length; i++) {
+    const s = inkShapes[i];
+    const phase = t * s.speed + i * 1.37;
+    const x = (s.cx + Math.sin(phase) * s.driftX) * w;
+    const y = (s.cy + Math.cos(phase * 0.85) * s.driftY) * h;
+    const rx = s.rx * w * (0.94 + 0.08 * Math.sin(phase * 1.1));
+    const ry = s.ry * h * (0.94 + 0.08 * Math.cos(phase * 0.9));
+    const rot = s.angle + Math.sin(phase * 0.6) * 0.22;
+
+    fCtx.save();
+    fCtx.translate(x, y);
+    fCtx.rotate(rot);
+    fCtx.globalCompositeOperation = s.mode;
+
+    const grad = fCtx.createRadialGradient(-rx * 0.15, -ry * 0.1, rx * 0.05, 0, 0, Math.max(rx, ry));
+    grad.addColorStop(0, `rgba(${s.color[0]}, ${s.color[1]}, ${s.color[2]}, ${s.alpha})`);
+    grad.addColorStop(0.55, `rgba(${s.color[0] + 18}, ${s.color[1] + 24}, ${s.color[2] + 32}, ${s.alpha * 0.72})`);
+    grad.addColorStop(0.88, `rgba(${s.color[0] + 45}, ${s.color[1] + 55}, ${s.color[2] + 68}, ${s.alpha * 0.26})`);
+    grad.addColorStop(1, `rgba(${s.color[0] + 60}, ${s.color[1] + 70}, ${s.color[2] + 85}, 0)`);
+
+    fCtx.fillStyle = grad;
+    fCtx.beginPath();
+    const w1 = rx * (0.9 + 0.12 * Math.sin(phase));
+    const h1 = ry * (0.95 + 0.1 * Math.cos(phase * 1.2));
+    fCtx.moveTo(0, -h1);
+    fCtx.bezierCurveTo(w1 * 0.95, -h1 * 0.7, w1 * 1.05, h1 * 0.45, w1 * 0.18, h1);
+    fCtx.bezierCurveTo(-w1 * 0.78, h1 * 0.85, -w1 * 1.05, -h1 * 0.35, 0, -h1);
+    fCtx.closePath();
+    fCtx.fill();
+    fCtx.restore();
+  }
+
+  fCtx.save();
+  fCtx.globalCompositeOperation = 'multiply';
+  const coreX = (0.47 + Math.sin(t * 0.21) * 0.03) * w;
+  const coreY = (0.56 + Math.cos(t * 0.17) * 0.03) * h;
+  const coreGrad = fCtx.createRadialGradient(coreX, coreY, w * 0.02, coreX, coreY, w * 0.28);
+  coreGrad.addColorStop(0, 'rgba(8, 16, 30, 0.82)');
+  coreGrad.addColorStop(0.5, 'rgba(20, 36, 58, 0.45)');
+  coreGrad.addColorStop(1, 'rgba(20, 36, 58, 0)');
+  fCtx.fillStyle = coreGrad;
+  fCtx.fillRect(0, 0, w, h);
+  fCtx.restore();
+
+  fCtx.globalCompositeOperation = 'screen';
+  for (let i = 0; i < lightWisps.length; i++) {
+    const lw = lightWisps[i];
+    const lx = (lw.cx + Math.sin(t * lw.speed + i) * 0.03) * w;
+    const ly = (lw.cy + Math.cos(t * lw.speed * 0.9 + i) * 0.03) * h;
+    const lr = lw.r * w;
+    const lg = fCtx.createRadialGradient(lx, ly, 0, lx, ly, lr);
+    lg.addColorStop(0, `rgba(255, 255, 255, ${lw.alpha})`);
+    lg.addColorStop(0.5, `rgba(232, 244, 255, ${lw.alpha * 0.55})`);
+    lg.addColorStop(1, 'rgba(232, 244, 255, 0)');
+    fCtx.fillStyle = lg;
+    fCtx.fillRect(0, 0, w, h);
+  }
+
+  fCtx.globalCompositeOperation = 'source-over';
+  fCtx.fillStyle = grainPattern;
+  fCtx.fillRect(0, 0, w, h);
+}
+
+drawInkFluid(0);
+
+// =========================================================================
+// 3. THREE.JS SCENE: HIGH-DETAIL MACBOOK PRO 14" + 1K STUDIO HDRI + WAVE
+// =========================================================================
+const webglCanvas = document.getElementById('webgl-canvas');
+const renderer = new THREE.WebGLRenderer({
+  canvas: webglCanvas,
+  antialias: true,
+  alpha: true,
+  powerPreference: 'high-performance'
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.94;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(28, window.innerWidth / window.innerHeight, 0.05, 100);
+camera.position.set(0, 0.44, 9.4);
+
+// 3A. Fast 1K Studio HDRI Environment via RGBELoader + PMREMGenerator
+let hdriReady = false;
+let modelReady = false;
+
+const pmremGenerator = new THREE.PMREMGenerator(renderer);
+pmremGenerator.compileEquirectangularShader();
+
+const rgbeLoader = new RGBELoader();
+rgbeLoader.load(
+  '/studio.hdr',
+  (hdrTexture) => {
+    hdrTexture.mapping = THREE.EquirectangularReflectionMapping;
+    const envRT = pmremGenerator.fromEquirectangular(hdrTexture);
+    scene.environment = envRT.texture;
+    scene.environmentIntensity = 0.96;
+    hdrTexture.dispose();
+    pmremGenerator.dispose();
+    hdriReady = true;
+  },
+  undefined,
+  (err) => {
+    console.warn('HDRI load failed, falling back to studio lights:', err);
+    hdriReady = true;
+  }
+);
+
+// Precision Apple Commercial Studio Lighting (crisp silver aluminum + legible 3D keyboard)
+const hemiLight = new THREE.HemisphereLight(0xf6f8fc, 0x454b56, 0.55);
+scene.add(hemiLight);
+
+const keyLight = new THREE.DirectionalLight(0xffffff, 1.55);
+keyLight.position.set(-3.4, 8.2, 5.2);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(1024, 1024);
+keyLight.shadow.camera.near = 1;
+keyLight.shadow.camera.far = 20;
+keyLight.shadow.camera.left = -3.4;
+keyLight.shadow.camera.right = 3.4;
+keyLight.shadow.camera.top = 3.4;
+keyLight.shadow.camera.bottom = -3.4;
+keyLight.shadow.bias = -0.0004;
+keyLight.shadow.radius = 4.5;
+scene.add(keyLight);
+
+// Soft overhead-front fill to catch sculpted keycaps & aluminum chamfers
+const frontFill = new THREE.DirectionalLight(0xf2f6ff, 0.62);
+frontFill.position.set(1.8, 4.0, 6.2);
+scene.add(frontFill);
+
+// Crisp cool rear rim light for CNC lid edge separation
+const rimLight = new THREE.DirectionalLight(0xdce8ff, 0.85);
+rimLight.position.set(5.2, 4.5, -5.0);
+scene.add(rimLight);
+
+// 3B. Bold Diagonal 3D Particle Silk-Wave Ribbon (100% preserved)
+const cols = 240;
+const rows = 92;
+const totalPts = cols * rows;
+const wavePositions = new Float32Array(totalPts * 3);
+const waveUVs = new Float32Array(totalPts * 2);
+
+let idx = 0;
+let uvIdx = 0;
+for (let i = 0; i < cols; i++) {
+  const u = i / (cols - 1);
+  for (let j = 0; j < rows; j++) {
+    const v = j / (rows - 1);
+    wavePositions[idx++] = (u - 0.5) * 23.0;
+    wavePositions[idx++] = (v - 0.5) * 5.8;
+    wavePositions[idx++] = 0;
+    waveUVs[uvIdx++] = u;
+    waveUVs[uvIdx++] = v;
+  }
+}
+
+const waveGeo = new THREE.BufferGeometry();
+waveGeo.setAttribute('position', new THREE.BufferAttribute(wavePositions, 3));
+waveGeo.setAttribute('aUv', new THREE.BufferAttribute(waveUVs, 2));
+
+const waveUniforms = {
+  uTime: { value: 0 },
+  uColor: { value: new THREE.Color(isDark ? 0xebebf2 : 0x26262a) },
+  uOpacity: { value: isDark ? 0.85 : 0.72 },
+  uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 2) },
+  uMouse: { value: new THREE.Vector2(99.0, 99.0) },
+  uMouseEnergy: { value: 0.0 }
+};
+
+const waveMat = new THREE.ShaderMaterial({
+  uniforms: waveUniforms,
+  transparent: true,
+  depthWrite: false,
+  vertexShader: `
+    attribute vec2 aUv;
+    uniform float uTime;
+    uniform float uPixelRatio;
+    uniform vec2 uMouse;
+    uniform float uMouseEnergy;
+    varying float vAlpha;
+    varying float vShade;
+
+    void main() {
+      float u = aUv.x;
+      float v = aUv.y;
+      float vc = v - 0.5;
+      vec3 pos = position;
+
+      float flow = u * 6.8 - uTime * 0.65;
+      float flow2 = u * 3.6 - uTime * 0.38;
+      float spineY = sin(flow2) * 0.95 + cos(u * 2.4 + uTime * 0.25) * 0.45;
+
+      float twistAngle = sin(flow * 0.55) * 1.15 + cos(u * 4.2 - uTime * 0.42) * 0.55;
+      float localY = vc * 5.4;
+      float localZ = sin(flow + vc * 5.2) * 0.92 + cos(u * 9.0 - uTime * 0.75 - vc * 3.8) * 0.42;
+
+      float ct = cos(twistAngle);
+      float st = sin(twistAngle);
+      float foldedY = localY * ct - localZ * st;
+      float foldedZ = localY * st + localZ * ct;
+
+      pos.y = spineY + foldedY * 0.78;
+      pos.z = foldedZ * 0.95;
+
+      // Real-time mouse cursor 3D silk ripple & gentle magnetic swell
+      vec2 toMouse = pos.xy - uMouse;
+      float dist = length(toMouse);
+      float influence = exp(-dist * dist * 0.16);
+      float ripple = sin(dist * 2.8 - uTime * 5.2) * exp(-dist * 0.38);
+      vec2 pushDir = dist > 0.001 ? normalize(toMouse) : vec2(0.0);
+
+      float activeStrength = 0.55 + uMouseEnergy * 0.95;
+      pos.xy += pushDir * influence * 0.42 * activeStrength;
+      pos.z += (influence * 1.15 + ripple * 0.55) * activeStrength;
+
+      float vEdge = smoothstep(0.0, 0.14, v) * smoothstep(1.0, 0.86, v);
+      float uEdge = smoothstep(0.0, 0.06, u) * smoothstep(1.0, 0.94, u);
+      float crest = 0.55 + 0.45 * abs(sin(v * 3.14159265 * 2.0 + flow * 0.4));
+      float depthGlow = smoothstep(-2.4, 2.2, pos.z);
+      vShade = clamp(mix(0.42, 1.0, depthGlow) + influence * 0.35 * activeStrength, 0.0, 1.25);
+      vAlpha = vEdge * uEdge * crest;
+
+      vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+      float sizeBase = mix(17.5, 29.0, depthGlow) + influence * 9.5 * activeStrength;
+      gl_PointSize = clamp((sizeBase * uPixelRatio) / -mvPosition.z, 1.7, 5.4);
+      gl_Position = projectionMatrix * mvPosition;
+    }
+  `,
+  fragmentShader: `
+    uniform vec3 uColor;
+    uniform float uOpacity;
+    varying float vAlpha;
+    varying float vShade;
+
+    void main() {
+      float d = length(gl_PointCoord - vec2(0.5));
+      if (d > 0.5) discard;
+      float disc = smoothstep(0.5, 0.18, d);
+      gl_FragColor = vec4(uColor, clamp(disc * vAlpha * vShade * uOpacity, 0.0, 0.96));
+    }
+  `
+});
+
+const particleWave = new THREE.Points(waveGeo, waveMat);
+particleWave.position.set(0.0, 0.12, -2.8);
+particleWave.rotation.set(0.14, 0.04, -0.46);
+scene.add(particleWave);
+
+// 3C. High-Detail 14" MacBook Pro (public/macbook.glb)
+const screenTexture = new THREE.CanvasTexture(fluidCanvas);
+screenTexture.colorSpace = THREE.SRGBColorSpace;
+screenTexture.minFilter = THREE.LinearFilter;
+screenTexture.magFilter = THREE.LinearFilter;
+screenTexture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+// New macbook.glb display mesh ('Object_107') uses glTF UV convention (v=0 top, v=1 bottom),
+// so flipY = false renders the ink-cloud canvas upright and un-mirrored 1:1.
+screenTexture.flipY = false;
+
+function createContactShadowTexture() {
+  const c = document.createElement('canvas');
+  c.width = 512;
+  c.height = 512;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, 512, 512);
+
+  const g1 = ctx.createRadialGradient(256, 256, 58, 256, 256, 246);
+  g1.addColorStop(0, 'rgba(0, 0, 0, 0.34)');
+  g1.addColorStop(0.56, 'rgba(0, 0, 0, 0.12)');
+  g1.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = g1;
+  ctx.fillRect(0, 0, 512, 512);
+
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.44)';
+  ctx.filter = 'blur(16px)';
+  ctx.beginPath();
+  ctx.roundRect(96, 130, 320, 252, 28);
+  ctx.fill();
+
+  return new THREE.CanvasTexture(c);
+}
+
+const macbookGroup = new THREE.Group();
+scene.add(macbookGroup);
+
+// Reduced ~20% vs previous 3.64 so open MacBook sits cleanly beneath hero headline with generous gap
+const TARGET_WIDTH = 2.90;
+const TARGET_DEPTH = 2.05;
+
+// Soft studio contact shadow beneath rubber feet
+const contactShadowMat = new THREE.MeshBasicMaterial({
+  map: createContactShadowTexture(),
+  transparent: true,
+  depthWrite: false,
+  opacity: isDark ? 0.38 : 0.76
+});
+const contactShadowPlane = new THREE.Mesh(
+  new THREE.PlaneGeometry(TARGET_WIDTH * 1.46, TARGET_DEPTH * 1.48),
+  contactShadowMat
+);
+contactShadowPlane.rotation.x = -Math.PI / 2;
+contactShadowPlane.position.set(0, -0.006, 0.02);
+macbookGroup.add(contactShadowPlane);
+
+// Real directional PCF soft shadow catcher on studio floor
+const floorShadowMat = new THREE.ShadowMaterial({
+  opacity: isDark ? 0.12 : 0.24
+});
+const floorShadowPlane = new THREE.Mesh(
+  new THREE.PlaneGeometry(10, 10),
+  floorShadowMat
+);
+floorShadowPlane.rotation.x = -Math.PI / 2;
+floorShadowPlane.position.set(0, -0.010, 0);
+floorShadowPlane.receiveShadow = true;
+macbookGroup.add(floorShadowPlane);
+
+// References discovered & bound dynamically from macbook.glb
+let lidPivot = null;
+let screenMesh = null;
+const screenLocalCenter = new THREE.Vector3();
+const screenWorldCenter = new THREE.Vector3();
+
+// Exact rotation offsets around the re-pivoted mechanical hinge axis of RcexTyyhpuJYATQ_61
+// (Baked pose = 0 rad = 110° open; +1.885 rad closes lid flush over deck; +0.16 rad = ~101° hero open; +0.349 rad = 90° vertical for zoom-in)
+const LID_CLOSED_X = 1.885;
+const LID_OPEN_X = 0.16;
+const LID_ZOOM_VERTICAL_X = 0.3491; // +20 deg -> screen normal becomes exact [0, 0, +1]
+
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('/draco/');
+
+const gltfLoader = new GLTFLoader();
+gltfLoader.setDRACOLoader(dracoLoader);
+
+// Material buckets identified from macbook.glb inspection
+const ALUMINUM_SHELL_MATS = new Set(['zNRfbdNyoCOxSDD', 'HdeQgqDhVRltuvQ', 'XvtJEVWVvyDeJRR']);
+const TRACKPAD_MATS = new Set(['WiyOPYJEeiHNVjF']);
+const KEYCAP_MATS = new Set(['waAAeDqzqDLObIi', 'sqkqSXQCeccDMmm', 'kMkIQgtfAZdmtyc']);
+const KEY_LEGEND_MATS = new Set(['quuXrfeUujYrUMo']);
+const BEZEL_GLASS_MATS = new Set(['ZtrFkpzRROyZncn', 'pKaDkdyuuvylYHt']);
+
+gltfLoader.load(
+  '/macbook.glb',
+  (gltf) => {
+    const model = gltf.scene;
+
+    // 1) Inspect hierarchy & tune PBR materials for crisp Apple Silver Aluminum + 3D Keyboard
+    model.traverse((obj) => {
+      if (!obj.isMesh) return;
+
+      const mat = obj.material;
+      const matName = mat && mat.name ? mat.name : '';
+
+      // Identify display screen mesh (Object_107 / material HlQwFCAPWzetDQy with emissiveMap)
+      if (obj.name === 'Object_107' || matName === 'HlQwFCAPWzetDQy' || (mat && mat.emissiveMap)) {
+        screenMesh = obj;
+        obj.castShadow = false;
+        obj.receiveShadow = false;
+        obj.material = new THREE.MeshBasicMaterial({
+          map: screenTexture,
+          toneMapped: false
+        });
+        obj.geometry.computeBoundingBox();
+        if (obj.geometry.boundingBox) {
+          obj.geometry.boundingBox.getCenter(screenLocalCenter);
+        }
+        return;
+      }
+
+      obj.castShadow = true;
+      obj.receiveShadow = true;
+
+      if (!mat) return;
+
+      if (ALUMINUM_SHELL_MATS.has(matName)) {
+        // Authentic Apple Silver Anodized Aluminum preserving original normal + roughness maps
+        mat.color.setHex(0xcfd4dc);
+        mat.envMapIntensity = 1.08;
+        mat.needsUpdate = true;
+      } else if (TRACKPAD_MATS.has(matName)) {
+        // Force Touch Glass Trackpad in slightly cooler silver tone for crisp deck contrast
+        mat.color.setHex(0xbec4ce);
+        mat.envMapIntensity = 1.0;
+        mat.needsUpdate = true;
+      } else if (KEYCAP_MATS.has(matName)) {
+        // Matte anodized jet-black sculpted keycaps & recessed keyboard well with crisp specular edges
+        mat.color.setHex(0x16181e);
+        mat.metalness = 0.14;
+        mat.roughness = 0.48;
+        mat.envMapIntensity = 0.72;
+        mat.needsUpdate = true;
+      } else if (KEY_LEGEND_MATS.has(matName)) {
+        // Subtle crisp white backlit MacBook keycap legends
+        mat.color.setHex(0xeaf0f8);
+        if (mat.emissive) {
+          mat.emissive.setHex(0xd8e4f5);
+          mat.emissiveIntensity = 0.28;
+        }
+        mat.roughness = 0.35;
+        mat.needsUpdate = true;
+      } else if (BEZEL_GLASS_MATS.has(matName)) {
+        // Glossy obsidian glass bezel & dark chrome Apple logo
+        mat.envMapIntensity = 0.85;
+        mat.needsUpdate = true;
+      } else if (mat.envMapIntensity !== undefined) {
+        mat.envMapIntensity = 0.88;
+      }
+    });
+
+    // 2) Re-pivot the upper lid assembly ('RcexTyyhpuJYATQ_61') cleanly onto its real hinge axis
+    const lidRawNode = model.getObjectByName('RcexTyyhpuJYATQ_61');
+    if (lidRawNode && lidRawNode.parent) {
+      const hingeLocal = new THREE.Vector3(0, -11.0, 0.25);
+      lidPivot = new THREE.Group();
+      lidPivot.name = 'MacBookLidHingePivot';
+      lidPivot.position.copy(hingeLocal);
+
+      lidRawNode.parent.add(lidPivot);
+      lidRawNode.position.sub(hingeLocal);
+      lidPivot.add(lidRawNode);
+
+      // Start completely closed before preloader fades out
+      lidPivot.rotation.x = LID_CLOSED_X;
+    }
+
+    // 3) Normalize scale & center base chassis ('EhCmdLAMoLoXcIA_43') so y=0 rests on rubber feet
+    const baseNode = model.getObjectByName('EhCmdLAMoLoXcIA_43') || model;
+    model.updateMatrixWorld(true);
+    const baseBox = new THREE.Box3().setFromObject(baseNode);
+    const baseSize = new THREE.Vector3();
+    const baseCenter = new THREE.Vector3();
+    baseBox.getSize(baseSize);
+    baseBox.getCenter(baseCenter);
+
+    const modelScale = TARGET_WIDTH / Math.max(0.001, baseSize.x);
+    model.scale.setScalar(modelScale);
+    model.position.set(
+      -baseCenter.x * modelScale,
+      -baseBox.min.y * modelScale,
+      -baseCenter.z * modelScale
+    );
+
+    macbookGroup.add(model);
+    macbookGroup.updateMatrixWorld(true);
+    modelReady = true;
+
+    console.info('[MacBook GLB Loaded]', {
+      lidPivot: lidPivot ? lidPivot.name : null,
+      screenMesh: screenMesh ? screenMesh.name : null,
+      scale: Number(modelScale.toFixed(4))
+    });
+  },
+  undefined,
+  (err) => {
+    console.error('Failed to load /macbook.glb:', err);
+    modelReady = true;
+  }
+);
+
+// =========================================================================
+// 4. FAST PRELOADER + INTRO + SCROLL CHOREOGRAPHY + ACCURATE VIEWPORT NAV SYNC
+// =========================================================================
+const preloader = document.getElementById('preloader');
+const hexProgress = document.getElementById('hexProgress');
+const topControls = document.getElementById('topControls');
+const floatingNav = document.getElementById('floatingNav');
+const navLinks = Array.from(floatingNav.querySelectorAll('a'));
+const heroCopy = document.getElementById('heroCopy');
+const heroBottomBar = document.getElementById('heroBottomBar');
+const scrollIndicator = document.getElementById('scrollIndicator');
+const scrollIndicatorFill = document.getElementById('scrollIndicatorFill');
+const scrollTrack = document.getElementById('scrollTrack');
+const replayBtn = document.getElementById('replayBtn');
+const backToTopBtn = document.getElementById('backToTopBtn');
+
+const HEX_LEN = 168;
+const PRELOADER_MIN_SEC = 0.88; // Crisp 0.8–1.0s minimum splash
+let introState = 'preloader';
+let introStartTime = 0;
+let preloaderStartTime = performance.now();
+
+let targetHeroP = 0;
+let currentHeroP = 0;
+let isHeroInView = true;
+
+let mouseX = 0;
+let mouseY = 0;
+let smoothMouseX = 0;
+let smoothMouseY = 0;
+let mouseActive = false;
+let targetMouseEnergy = 0;
+let smoothMouseEnergy = 0;
+let prevClientX = 0;
+let prevClientY = 0;
+
+function updatePointerInput(clientX, clientY, energyScale = 1.0, rangeScale = 1.0) {
+  const dx = clientX - prevClientX;
+  const dy = clientY - prevClientY;
+  prevClientX = clientX;
+  prevClientY = clientY;
+  const speed = Math.min(1.0, Math.hypot(dx, dy) / 38);
+  targetMouseEnergy = Math.max(targetMouseEnergy, (0.35 + speed * 0.85) * energyScale);
+  mouseActive = true;
+  mouseX = ((clientX / Math.max(1, window.innerWidth)) - 0.5) * 2 * rangeScale;
+  mouseY = ((clientY / Math.max(1, window.innerHeight)) - 0.5) * 2 * rangeScale;
+}
+
+window.addEventListener('mousemove', (e) => {
+  updatePointerInput(e.clientX, e.clientY, 1.0, 1.0);
+});
+
+// Passive touch listeners: gentle 3D wave & MacBook feedback without ever blocking vertical scroll
+window.addEventListener('touchstart', (e) => {
+  if (!e.touches || !e.touches.length) return;
+  const t = e.touches[0];
+  prevClientX = t.clientX;
+  prevClientY = t.clientY;
+  updatePointerInput(t.clientX, t.clientY, 0.55, 0.65);
+}, { passive: true });
+
+window.addEventListener('touchmove', (e) => {
+  if (!e.touches || !e.touches.length) return;
+  const t = e.touches[0];
+  updatePointerInput(t.clientX, t.clientY, 0.6, 0.65);
+}, { passive: true });
+
+window.addEventListener('touchend', () => {
+  // Smoothly return MacBook to center once finger lifts
+  mouseX = 0;
+  mouseY = 0;
+}, { passive: true });
+
+const sectionIds = ['about', 'career', 'projects', 'capabilities', 'contact'];
+const sectionEls = sectionIds.map((id) => document.getElementById(id));
+const aboutEl = document.getElementById('about');
+
+// =========================================================================
+// 4A. APPLE-STYLE SCROLL REVEAL (IntersectionObserver + Instant Nav Jump)
+// =========================================================================
+const revealEls = Array.from(document.querySelectorAll('.reveal'));
+let revealObserver = null;
+
+function markRevealed(el, instant = false) {
+  if (!el || el.classList.contains('is-visible')) return;
+  if (instant) {
+    el.style.setProperty('--reveal-delay', '0ms');
+  }
+  el.classList.add('is-visible');
+  if (revealObserver) revealObserver.unobserve(el);
+
+  const delayVal = instant ? 0 : (parseFloat(getComputedStyle(el).getPropertyValue('--reveal-delay')) || 0);
+  setTimeout(() => {
+    el.classList.add('is-settled');
+  }, delayVal + 850);
+}
+
+function revealSectionImmediately(sectionId) {
+  const target = document.getElementById(sectionId);
+  if (!target) return;
+  const targets = target.querySelectorAll('.reveal');
+  targets.forEach((el, i) => {
+    el.style.setProperty('--reveal-delay', `${Math.min(i * 45, 220)}ms`);
+    markRevealed(el, false);
+  });
+}
+
+function revealVisibleInViewport(forceInView = false) {
+  const vh = window.innerHeight;
+  const cutoff = forceInView ? vh * 0.96 : vh * 0.72;
+  revealEls.forEach((el) => {
+    if (el.classList.contains('is-visible')) return;
+    const rect = el.getBoundingClientRect();
+    // Fallback for fast scrolls, tall cards, or elements already above viewport
+    if (rect.top <= cutoff) {
+      markRevealed(el, rect.bottom < 0);
+    }
+  });
+}
+
+if ('IntersectionObserver' in window) {
+  revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          markRevealed(entry.target, false);
+        }
+      });
+    },
+    {
+      threshold: 0.12,
+      rootMargin: '0px 0px -60px 0px'
+    }
+  );
+
+  revealEls.forEach((el) => revealObserver.observe(el));
+} else {
+  revealEls.forEach((el) => markRevealed(el, true));
+}
+
+// Guarantee immediate reveal when clicking floating nav tabs or jumping via URL hash
+navLinks.forEach((link) => {
+  link.addEventListener('click', () => {
+    const href = link.getAttribute('href') || '';
+    if (href.startsWith('#')) {
+      const targetId = href.slice(1);
+      revealSectionImmediately(targetId);
+      setTimeout(() => revealVisibleInViewport(true), 350);
+      setTimeout(() => revealVisibleInViewport(true), 800);
+    }
+  });
+});
+
+window.addEventListener('hashchange', () => {
+  const id = window.location.hash.replace(/^#/, '');
+  if (id) revealSectionImmediately(id);
+  revealVisibleInViewport(true);
+});
+
+if (window.location.hash) {
+  revealSectionImmediately(window.location.hash.replace(/^#/, ''));
+}
+revealVisibleInViewport(true);
+
+function updateScrollState() {
+  const heroMax = Math.max(1, scrollTrack.offsetHeight - window.innerHeight);
+  targetHeroP = Math.max(0, Math.min(1, window.scrollY / heroMax));
+  isHeroInView = window.scrollY < scrollTrack.offsetHeight + 120;
+
+  revealVisibleInViewport();
+
+  // Global scroll progress bar
+  const docMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  const docP = Math.max(0, Math.min(1, window.scrollY / docMax));
+  scrollIndicatorFill.style.height = (docP * 100).toFixed(1) + '%';
+
+  // Show floating nav ONLY once About section enters the upper viewport
+  const aboutRect = aboutEl.getBoundingClientRect();
+  if (aboutRect.top <= window.innerHeight * 0.55 && introState !== 'preloader') {
+    floatingNav.classList.add('is-visible');
+  } else {
+    floatingNav.classList.remove('is-visible');
+  }
+
+  // Viewport-relative active tab calculation
+  const triggerLine = window.innerHeight * 0.38;
+  let activeId = sectionIds[0];
+
+  if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 24) {
+    activeId = sectionIds[sectionIds.length - 1];
+  } else {
+    for (let i = 0; i < sectionEls.length; i++) {
+      const el = sectionEls[i];
+      if (el && el.getBoundingClientRect().top <= triggerLine) {
+        activeId = sectionIds[i];
+      }
+    }
+  }
+
+  navLinks.forEach((link) => {
+    if (link.getAttribute('href') === '#' + activeId) {
+      link.classList.add('is-active');
+    } else {
+      link.classList.remove('is-active');
+    }
+  });
+}
+
+window.addEventListener('scroll', updateScrollState, { passive: true });
+updateScrollState();
+
+backToTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+function startSequence() {
+  window.scrollTo({ top: 0, behavior: 'auto' });
+  targetHeroP = 0;
+  currentHeroP = 0;
+  introState = 'preloader';
+  preloaderStartTime = performance.now();
+  preloader.classList.remove('is-hidden');
+  topControls.classList.remove('is-visible');
+  floatingNav.classList.remove('is-visible');
+  scrollIndicator.classList.remove('is-visible');
+  heroCopy.style.opacity = '0';
+  heroBottomBar.style.opacity = '0';
+  hexProgress.style.strokeDashoffset = String(HEX_LEN);
+  if (lidPivot) {
+    lidPivot.rotation.x = LID_CLOSED_X;
+  }
+}
+
+replayBtn.addEventListener('click', startSequence);
+
+function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
+function easeInOutCubic(x) { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+function clamp01(x) { return Math.max(0, Math.min(1, x)); }
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+const stickyStage = document.querySelector('.sticky-stage');
+
+function getViewportSize() {
+  const vw = Math.max(1, (stickyStage && stickyStage.clientWidth) || window.innerWidth);
+  const vh = Math.max(1, (stickyStage && stickyStage.clientHeight) || window.innerHeight);
+  return { vw, vh };
+}
+
+// Responsive framing: guarantees zero horizontal clip on 375px~430px portrait mobile
+// AND >= 50-70px breathing room between .hero-copy bottom and open MacBook lid top
+function computeResponsiveFraming() {
+  const { vw, vh } = getViewportSize();
+  const aspect = vw / vh;
+  const isPortraitMobile = aspect < 0.85;
+
+  let macScale = 1.0;
+  let baseZ = 9.4;
+
+  if (isPortraitMobile) {
+    // Dedicated portrait mobile scale & camera distance so MacBook fits cleanly with side margins
+    macScale = lerp(0.84, 0.94, clamp01((aspect - 0.42) / 0.43));
+    const desiredScreenWidthFill = 0.82; // Leaves ~9% clean margin on left & right even during 3/4 intro
+    const requiredFullW = (TARGET_WIDTH * macScale) / desiredScreenWidthFill;
+    const tanHalfFov = Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5));
+    baseZ = Math.max(11.4, Math.min(15.6, requiredFullW / (2 * tanHalfFov * aspect)));
+  } else if (aspect < 1.05) {
+    macScale = 0.96;
+    baseZ = 11.4;
+  } else if (aspect < 1.32) {
+    baseZ = 10.3;
+  }
+
+  // Measure actual rendered hero headline bottom to prevent overlap at any viewport height
+  const copyRect = heroCopy.getBoundingClientRect();
+  const copyBottomRatio = copyRect.height > 0 ? (copyRect.bottom / vh) : 0.22;
+  const desiredGapPx = isPortraitMobile
+    ? Math.max(48, Math.min(72, vh * 0.075))
+    : Math.max(52, Math.min(72, vh * 0.068));
+  const minLidTopRatio = copyBottomRatio + desiredGapPx / vh;
+
+  const openCamY = isPortraitMobile ? 0.42 : 0.44;
+  const openLookY = isPortraitMobile ? -0.16 : -0.20;
+  const approxLidZ = -1.0 * macScale;
+  const distToLid = baseZ - approxLidZ;
+  const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5)) * distToLid;
+  const viewCenterYAtLid = lerp(openCamY, openLookY, distToLid / (baseZ + 0.5));
+
+  // Target NDC Y for the top bezel (top of viewport = +1, bottom = -1)
+  const targetTopNDC = Math.min(isPortraitMobile ? 0.24 : 0.32, 1 - 2 * minLidTopRatio);
+  const maxLidTopWorldY = viewCenterYAtLid + targetTopNDC * halfH;
+  const openLidHeight = 1.98 * macScale;
+  const macOpenY = isPortraitMobile
+    ? Math.min(-1.18, Math.max(-1.68, maxLidTopWorldY - openLidHeight))
+    : Math.min(-1.46, Math.max(-1.82, maxLidTopWorldY - openLidHeight));
+
+  return { baseZ, macOpenY, macScale, openCamY, openLookY };
+}
+
+let framing = computeResponsiveFraming();
+
+function handleViewportResize() {
+  const { vw, vh } = getViewportSize();
+  camera.aspect = vw / vh;
+  camera.updateProjectionMatrix();
+  renderer.setSize(vw, vh);
+  waveUniforms.uPixelRatio.value = Math.min(window.devicePixelRatio || 1, 2);
+  resizeTransitionCanvas();
+  framing = computeResponsiveFraming();
+  updateScrollState();
+}
+
+window.addEventListener('resize', handleViewportResize);
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', handleViewportResize);
+}
+
+const lightWaveColor = new THREE.Color(0x26262a);
+const darkWaveColor = new THREE.Color(0xebebf2);
+
+// =========================================================================
+// 5. MAIN ANIMATION LOOP (60fps)
+//    - Snappy 0.88s preloader synced with GLB + 1K HDRI ready state
+//    - Automatic MacBook sweep-in & lid opening independent of scroll
+//    - Mouse-reactive MacBook + 3D diagonal silk wave
+//    - Smooth scroll zoom straight into the real GLB screen center -> #about
+// =========================================================================
+let lastTime = performance.now();
+let elapsed = 0;
+
+function animate(now) {
+  requestAnimationFrame(animate);
+  const dt = Math.min(0.05, (now - lastTime) / 1000);
+  lastTime = now;
+  elapsed += dt;
+
+  if (introState === 'preloader') {
+    const pElapsed = (now - preloaderStartTime) / 1000;
+    const assetsDone = (modelReady && hdriReady) || pElapsed >= 6.0;
+    const rawProg = clamp01(pElapsed / (PRELOADER_MIN_SEC * 0.92));
+    const loadProg = assetsDone ? rawProg : Math.min(0.90, rawProg);
+    hexProgress.style.strokeDashoffset = String(HEX_LEN * (1 - easeInOutCubic(loadProg)));
+
+    if (pElapsed >= PRELOADER_MIN_SEC && assetsDone) {
+      preloader.classList.add('is-hidden');
+      introState = 'entering';
+      introStartTime = now;
+      framing = computeResponsiveFraming();
+      topControls.classList.add('is-visible');
+      scrollIndicator.classList.add('is-visible');
+      updateScrollState();
+    }
+  }
+
+  if (!isHeroInView && introState === 'ready') return;
+
+  drawInkFluid(elapsed);
+  screenTexture.needsUpdate = true;
+
+  // Theme-synced wave, shadows & subtle exposure adaptation
+  const targetWaveCol = isDark ? darkWaveColor : lightWaveColor;
+  waveUniforms.uColor.value.lerp(targetWaveCol, 0.08);
+  const targetWaveOpacity = isDark ? 0.86 : 0.72;
+  contactShadowMat.opacity = lerp(contactShadowMat.opacity, isDark ? 0.34 : 0.76, 0.08);
+  floorShadowMat.opacity = lerp(floorShadowMat.opacity, isDark ? 0.12 : 0.24, 0.08);
+  renderer.toneMappingExposure = lerp(renderer.toneMappingExposure, isDark ? 0.88 : 0.95, 0.06);
+  waveUniforms.uTime.value = elapsed;
+
+  smoothMouseX = lerp(smoothMouseX, mouseX, 0.075);
+  smoothMouseY = lerp(smoothMouseY, mouseY, 0.075);
+  targetMouseEnergy = Math.max(0.0, targetMouseEnergy - dt * 1.4);
+  smoothMouseEnergy = lerp(smoothMouseEnergy, targetMouseEnergy, 0.10);
+  currentHeroP = lerp(currentHeroP, targetHeroP, 0.12);
+
+  // Automatic intro sequence (independent of scroll, starts right after preloader):
+  // 0.00s -> 1.00s: MacBook sweeps in from sleek 3/4 angle to front center
+  // 0.14s -> 1.44s: MacBook lid smoothly opens from closed to full open!
+  let introElapsed = 0;
+  if (introState === 'entering') {
+    introElapsed = (now - introStartTime) / 1000;
+    if (introElapsed >= 1.55) introState = 'ready';
+  } else if (introState === 'ready') {
+    introElapsed = 1.55;
+  }
+
+  const enterT = easeOutCubic(clamp01(introElapsed / 1.0));
+  const autoOpenP = easeInOutCubic(clamp01((introElapsed - 0.14) / 1.30));
+
+  // Scroll drives zoom straight into the open MacBook screen -> #about
+  const zoomP = easeInOutCubic(clamp01((currentHeroP - 0.08) / 0.86));
+  const fluidInP = easeInOutCubic(clamp01((currentHeroP - 0.68) / 0.28));
+
+  // Lid smoothly opens automatically, and levels to exact 90° vertical during zoom-in
+  if (lidPivot) {
+    const targetOpenX = lerp(LID_OPEN_X, LID_ZOOM_VERTICAL_X, zoomP);
+    lidPivot.rotation.x = lerp(LID_CLOSED_X, targetOpenX, autoOpenP);
+  }
+
+  const parallaxWeight = (1 - zoomP) * enterT;
+  const macY = lerp(framing.macOpenY - 0.08, framing.macOpenY, autoOpenP);
+  macbookGroup.scale.setScalar(framing.macScale);
+  macbookGroup.position.set(
+    smoothMouseX * 0.10 * parallaxWeight,
+    macY + smoothMouseY * -0.035 * parallaxWeight,
+    0
+  );
+
+  // Slight Apple-ad top-down keyboard angle at rest; levels to 0° during screen zoom-in
+  const baseTiltX = lerp(lerp(0.18, 0.14, autoOpenP), 0.0, zoomP);
+  macbookGroup.rotation.set(
+    baseTiltX + smoothMouseY * 0.05 * parallaxWeight,
+    lerp(-0.52, 0, enterT) + smoothMouseX * 0.11 * parallaxWeight,
+    lerp(-0.04, 0, enterT) - smoothMouseX * 0.018 * parallaxWeight
+  );
+
+  // Project mouse cursor onto the diagonal 3D wave's local plane for real-time ripples
+  const baseZ = framing.baseZ;
+  if (mouseActive) {
+    const waveDist = baseZ - particleWave.position.z;
+    const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5)) * waveDist;
+    const halfW = halfH * camera.aspect;
+    const worldMX = smoothMouseX * halfW - particleWave.position.x;
+    const worldMY = -smoothMouseY * halfH - particleWave.position.y;
+    const invAngle = -particleWave.rotation.z;
+    const cA = Math.cos(invAngle);
+    const sA = Math.sin(invAngle);
+    waveUniforms.uMouse.value.set(
+      worldMX * cA - worldMY * sA,
+      worldMX * sA + worldMY * cA
+    );
+    waveUniforms.uMouseEnergy.value = smoothMouseEnergy * (1 - zoomP);
+  }
+
+  particleWave.position.x = -smoothMouseX * 0.34 * parallaxWeight;
+  particleWave.position.y = 0.12 + smoothMouseY * 0.22 * parallaxWeight;
+  particleWave.rotation.x = 0.14 + smoothMouseY * 0.08 * parallaxWeight;
+  particleWave.rotation.y = 0.04 + smoothMouseX * 0.09 * parallaxWeight;
+  waveUniforms.uOpacity.value = lerp(waveUniforms.uOpacity.value, targetWaveOpacity * (1 - zoomP * 0.92), 0.12);
+
+  // Compute exact world-space center of the real GLB screen mesh for dead-center zoom-in
+  macbookGroup.updateMatrixWorld(true);
+  if (screenMesh) {
+    screenWorldCenter.copy(screenLocalCenter).applyMatrix4(screenMesh.matrixWorld);
+  } else {
+    screenWorldCenter.set(0, macY + 1.0, -1.0);
+  }
+
+  // Camera framing: clean eye-level Apple product perspective below headline, then zooms into screen center
+  const openCamY = lerp(framing.openCamY + 0.12, framing.openCamY, autoOpenP);
+  const openLookY = lerp(framing.openLookY - 0.06, framing.openLookY, autoOpenP);
+  const openLookZ = -0.5;
+
+  // Distance in front of screen at full zoom so display fills 100% of viewport seamlessly on desktop & mobile
+  const zoomTargetZ = screenWorldCenter.z + 2.15 * framing.macScale;
+  const camX = lerp(0, screenWorldCenter.x, zoomP);
+  const camY = lerp(openCamY, screenWorldCenter.y, zoomP);
+  const camZ = lerp(baseZ, zoomTargetZ, zoomP);
+
+  const lookX = lerp(0, screenWorldCenter.x, zoomP);
+  const lookY = lerp(openLookY, screenWorldCenter.y, zoomP);
+  const lookZ = lerp(openLookZ, screenWorldCenter.z, zoomP);
+
+  camera.position.set(camX, camY, camZ);
+  camera.lookAt(lookX, lookY, lookZ);
+
+  // Hero headline fades in smoothly as MacBook opens, fades out cleanly on scroll zoom
+  const introCopyFade = easeOutCubic(clamp01((introElapsed - 0.12) / 0.65));
+  const zoomCopyFade = 1 - clamp01((currentHeroP - 0.10) / 0.28);
+  const copyOpacity = introCopyFade * zoomCopyFade;
+
+  heroCopy.style.opacity = copyOpacity.toFixed(3);
+  heroCopy.style.transform = `translate(-50%, ${lerp(16, 0, introCopyFade) - zoomP * 32}px)`;
+  heroBottomBar.style.opacity = (introCopyFade * (1 - clamp01((currentHeroP - 0.08) / 0.22))).toFixed(3);
+
+  // Fullscreen glowing ink-cloud transition right into #about (ZERO blank void!)
+  transitionCanvas.style.opacity = fluidInP.toFixed(3);
+  if (fluidInP > 0.005) {
+    const scale = lerp(1.06, 1.0, fluidInP);
+    transitionCanvas.style.transform = `scale(${scale.toFixed(4)})`;
+    tCtx.clearRect(0, 0, transitionCanvas.width, transitionCanvas.height);
+    tCtx.drawImage(fluidCanvas, 0, 0, transitionCanvas.width, transitionCanvas.height);
+  }
+
+  renderer.render(scene, camera);
+}
+
+requestAnimationFrame(animate);

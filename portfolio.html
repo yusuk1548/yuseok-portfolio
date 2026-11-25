@@ -1,0 +1,2946 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YU-SEOK JUNG · PORTFOLIO · 2026</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    :root {
+      --bg: #f6f6f2;
+      --surface: #ffffff;
+      --surface-subtle: #efefea;
+      --text: #161618;
+      --text-secondary: #48484f;
+      --muted: #86868b;
+      --border: rgba(22, 22, 24, 0.11);
+      --border-strong: rgba(22, 22, 24, 0.22);
+      --pill-bg: rgba(22, 22, 24, 0.05);
+      --pill-hover: rgba(22, 22, 24, 0.11);
+      --accent: #1d3557;
+      --accent-soft: rgba(29, 53, 87, 0.08);
+      --modal-backdrop: rgba(16, 16, 18, 0.56);
+      --theme-transition: 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg: #151517;
+      --surface: #1d1d21;
+      --surface-subtle: #232328;
+      --text: #f3f3ef;
+      --text-secondary: #b9b9c2;
+      --muted: #8a8a92;
+      --border: rgba(243, 243, 239, 0.12);
+      --border-strong: rgba(243, 243, 239, 0.24);
+      --pill-bg: rgba(243, 243, 239, 0.08);
+      --pill-hover: rgba(243, 243, 239, 0.16);
+      --accent: #8cb4e8;
+      --accent-soft: rgba(140, 180, 232, 0.13);
+      --modal-backdrop: rgba(0, 0, 0, 0.74);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color var(--theme-transition), color var(--theme-transition);
+      scroll-behavior: smooth;
+      overflow-x: clip;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background-color var(--theme-transition), color var(--theme-transition);
+      overflow-x: clip;
+      min-height: 100vh;
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    /* Preloader Splash Screen (00:00 - 00:03) */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background-color: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.65s ease, background-color var(--theme-transition);
+    }
+
+    #preloader.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .preloader-mark {
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: scale(1);
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+    }
+
+    #preloader.is-hidden .preloader-mark {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+
+    .hex-track {
+      fill: none;
+      stroke: var(--text);
+      stroke-opacity: 0.14;
+      stroke-width: 1.8;
+    }
+
+    .hex-progress {
+      fill: none;
+      stroke: var(--text);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 168;
+      stroke-dashoffset: 168;
+      transition: stroke-dashoffset 0.08s linear;
+    }
+
+    .hex-inner {
+      fill: var(--text);
+      opacity: 0.88;
+    }
+
+    .preloader-footer {
+      position: absolute;
+      bottom: 34px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    /* Floating Section Navigation Pill */
+    .floating-nav {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translate(-50%, -14px);
+      z-index: 115;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface) 84%, transparent);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), background-color var(--theme-transition);
+    }
+
+    .floating-nav.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+      pointer-events: auto;
+    }
+
+    .floating-nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 999px;
+      transition: color 0.2s ease, background-color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .floating-nav a:hover {
+      color: var(--text);
+    }
+
+    .floating-nav a.is-active {
+      color: var(--bg);
+      background: var(--text);
+      font-weight: 600;
+    }
+
+    /* Top-right minimal controls */
+    .top-controls {
+      position: fixed;
+      top: 18px;
+      right: 24px;
+      z-index: 120;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .top-controls.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .icon-btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--surface) 76%, transparent);
+      color: var(--text);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 999px;
+      height: 34px;
+      padding: 0 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      background: var(--pill-hover);
+      transform: translateY(-1px);
+    }
+
+    .icon-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ===================================================================== */
+    /* HERO 3D SCROLL STAGE (MacBook Pro + Diagonal Silk Wave + Zoom Intro)  */
+    /* ===================================================================== */
+    .scroll-track {
+      position: relative;
+      height: 210vh;
+      width: 100%;
+    }
+
+    .sticky-stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+      background-color: var(--bg);
+      transition: background-color var(--theme-transition);
+    }
+
+    #webgl-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 2;
+    }
+
+    .hero-copy {
+      position: absolute;
+      top: 11.5vh;
+      left: 50%;
+      transform: translate(-50%, 16px);
+      z-index: 10;
+      text-align: center;
+      width: min(92vw, 820px);
+      pointer-events: none;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    .hero-copy h1 {
+      font-size: clamp(27px, 3.85vw, 52px);
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.035em;
+      color: var(--text);
+      transition: color var(--theme-transition);
+      word-break: keep-all;
+    }
+
+    .hero-bottom-bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 26px;
+      padding: 0 clamp(20px, 3.5vw, 44px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0;
+      will-change: opacity;
+    }
+
+    .micro-label {
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color var(--theme-transition);
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .scroll-arrow {
+      display: inline-block;
+      animation: floatDown 2s ease-in-out infinite;
+    }
+
+    @keyframes floatDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(3px); }
+    }
+
+    #fluid-transition-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 25;
+      pointer-events: none;
+      opacity: 0;
+      will-change: opacity, transform;
+    }
+
+    /* ===================================================================== */
+    /* PORTFOLIO MAIN CONTENT (Zero Blank Gap — Immediate Seamless Reveal!)  */
+    /* ===================================================================== */
+    .portfolio-main {
+      position: relative;
+      z-index: 40;
+      background-color: var(--bg);
+      transition: background-color var(--theme-transition);
+    }
+
+    .section-wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: clamp(72px, 9.5vh, 112px) clamp(20px, 5vw, 64px);
+      scroll-margin-top: 24px;
+    }
+
+    #about.section-wrap {
+      padding-top: clamp(78px, 10vh, 108px);
+    }
+
+    .section-divider {
+      border-top: 1px solid var(--border);
+    }
+
+    .editorial-grid {
+      display: grid;
+      grid-template-columns: minmax(170px, 240px) 1fr;
+      gap: 28px 56px;
+      align-items: start;
+    }
+
+    .section-kicker {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      position: sticky;
+      top: 86px;
+    }
+
+    .section-kicker strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      text-transform: none;
+      color: var(--text);
+    }
+
+    /* Section 1: About Me + Profile Photo */
+    .about-profile-layout {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 36px;
+      align-items: start;
+    }
+
+    .portrait-card {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .portrait-frame {
+      width: 100%;
+      aspect-ratio: 3 / 3.85;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface-subtle);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.06);
+    }
+
+    .portrait-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+
+    .portrait-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .portrait-name {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .portrait-en {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .portrait-role {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+
+    .about-lead {
+      font-size: clamp(20px, 2.2vw, 28px);
+      font-weight: 600;
+      line-height: 1.42;
+      letter-spacing: -0.028em;
+      color: var(--text);
+      word-break: keep-all;
+      margin-bottom: 20px;
+    }
+
+    .about-desc {
+      font-size: 15.5px;
+      line-height: 1.82;
+      color: var(--text-secondary);
+      word-break: keep-all;
+      margin-bottom: 28px;
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    .kpi-box {
+      padding: 18px 18px;
+      border-radius: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      transition: background-color var(--theme-transition), border-color var(--theme-transition);
+    }
+
+    .kpi-num {
+      font-size: clamp(19px, 1.9vw, 24px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .kpi-label {
+      margin-top: 6px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+      word-break: keep-all;
+    }
+
+    .skill-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .skill-pill {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--pill-bg);
+      border: 1px solid var(--border);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    /* Section 2: Career Timeline */
+    .timeline-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 12px 28px;
+      padding: 26px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .timeline-item:first-child {
+      padding-top: 0;
+    }
+
+    .timeline-item:last-child {
+      border-bottom: none;
+    }
+
+    .timeline-period {
+      font-size: 12.5px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      color: var(--muted);
+      padding-top: 3px;
+    }
+
+    .timeline-badge {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .timeline-org {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .timeline-role {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-top: 3px;
+      margin-bottom: 12px;
+    }
+
+    .timeline-points {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .timeline-points li {
+      position: relative;
+      padding-left: 14px;
+      font-size: 14.5px;
+      line-height: 1.68;
+      color: var(--text-secondary);
+      word-break: keep-all;
+    }
+
+    .timeline-points li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+
+    /* Credentials Sub-grid */
+    .credentials-grid {
+      margin-top: 36px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .cred-card {
+      padding: 20px 22px;
+      border-radius: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      transition: background-color var(--theme-transition), border-color var(--theme-transition);
+    }
+
+    .cred-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .cred-entry + .cred-entry {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .cred-title {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+
+    .cred-sub {
+      margin-top: 4px;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      word-break: keep-all;
+    }
+
+    /* Section 3: Selected Web Apps Grid */
+    .projects-intro {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
+    }
+
+    .project-card {
+      appearance: none;
+      text-align: left;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.35s ease, background-color var(--theme-transition);
+    }
+
+    .project-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--border-strong);
+      box-shadow: 0 20px 44px rgba(0, 0, 0, 0.08);
+    }
+
+    .project-visual {
+      position: relative;
+      height: 176px;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .project-visual.theme-hub {
+      background: linear-gradient(135deg, #0f1f38 0%, #1d3c63 55%, #376191 100%);
+      color: #f4f8ff;
+    }
+
+    .project-visual.theme-vent {
+      background: linear-gradient(135deg, #16242b 0%, #244554 55%, #447285 100%);
+      color: #f2f9fc;
+    }
+
+    .project-visual.theme-kiha {
+      background: linear-gradient(135deg, #1c1d26 0%, #2e344d 55%, #4b5678 100%);
+      color: #f4f5fa;
+    }
+
+    .project-visual.theme-sif {
+      background: linear-gradient(135deg, #1d1a24 0%, #372d4a 55%, #5b4c75 100%);
+      color: #f8f5fc;
+    }
+
+    .pv-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.82;
+    }
+
+    .pv-status {
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(6px);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+    }
+
+    .pv-mockup {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .pv-brand {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    .pv-domain {
+      margin-top: 4px;
+      font-size: 11px;
+      opacity: 0.72;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .pv-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.13);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .pv-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .project-body {
+      padding: 22px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: 12px;
+    }
+
+    .project-title {
+      font-size: 17.5px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .project-summary {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      word-break: keep-all;
+      flex: 1;
+    }
+
+    .project-footer {
+      margin-top: 6px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .project-tag {
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--pill-bg);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .project-cta {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Section 4: Capabilities */
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .cap-card {
+      padding: 26px 24px;
+      border-radius: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: background-color var(--theme-transition), border-color var(--theme-transition);
+    }
+
+    .cap-index {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+    }
+
+    .cap-title {
+      font-size: 16.5px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+
+    .cap-desc {
+      font-size: 14px;
+      line-height: 1.72;
+      color: var(--text-secondary);
+      word-break: keep-all;
+    }
+
+    /* Section 5: Contact */
+    .contact-panel {
+      padding: clamp(32px, 5vw, 56px);
+      border-radius: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      transition: background-color var(--theme-transition), border-color var(--theme-transition);
+    }
+
+    .contact-headline {
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.32;
+      color: var(--text);
+      word-break: keep-all;
+    }
+
+    .contact-sub {
+      font-size: 15px;
+      line-height: 1.72;
+      color: var(--text-secondary);
+      max-width: 620px;
+      word-break: keep-all;
+    }
+
+    .contact-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .btn-primary {
+      appearance: none;
+      border: none;
+      background: var(--text);
+      color: var(--bg);
+      border-radius: 999px;
+      padding: 12px 22px;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      appearance: none;
+      border: 1px solid var(--border-strong);
+      background: transparent;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--pill-bg);
+      transform: translateY(-1px);
+    }
+
+    .site-footer {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px clamp(20px, 5vw, 64px) 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 11.5px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    /* Project Detail Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: var(--modal-backdrop);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .modal-backdrop.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .modal-dialog {
+      width: min(100%, 720px);
+      max-height: 90vh;
+      overflow-y: auto;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+      border-radius: 24px;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.28);
+      transform: translateY(18px) scale(0.98);
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), background-color var(--theme-transition);
+    }
+
+    .modal-backdrop.is-open .modal-dialog {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-banner {
+      padding: 26px 28px 24px;
+      color: #f6f8fc;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .modal-banner-kicker {
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.78;
+      margin-bottom: 6px;
+    }
+
+    .modal-banner-title {
+      font-size: clamp(20px, 2.5vw, 26px);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.25;
+    }
+
+    .modal-banner-sub {
+      margin-top: 6px;
+      font-size: 13.5px;
+      opacity: 0.86;
+    }
+
+    .modal-close {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      line-height: 1;
+      flex-shrink: 0;
+      transition: background-color 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.24);
+    }
+
+    .modal-content {
+      padding: 26px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .modal-block-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .modal-text {
+      font-size: 14.5px;
+      line-height: 1.75;
+      color: var(--text-secondary);
+      word-break: keep-all;
+    }
+
+    .modal-features {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .modal-features li {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--text);
+      word-break: keep-all;
+    }
+
+    .modal-actions {
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .modal-url-preview {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      word-break: break-all;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translate(-50%, 16px);
+      z-index: 600;
+      background: var(--text);
+      color: var(--bg);
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .toast.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .scroll-indicator {
+      position: fixed;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2px;
+      height: 72px;
+      background: var(--border);
+      border-radius: 2px;
+      z-index: 90;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .scroll-indicator.is-visible {
+      opacity: 0.7;
+    }
+
+    .scroll-indicator-fill {
+      width: 100%;
+      height: 0%;
+      background: var(--text);
+      border-radius: 2px;
+      transition: background-color var(--theme-transition);
+    }
+
+    @media (max-width: 960px) {
+      .editorial-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .section-kicker {
+        position: static;
+      }
+
+      .credentials-grid,
+      .cap-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .floating-nav {
+        display: none;
+      }
+
+      .about-profile-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .portrait-frame {
+        max-width: 170px;
+      }
+
+      .kpi-strip,
+      .projects-grid,
+      .modal-features {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .top-controls {
+        top: 14px;
+        right: 14px;
+      }
+
+      .icon-btn span {
+        display: none;
+      }
+
+      .icon-btn {
+        width: 34px;
+        padding: 0;
+        justify-content: center;
+      }
+
+      .site-footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Preloader (00:00 - 00:03) -->
+  <div id="preloader" aria-label="Loading portfolio">
+    <div class="preloader-mark">
+      <svg viewBox="0 0 60 60" width="52" height="52" aria-hidden="true">
+        <polygon class="hex-track" points="30,4 52,17 52,43 30,56 8,43 8,17" />
+        <polygon id="hexProgress" class="hex-progress" points="30,4 52,17 52,43 30,56 8,43 8,17" />
+        <path class="hex-inner" d="M21 20h3.4l5.6 9.2L35.6 20H39l-7.4 11.9V40h-3.2v-8.1L21 20z" />
+      </svg>
+    </div>
+    <div class="preloader-footer">YU-SEOK JUNG &nbsp;·&nbsp; PORTFOLIO &nbsp;·&nbsp; 2026</div>
+  </div>
+
+  <!-- Minimal Floating Navigation (viewport-accurate active highlighting) -->
+  <nav id="floatingNav" class="floating-nav" aria-label="포트폴리오 섹션 이동">
+    <a href="#about">About</a>
+    <a href="#career">Career</a>
+    <a href="#projects">Web Apps</a>
+    <a href="#capabilities">AI DX</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <!-- Minimal Top-Right Controls -->
+  <div id="topControls" class="top-controls">
+    <button id="replayBtn" class="icon-btn" type="button" title="인트로 애니메이션 다시 보기">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+        <path d="M3 3v5h5" />
+      </svg>
+      <span>Replay</span>
+    </button>
+    <button id="themeToggleBtn" class="icon-btn" type="button" title="라이트/다크 모드 전환 (단축키: D)" aria-label="Toggle color theme">
+      <svg id="themeIconSun" viewBox="0 0 24 24" style="display:none;" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+      </svg>
+      <svg id="themeIconMoon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+      </svg>
+      <span id="themeLabel">Dark</span>
+    </button>
+  </div>
+
+  <!-- Subtle Scroll Indicator -->
+  <div id="scrollIndicator" class="scroll-indicator" aria-hidden="true">
+    <div id="scrollIndicatorFill" class="scroll-indicator-fill"></div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- HOME: 3D MACBOOK PRO & DIAGONAL WAVE INTRO STAGE                      -->
+  <!-- ===================================================================== -->
+  <section class="scroll-track" id="scrollTrack" aria-label="Intro Showcase">
+    <div class="sticky-stage">
+      <canvas id="webgl-canvas"></canvas>
+
+      <header class="hero-copy" id="heroCopy">
+        <h1>기업이 원하는 모든 상상을<br />AI로 구현하는 맞춤형 인재</h1>
+      </header>
+
+      <div class="hero-bottom-bar" id="heroBottomBar">
+        <div class="micro-label">BUILT WITH AI · CRAFTED FOR IMPACT.</div>
+        <div class="micro-label">SCROLL TO EXPLORE <span class="scroll-arrow">↓</span></div>
+      </div>
+
+      <canvas id="fluid-transition-canvas"></canvas>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- PORTFOLIO CONTENT: IMMEDIATELY FOLLOWS WITHOUT ANY BLANK VOID         -->
+  <!-- ===================================================================== -->
+  <main class="portfolio-main">
+    <!-- Section 1: About Me -->
+    <section id="about" class="section-wrap">
+      <div class="editorial-grid">
+        <div class="section-kicker">
+          01 / ABOUT ME
+          <strong>프로필 &amp; 소개</strong>
+        </div>
+
+        <div class="about-profile-layout">
+          <div class="portrait-card">
+            <div class="portrait-frame">
+              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHwAAACgCAIAAABBgJ+9AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAFg2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSfvu78nIGlkPSdXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQnPz4KPHg6eG1wbWV0YSB4bWxuczp4PSdhZG9iZTpuczptZXRhLyc+CjxyZGY6UkRGIHhtbG5zOnJkZj0naHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyc+CgogPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9JycKICB4bWxuczpBdHRyaWI9J2h0dHA6Ly9ucy5hdHRyaWJ1dGlvbi5jb20vYWRzLzEuMC8nPgogIDxBdHRyaWI6QWRzPgogICA8cmRmOlNlcT4KICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0nUmVzb3VyY2UnPgogICAgIDxBdHRyaWI6Q3JlYXRlZD4yMDI2LTA2LTI1PC9BdHRyaWI6Q3JlYXRlZD4KICAgICA8QXR0cmliOkRhdGE+eyZxdW90O2RvYyZxdW90OzomcXVvdDtEQUhObmN3U2hIVSZxdW90OywmcXVvdDt1c2VyJnF1b3Q7OiZxdW90O1VBR3VpSHdHNWNBJnF1b3Q7LCZxdW90O2JyYW5kJnF1b3Q7OiZxdW90O1xi67O467aA64yA7Jm47ZmN67O06rWtX+yepeyKrOq4sCZxdW90O308L0F0dHJpYjpEYXRhPgogICAgIDxBdHRyaWI6RXh0SWQ+YzY0Y2ZkZjItZTMzYy00MGQ4LWFjNmQtMmJlOTczMGE4MjA3PC9BdHRyaWI6RXh0SWQ+CiAgICAgPEF0dHJpYjpGYklkPjUyNTI2NTkxNDE3OTU4MDwvQXR0cmliOkZiSWQ+CiAgICAgPEF0dHJpYjpUb3VjaFR5cGU+MjwvQXR0cmliOlRvdWNoVHlwZT4KICAgIDwvcmRmOmxpPgogICA8L3JkZjpTZXE+CiAgPC9BdHRyaWI6QWRzPgogPC9yZGY6RGVzY3JpcHRpb24+CgogPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9JycKICB4bWxuczpkYz0naHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8nPgogIDxkYzp0aXRsZT4KICAgPHJkZjpBbHQ+CiAgICA8cmRmOmxpIHhtbDpsYW5nPSd4LWRlZmF1bHQnPuygnOuqqSDsl4bsnYwgKDEyNCB4IDE2MCBweCkgLSAyPC9yZGY6bGk+CiAgIDwvcmRmOkFsdD4KICA8L2RjOnRpdGxlPgogPC9yZGY6RGVzY3JpcHRpb24+CgogPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9JycKICB4bWxuczpwZGY9J2h0dHA6Ly9ucy5hZG9iZS5jb20vcGRmLzEuMy8nPgogIDxwZGY6QXV0aG9yPuygleycoOyEnTwvcGRmOkF1dGhvcj4KIDwvcmRmOkRlc2NyaXB0aW9uPgoKIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PScnCiAgeG1sbnM6eG1wPSdodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvJz4KICA8eG1wOkNyZWF0b3JUb29sPkNhbnZhIChSZW5kZXJlcikgZG9jPURBSE5uY3dTaEhVIHVzZXI9VUFHdWlId0c1Y0EgYnJhbmQ9LuuzuOu2gOuMgOyZuO2ZjeuztOq1rV/snqXsiqzquLA8L3htcDpDcmVhdG9yVG9vbD4KIDwvcmRmOkRlc2NyaXB0aW9uPgo8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSdyJz8+b/FSaQAAAE5lWElmTU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUAAAABAAAARgEoAAMAAAABAAIAAAITAAMAAAABAAEAAAAAAAAAAABgAAAAAQAAAGAAAAABdwXf5wAAWFtJREFUeJysvemzJcd1H3iWzKyqu7y9F6AXAA0CIEGAmxaGFBqGTVm2JzxhzViyPtgTEzPf/N/MzPeRwo6QRzNWhOUYUxoNJZmyJIqLQFISJVEEiB3oRm+v37vvLlWVec6ZD1X33rrLe92glN3x7lJZmVm/PHn2zIv/9ld/HRHNDNpiSAgbxcwQEXHLJQBYbQG2VjMzQAQABDADBADE+bvzb9noCADUDC/sqBlP28W2YgC4esvmUzy2dCsbAKw10v4xM4N2LG2fDgnMFPAxXZ4H9+LSBRUW1QxgPm/Wvj5xpw2Ui+8v6OwJx3NeRx/rrq2k1n4/pzBENF1WMFC3VnsT+pUBzRv68QrO7+22+YQPfHG1cylmftv6Q20Q+3ntrE38RaNamwBr37X9dS65tZ7O63Jx+YI1uzm+dm63Lt7F28dh3vKKzu3YaW2dvlbvhA1wsfMlPhbHcy6dN8FruNv8IVevgINVgJYfAbuDpccR2gXfdHHp1Fi/weac+twW5mPfZCDLh1tr9ZwRXjzRjwH3AvLvLKz1lQVzylN057a4panHdP+E5QJp/Jgb4fxF9nEHcU6nmwv9CUUrddb0otnFrWsE5H48GbJ1xH+X0pWTf8dyMY6PvdfMPtZgLqZIMwNYnzm3xls6d6xw5I/V2Y9ReVmhlT9bLm+qCls5cqs5NGLgyYe41sLjOvoY7a1wDQAAt3UFLXpa083/HpnJ4urGExrYQvLjZuWt49kKSit+m0bVHktGF4z5CflMd4Rzam6GsjKupcq4tafNzv6+lt55NVsBfs59TyIPOlIX0ADAcC7ImkXQPq8BAmgjv54M0O7HheptYBukfHFDQB+j8hMbQU/e5rnM7e9SFuKr+dtYhrh+3bBF/MccAFrzf+3WrU3hvDQfXXctbIVgc1F3H+k8PrDZKzwZU7btVsuWsliF68NbSIfWBMJu5XkvW6UGbB3Seb1vjmSzwpqN0nzpujXOY99bZ29h028d5abxsqWFrZxq25Sfd/sFw5vfv9LUudVWe9zay5Pcda5gXy0rboDH8uvmauNvWqyAJTteM68utJi6H7eOeLPZRdkKd5emHiv3nlwB71LP2kp9rDXbxaFb3y0uX6xvdj/S3HoiwIXZqmY2N7q2gnvBQy4mr4tmtzZ2am4d0lovG0bKBhN7gonZ0nKXOs97lk4f57XjoIP4eULAVh97rh40GLfP1HUIb8VrDZTNuVkbXNPZuaTQxWBZfQuUT+5duXgaujhsEm/b13w457XTMIkntUjb/hqktvW04nrt9r+otg3oTafV2oNul6qdddDthwAXvvYlIuc/4dp6+juWFVI7Z/4a9NxavU1oGt9NO77WFwbdq1tHsEBx+7CeWEfbrNauGAAwUG3Mn3Z2FJsV9/eI5Hp5ch33Aqa6BP1i6Ycb38A2SbC81AZObCsVL5xwF3GYzgTb/C8iikg9LeuyjLHSFCUJETnv+8OBCzkyEzsiAmhU9I83AVv1PDiH3W06nDc72yR5xFUv46Yyu7VslQGLEVwgHqAz84u+lrzZENBMWzOvw8fax9Gk1Wx25/133/jBDz+699H9+w9ijM1U5Fk2HPSGOzuXr1y5+tTTB0eHu4cHIcvZOTIEQgMFAzS0OUdprdNtg1xAv66Pbau2Mk9zKbepqnZbWAYxFk0slaR1wOC8eKZ9TC24aZ+IzIwQ1drALCKq6YKBIAACihkAal2fPnz4l3/+59//q+/fO35YV1FVAdpAATp+ODrNHjx898Pbuf/Lfr9/dHT0zK1bT127vru7V/T6QAi4Ypc+lqE/MQv82GWFvVygL5tZA8tWXakBbFNJWmtnnR0ZIFCjfkld11VVzUoRVVXnOORZluXOeyJKMT68/+CbX//jN9966/7xcVIFAHYuqUiSKIJKEbGs6lDHXp4nxaq6+8EHd/IsXLt2/RMvvPjMs8/mw35jX/wYLsMnUfyhZarnCLkOtisW6ZOU7awfcStHW7+xCYtb64FCJFON09mdDz746KM7jx4+nEynImqmMaXDg4OD/YOnb1w/ODqaTqff+uY3vv83fzOaTlRUVQFAojCzz3KK0UyQ0BGpyNn4LMWoPclCNp7O3nj9h++88/b1a9e/8JM/dfXGdZeHhj4IUUzn3rDHP+yT6PVrpka3kUUVAHOI2PVEbGK3IE9tJMqqZrSs9gTjIJyLUERE1Dreef+Dv/jen9++/eF4Oo0iMdaSRFQA8e1330PEo8P9a089VVbVG2+9dTaZqCoCEpGYqmmKghHzLGOXV1U5qypmBjBVNYOqjoNerz8YTifjt95+6/j4+JMvv/zy5z6zs7cPgKra8LflA2yg/3GtvDWsu8/evjEEhC3huk3Iuvev8oc1T9MWzafbqyESoIARwtnD49e+9Wfvvvfu6WhExIhUVdOYoqqqqgGkFGNKj0Yn77z/HiCoGgI5YiIioiQiJE3lsqqCaq/oZZnMytIM1GxWlwamU8vyfDjcrWM9mUz+8i/+4v79ez/xkz999eZ1cg5aT++PE1067+oapW/ghoDAv/Qvfrl5317Ybo2sSOrNj084VgQ0BFY4/ujef/n933/33XfLqkamlNJkPKli1YCYUkoqBmBmIiIqdV0zO0CoYx1jUtWmNURqCB8QJElwvsgLZGr4DyISYJ0iAITgnfeIeHZ6+tGd20We7+3vI/GKOvzET3PBg+O8nFN5QekrZvSWVi7w8621Pld7WqXCAGjOeagxXlL60d++8a1vfvvR6UmZYuZ9rONsNnPeQV2llFJKopJSUgNAJAICzEKWUhJVImJmJkRTQlJsoCVRBcS6rvMAg6IffSjrSpIoMiCOxmMzA7A8CwgwOjv9xp/8iST5xKc/TY5hbmGtKwIbUNim2TG3R7ahs9LI0qaDTfaCS2/tx6Lrc82EhrwRFQxF/vI73/3mN75V1rUaqOqsrLxzWZ6fjkZJpPkPYMxMAGoGZuyQHYqYZyYwVDVTVQDHeZabQVT1TDEl9r6sa1Xo9XueXUpSVmU5K4fDYRLL83A6GiGAcy6J/Nev/UFM9cuf/Rw6bwCg+uPkFCzo63GlS7jrxtHam4u6O5+D2zxpBgEMrLUOzX70g7/50z/+49K0rlMSKbK83+9NZ9PR6ahOUVREhZjQIKakpmDgmPpFzzGCRBNRszomAxAziBjrOBwMsozJwDs3q2vnvarGOhZ54Vh9Fs7Ozuqq3t/bF5Os6I/PRlUdy3LmGL72B1/Nffb8K58GIiQCtDWOvGaaboXlfMyXtLfGLeY8/YmxfmzNdYlvCIgEcPudt3/nK/95PJtVZR1T2t/ddezG08nx6clC1DZxyyrWhtZwEULIg+8Xoa5jXceYBBGZyZDAIJlWUufe58XAu8DEkhIzmlmSlOe5Z9fr96u6QsJ+v6+qaqZmtUhKMcV4986Hly9fOTg4VGwTxxYcufVVz/nzGqe+wFTsgL7CXhYchta++njFYGHkLYa7oiSZoSEiTc+Ov/o7Xzk5O6tinM3Kvd097/zZZHw6GnkfAMAxqyqgVXXFzJkPmWMCM9VY12VVIoJzzESZZ88ciJxjHzwRj2dVisn7wMy9ouedd85572dlaWaBeX9vL8Z6Npt55xw7AyDkpDat69vHD37nt//z3fffRyRrUmwNmjct3rYquraR9YrwtPn/tRQAm2vLAPSEcGOnNJM7B3tj3c3fU7NmCTTFr/3uVz+8ewcAUp0uXbqERKPJ+GR0WuS5iTjiWNdEJGrEnGfekxLGzKNn8K5RUTB4V+QZEgKaStIULUVQQYCyqgBg0Bs4dkVeZFmGiEVeGNqkLAlpf3dPVCazKSExkYg0VByjfHj3zu9+9f8rx+Ols66NxsA84XEJ2RL3Fc3Zls/ewWbNA7Mo/Ev/4l8+Cdwr3zRQN56RbXOG8xubj9/9+h99/Rt/Cgaitrd7iEhlrEdnI2ZmZAAwtSQCADHGPPNkSSWJmJl5doTY7xfBe8/smAGMiBCBqXlFx05UQsiykHnnkDDLMiJStaIoDGE0GgUfijyv6liVJTIhYF1XBkbEIjYan9Wz8oWXXkIkgA2/f4eQcZVpLK53FYdWgVvUmTOiRR2yC+2CNUBtPuO25rRuv2pcSu0bUwDDj95770++/ocGEJPs7u6rqpmNRicxxjzLFSz4YKpZnitYFgKIEHJVRkmKiMzY6+WFD72Q7fT7O/3e3nAw6Be9PDhGNGUEAtgZDk5HJ8zM7JzzzDwYDF3ws7LMyff6/ZPJWV3VhQvGMJ3NzHTQHyKSaHTEYvrad177zje/OU9J1IbcrXWmmDZPfSFWSwbS8IIFt+kEdZriFjOxqY93ETdAPD94Zh3zGAENjQHFzGL9td/77dOzsSr0ikGs6l5v+Gh0Mp5MLh0cZewjAAL0e70qVqaCSFnwdZz1+j5zLgtZr8j3h8O9YV9VYtIyqXMcU30ynpycnJVVTCkiKYog0qScDPrDalZbtEHf7Q6Gk+k0qXrnPPlZOXPEGTphFyUawE5/t4zT2XSacUGO/+jrf/LCS5/aOdxvMvPm1DRHbasnuOMrxtZ6n6MHtrx1xcPTRI464cbzp1G3WFkGaEuXUYcnggIw0/df+4s333k7pkTIIuaDj5pOTk97RZGHzFQ9u2bljqYTJDLTLORlOc69O9jZffrS4VNXDm4cHR7t9Caz8mQ8K5Ogc3Vdn4zGp2fTyXR6//hkNK0Q4ODg8Pj4eNAb5FlWVfWsLNm5EEJd1yklmvMHUWlIKKZoZkWWM9KsKgHRRqPvvvbal//JP9ZtCCyVBFs6oeZhtQXQqxygy9utWTkL0FtYO3zpnPhRCyluiRmtOOQAFCBOZ9///vdi0iQpeF/Herh3cP/hAx98EbJeUYzPxiEEQDwbn9V1lQXnKSODfh6evX711eeuf/LZG1d2hzt5cBmbwaSsInCdNMZYzWoGODk5ef3dD968c+94mioT9u7s7Gx3Z7ff71WxPhufmSoTEXOjIPZ7hYioaMM41LSOEVQJoJyVvt9/9523y8kk9HrL516guO4IRABAWg88dJn7lokDgK2B6Q6fmUO45D+rLc9HZG1lXLxjxNvvf/DR3Y9UJPhQ1/VwZ1CWpZkx0c5wR5L0+31AGE8m49mk3yvQdKcXMku3bj33yvM3P/nMtaP9PZ85x94Fj6A7CkYsBiaSyllM6WiY5wQ50uv3T999NA3ei+rZdLw33MlDVoV6MplMpmMEIGJEnEwmIWTMaGIKppLMZSrqiDFwHePJ6aPJ6Vno96BhJrbqisKFwWNrdvcCl4WOv9hVsVgei5bcsoXOBLW4tyluzZTOJ2HdRbRiBmPrBFZUe+edH52djQEgJUEkIi6rCgyCC0WWV1UVQhiNR2KCZkXIVGPh/fOHwy+8cOP5Z6/t7+5kmffeIzVeyODZNeNQUfE+1iWqXb18aVZVJ1W8MxWFxM5XsR6Nx0WeB8caMhUdz6YmdfDeOY4pFnlvPB45ogQQyEendV06ZiM+m0zuP7h/8PTVuZa4LZ+whbWD1xxynMfquvfgXNdbCIgNN4B13ncbPM8OXk27mQtTHJ+evvHG60mi9346nQ6HO6CAZgTomL33jllUESjVsVf0QgiW4CCn5472n7p0cLAzzPKcmZGI2LHz7PwCACLHzOQcoDPgK7PygwejXlYDOiImwtlsppKYiQiLPJeUZlZWqRZzYCA+DAbD09EjciHGyOwceRX1jtDgBz/460+++un5nsuLRd3CKWuwzmbaq1sVHreK8mPKOvRrq2/Zjt2/c/ve/Y8cc0qxKApCyrNsOpsRYh6yqix98KejE0TKQsjznBGIbK9fXN3fGw6HLgRmdiEQM7JjF5CZiLHVzADAEXtDUrWdYX+vnw97RRWnRa8XY5zNysl0QmDMjtgVee6cm1azKtYAANNJv993HMqqopCZagihriuVxMRv/uj16fgsH+xcDAXSgmU0mt0WtKC9vo7S3A3QTNqCQy+0y44DaMXYXWl6nb0Q0es//EGMkZhTSt577wIiNfPBTDHVd+/dTikCQpblWZYRc5Fne/18f6c/yDMmQsfITM6zD+Q8OUfONR9dlrEP5L3zPuR5v9/fH/QHvV4IPnjf7/WLogDDqq6ns0lZThGBCYf9fp7ldYxVrKqqJCJ2HsHMNMZYFIVpQrRZOXv7zTfnjzw3Slt9ff7aUeHNFkr3CtpzQDbI0oAW5vz6f1uCuKUY4Eoq44pbzhTu3L3N7KqqbEwV57yZeueYWESm07NyNjGwXlEUed7YNN75vX6vvzPIsoydY2Z2nlxAF8i7Bnp0nnyOzRvnnfPsfZZnvV7RCz7zPtYpxpj5wMRmlERjrMtqWtWzFOOg12PmlLSsaiLKnGcOedFDYknJOW+gAPbmm28yoZqarhFwCw52/s8t867A6/7fLOhwxWLduL41grFQVFcZ2WKGVFNZlqqaxPKMmTw7h4gq6p03S+Vs4r33zuV5zuzqusp8yKDe7Rd5kaFjYyJ2SIzOETtynogNEdEBIpgCCIKDAKzqi6I36BfuAZlGhTpWZpbneVmWzIEJqqoyBBT1ov0sT6plVQJAv+j5EIbDoaqcPDpuiIaIHty73+htBkvTZ/7k3QloXjppEOe4w9YgpHNmY+Wetrml/wyXMwoAYEgrHYo0AU5FJGozLxgAiChkYTI5S6lGIkQ01VRXAMCIDtLOsBeyAM65JlGLHbFjH4gDskfyxA6RkZicx+A5BJcXLu/lg/4gI9OkJlVVxVjneR7yvE7RZ7nPClGISZJKTCkLwXtfxkpUXfAxxn6vz+wadYWITk9PJKW5Z28V5+0UjABb2Pp5fGLr9pclm24Z1/qqaZla68Bc+BjmRhojOSY1c86pKViTBgCIKCnWsdK59qSq48nYYqX1rOdpd1iELDgmZkZspgxhwRlpnieHBMiIZIiEjEw7w0HmwFIV6yqmelZOk6QseGKalrMszwCAmesYFUxFgvcAUKW6ripTTS1vIWZnIqYpxmRbNPEOV1mDbFOFxC3xjZW8l06zc9g7QmCpY65NzbxW+xnbjYQpiaoSAiCqCiCZmaoA2KycxpSYKITMTEajY5GalQFx7/KVQb9g54kJiFq520oKowZ1JGvO6TAwVUNCJGQqev2qrFBTVVYqMca6rti5kPkwmU1hnk2GiKpap+i8Dz6oaowRAZAIAMTMISNq0ctF1HU4w9z+mO8ZsyVdNkZrK9JgEWTevgGsqTYHHRdoN5R0Ec9ZrJoVz8HS7WBqJiLeh1k5886BaYxRTVRTXZcA1qzlmKpYlUUIhmAmV/eGPsuAGgJfrJ8moqDzfjtLFgGBjMj5gMS94ANpXU4MyTRNZ5OigOB9HX1d10tDEREQRYS9S3Usq0pVmzZFVRWJrFlj8/pLR2yXwJEWR4wsNUKcG024cLRsQGftpoBOnKMD9soXCxMI50NfT6NZCmQDQmQmQkQkpCRiUIuIai2aEJEdJ6ljXYGqKkuSXr+4tL8TsmzBUlbG2rigVQANidSsYTSIRkRE7BCKwIV3qhGQEFTNqqoysyx4A6tjjYhNvJsBkygamllMsRHL3nlQlQTI4L1v4lmLp1sYfUt0dBWtBaoNAnO1ZuHs7cxWk0DaWlYLttzafe0uzHnniHMvT8uhF/OFZtDNckTC4DPTM+8I0VRqM1WVlCIYmiECpliBKiKaiSjtD/Pdnb7zDPOTZ0wNVFAEiA0EjBqWbmbt5m8QAANQQiKmS3t7jJYhlaoIZgpRpgaIRI4wAYoKMxmggogJKhqAqBgCCSAYgRkYkXPOEaHaFsUDoH3Si8MQC/JvqbOzr9IaV8Z8mSz+bJ3DJgWx2Ty5iNa2crtVsOZE4ZzzPmsYcRMKTimmlNQSYPOxNjWdK/XJ5Mr+XtHrETkmB0bd6AqaAWhriqqYipmC6cJWIGaf+6uXD4eB9waFmXgkAhXTlJKKYBM7RFAVUUlJAEzaVI62mEojRwCAmYmopc+OAtFhLisIAzYxddtaY82iROsK0oaSu6FYa7WW1elAW2aALph7ax80CwsJ8yIHAHasMRlYSqkhXVhqANgga2aB6dL+btYboM+NgxAbMhErMCIDMpFHcl3zuF1gZkCNApntHRw8e+XKTPDeaBS8Q7K6knZ0GhlbGaemuiBGIwBQFREwJmoOeQLK86L1Meoqa9goiKtpL9v8Iptl/WSjueGz2jQs4xwN2I2pNnflN5p4pz/Ea9euv/WjN7AFps2zVQVVI3I458kAoAjXLx1evnIJXCboEjogZw1nJ2YO5AO6jMgDWotYOyRFBEIyMm/UuxSfef7Z+5NykD84q+o8OBchqjRzrABkqK30amQSNK2ZgUgTj8PGqjg8umRAANI4d5cxim1JuS1DnqcPPBZxACAgMDScL6ZmsZyn6zSRTzNDajhTs3CMVhVXU71563mVCEgNSqKipqJJ1RpjSkSbCEPG7mD/MGG4e3J2/3TyYDSZzpIIJ2U1TkYCDsihDz4fuLzPecF5j7PCZz32PfI5eEaf94aHV24+u7O/tzccVFHVHJOpNaxILSUVAbNGkDbamaC5VlKgSrNuQFUvP31NVcAAceVwoTkfxvlm7AaZpWNqK8TWKF+dkKbb0PIfvz5WYqdLwTufKkQAODg87PX7Iqpg3KlppszUJP0gclIYDnfAh49GUzmdursnRV7k3ufB7w37lw73dvq9PC+zkPm8EO+RHfsALZ2CxFKlNoFoIkD53mFxcHkmryu5R2dTIDAzUXGOkqhAy0/MlAARsZ0WBCAUlYwCAnrvL1++Og94XiQuF4CtZS/P71rOylozHfbSwmfdm5sJXPjy57x+W9+tgWCNpTAY7uzu7T86PgaAFIWQmtRy7xkA1Vqn2rCXH+7vDPd2J0nH01kZT0U0VrVjPNrd3esX1y8fXj3cPdwfDgZ9n2U+5C7kiAQGqlpXU1CRZOPxeJrkg7v3JjGF3oDoLKGYaEN/pkDMqqLWqJiueUwmUjNyZCqITEDOu93d/X5/sB3f7WckrESIts7KCnpbLNJzSqc/W5ioixPZYHHk39xg8z5cv3Hz5NExIiYVMGBmFSHClMQRmelOv3jxmWufeumFg6Ojk9PTWNeEVlcQsixKOp1M6roCTbGa1dXscHews7sDvSSxBANEBlOQJKLj8fjhw9EHD47f+OD2hw9OHOPhzk6ZYjmr6qoGACTzSCCIzCkJU/OPQE3RoiggGjR5Tvnh0VHR7y0euT1TcVVx2EAVtursC+zWLrqVzU9N1aWespyfxVpbRP9x7a72lsbRbAb68iuf/973vsPICZWIvHeWAMGAXXC+yPjoYPfwYD8mefe927MYR2dns6pGQ2a3uzvc6RWBMcu9AUwnUwdKwZF3wYwRDKKoaUp1ZWdnk5Oz0cnJsZoe7u+5PO/t7ANyXafJdFan+vjkBBARKE4nJdWmgECSJLBDFGAk9I5JQVOqr9+4QY6bTX6wqihuxxRgoS5v5c6bU/VElL6eKHABo2s9xSimR1eu5L2h2ZnzLGIppZdefPH2hx+WZX3vdBSjvn77+LtvfPDM09duPnXl2uWDW1ePWBUB65TEbDQa3T4bjaaVqB3uDl+99dTns6xwnnyykCmAxLqqq9l4fOfh6LtvvPdXP3pvWlVDR8NBsTsYDPsZY67Sm9bVvQxOzya3T8an5UyTilmeZYE9sd/f701m5Wh06l0WQhCVo6PLjex5EmTWwO0YkxcVt0UH2ihdXraWONOt00oEazwCOBwOP/vqq9/61jcQrIrx2Vuf+G//u3/+7/7tv7u0d/TK5z////y/X71+6eB//sUvf/rWjV7wsa4MwJIYGJJXwNlkdjY+nc6mlej79yf/6Wuvvf7OB//qF35uUPSLw0HoD07vfKBnszfeff/X/+Dbju1zt27u9Bx7v9MfDHd2vXN1OY1VNauqF67sJktlguNx/drr7/z1j9559qUXCeDu3Xs//cUvHl66/H/86q9WKebqM+97vV6HyM5jHVsQn79bvXUr6Av1vsu8trQ4vzZvan0dzX1krSHVtJZLRWYA6J0f9vuBUmD48KMP33rnzWG//29+5Z89f3VPYn02m4CIKSBhkWc+8+yKzLvCwynTLKad6/TM1c//31/9+u6lp5862Pv0K8ODMPjLd++Rd7/6u9+6edj/0uc+YZoCc89lRb/oDXqIWJLOUJmkFqlr6xfucK93/dKrZPbOm2+wLzKmwtMgD7vDrJyVKjLY2Tk8PICFc2nhSsFWS3nsBHRQ6GK/chf/8i/9yrmZpqu4twncS2/vwkCet94KmzZQilXd++jNOqaqrmZVunP3Ixk//NIXXlXRt24/ePG56//oJ19I1SyWZaoqU2PvnHMIZD6EvOc0xjrlmS+8A/YO5NLBwdmjhz/7iaf99Fgf3e3JtB6P7z06/oefudV3btDr9fM85L7o97Ph/rSKj46PLdZMBEg+88TovHMMYvA3b3+EKv/8H/zkg7t3v/K7X5U6huBfuHrlc9cuPfXM89QbwiojbaTb1nMH1nSW1h/ddb9uoOpWr20va5zHtm1NWumhEadWF9XoJ64dPn1p75t/++7DyXS31z8Yhn/0hU/+9RvvXru833gHZpPJeDIbjeOj07P+0dXjaflH33zt+RdeevTRO1986ebnX35xb3ff52nm8Dl2N4922bu9q0/1ev1H9+/VcufnPv/ybk7BO+8zMHr/3v3/+tXXbp9V0SyW43/6pX/w0dt/Wzh77tlru3tDQvPEV3f7echfefbwk9d2X9caPB72d/Z3i89fP8pmU9RaTbvPh3MHSdfTu6YFLrBpfVsrscylwX9OEGOlLIyd5RqZR+o2Zrw1TptZAQAjR7vDfazqSzf37jwanb49c4yefd7jf/Mrv1CTdz7XehqjPHo0MQzP3Hju5ou3TqK8/e57Jw/uUij2nvnU+w9HIWSXDg4cGAU5fvioPyx2DnaKnT1gHY8euLPZcHdvUBRg/Edf/+b1l1669akXp3/zBohef/baT3zq2ZPD3vHpoxgrrVLRC+T9jatXfvnnf/rGQZFl2aCXZ84Vmfup55/ZRQ3ZnstzuRCUFpoOhS/tmCWNb9+M1PrTl5r2BUdatGja8sPc4bsAe8ULDNiw8l5v6PbDNM4OBj1CYILARJ4vM5xJKJwb7g33+4OnLl9BdoPdXcrygeL/8E9+/uRkZBKff+rI8yWrpoPdvazIH733IQCYqHfOuZB5nwTqaFmvGB4cxUpe/vQrg8HupYOrn3nxpRTrvWF/2PeXD25OR/uz2SxzBKB1jFrLZz5xjaUC57Lg2PBg2H9qZ7C/f5BOT4idLtzaS2e6gWEbuMBlsKID1IpXsEFlqzJj3QyvbdoLdt/ZOZcW3MZsvoII0BCJi/39YljYyWmbHYfMITiHYpYhhRACAXjIi2CIWcG+cAR88PJzklSqChDYO+cvZXkvk7x6/6OYEhMSEgAQe0BLxBFc1vNZkT+bP1dXtaR46HMEIUkAFRBgP+wMC2YX66qclVOdhuAsUTLx3iEhAOa93vBgnwY7Y58tdnythKkAOuls63hY60bremoao3FOnJ1yLnu50GG2xWHTvdHaxGoXjq4mnWQhpBip2SLkmBnIBwIklxWBkJxzTsHqWFfjU0ua1ECBXAhFP88zF5gZAMwxHOwOhoMhIKMBAezt7uyMY5EXwXtA53xWBT87O6tnYzAxEM/MeVYMi+ADmLnKAXOopVe4amYqkIXMMatpr9/zzvNg13yxYKOblv15sGBXF+mg1DmbaPHttlOlLyzW2mhLrtR5xVZTRAMjFKS618sm02o8doieOS8CefaOgJ0jTuiyXkbsgBgdZTZQTZpEgJiddxkwMwNZIgBVGmT+0kG/6A2IQ3NqW9HbeWowZgIWweAgOM446wXVHTAz1dZNqNq4xgHQgHo9yTlp8FJZlvWYsZe5OJ3aUGLPJXRgscmTuIDy1gLFjVG4OklLUsfuTni0DS8j2FLkLnbOzRMhO66xZddtjtniJFsABENQA6w467P3iE/v7RXZnSIrGADIE6bcuYmAz/qO0BxjE1JlarzcCNykfnMzk3WaVTWZ7AyGQIyIZmgGIWQ7uT959Ojq0U5QAfSMbBkZ+AWFmIi2Rw4YepiWdT/3IMgkRBg85iE8tbPjOBCghRxA1mh28exLsTd3yXQCxbC64FtTcctasTmlN+mQZoBIi7vm2g/ARS6I+WjWY1UIBqgSjHL2V3f3n97by0JgZkLLiID8ThHGyQ6GAQmBm70SBADMgMDMJCKojXNQ7j88uXHliPNhYwgwGiEgu92DS9N790/H9eGeD4hGDglsEfVBVqwRAE05xSS+1lmvyMvZhAiJWYEOesUzV68OfBHYxTYAi1vjFVtcjBft4e/yhJXKazsxcFUJ3R6rWk64wTJG2lkNaKBN9LauDJTZDfu9Zy/t11UlAoEBkbz3RfCTFMX6gZrYIAIzIs+3t7EDFZ1ZkgfHp1BOee+qmiiYqaiKqRFiDbQ7GBzfe7Az7DtFYiQKQIvNz0gMaIaKRjCGuhcy1khECIBAmvTW5aOjnV0msphYFM2MeO4nX/V/bINjXU9vMZw7XRuDf1XVWdD1phyA9gAmwzVP5OODUnO7QGLNvdz3Bz73L968QaoiYqAYApMBwm7hJ1EiMLBnH5A8UkAKSB6QgUgEHj4anT14UORFirGJRsMyRKsAQOQKknv3HkymVctfEYkckydyiA7ZIbmxOhbLHcD8XGczILBnLx8WeSaAzhGaEBjA0tu1po8/5sEBDNY8ZbYILS0aWT2BdH4i1nmzuq2s2cpNx4iqRhyRx9Oyf/loCrFfl5U4VUBlBAQgMDKRXGf1VKU/dMjOMaEnYjWr6zJOp7PRscwmveDYe0nJ+dCkehly+0ZNNDnHWE3K8UkCy3sDHwI7JufNNALViVIVYTLKLCVAQzCgNo/CtEeqVhd7BzTsjccTGRzBnDjP5R7WJX+Ys+85IEsYOnd02lk9w2suIHBDYbp4DtZrIgCgAqSsn6bjuq56e8PZ6JjLEkW1PXmoIQESAKimWk1rdpG8ISExmEIqJSZKVZ7nVfulOSRidnmfs0JmEyQkRCKWpMZgscbJaYpVYmfIAM15VbXG2iySc0quNRyRCMnMKIoB7l++TFk+Pj2LvV0DjyDrcYdNdQXniw3M7NydGJv4LCjdllB1xeFqN5ulOzdrs0JAqhpdFvuHfYwicLh3UE5maiaNFEA0U2QfkMx7YMfowFqxaQDAzrGzPK+rigWyEOq6JiJA5qzHeQ/ZMTtmDiHjLB9NxuxzlxWEhMTYcIkQKMtBBUBFVVRSrNRAbJ4swnB0+YiQHBAMD07zobb8dJ3sFqt/7oC0RXhnKzgXAOU6xvsadvOwXCevbAVZhFURYR29HU2NwAxpxNmOxYAojnf298eEAmCqTeoQGKgj5wKzYybkzAxA1VQ11ZJqEYnJMp8RExCaCGiqxic+1appKa0yH2JAFdOas8IXBZAnJCIUTaq1pWSiqqYGaqqmCmbIAbGfZYRGTGXIU+iRacPfunCvPftcU+44R85xpWy93c0Z0oYUXgKI65PcdgzzBL9VmxgXKj4hQAQ/Ax4CIGeZK6eGahRVvYgTUlEkE0gABsas85igiImYCbEXnaIlb64uZzIr2TnF4zgZqcQq1uPpxBMRQaoqLQbkMhGhumSnhqRopqomomLaNNkcnJRUDQxC5l0WGEwIZpwDEmJzptJjBVurvzV+R+wwnPPs2EVrbv5ll8BXXtvabShqYWW1XiCA7jS0k97tUwiPyxB06jy74Y5NpqqSFOoEiEDMCKAiZg5IjYSI1dRS1CSGSAyO8OzBo1iXd+7czbP8SoqDnR3nfJ3i2enoo49uS1ke7u6qwXDviInUJMYazIjY0KQ52cFMRJrzwapY17EEA1XLwwA8K/FI3CzLlhb7BnBrUG7y3ov5zIogXfMLtxrmpljYOASzlQLLmgYN7a9q96g2yYsPJ1VvMikYUMGM1FRVk0qMEQCcc4aQUJhYWMBAU7KUOASNFUu8/fZ7Z+OzB6NRTOlsNtkd7hgYMh8fP7r70d1eFkb3jy9dvhQcoQogWJKoSs4BQAO6mqpojDGmmFJU0WSqQIp1NaVZf2fcO1RCZzj/pb8tJyWsWflL89zWr27S+4rK+IQTtVE6+wwWKQa2xZOphKxa9/frbHAaZ+omeXUMZmogKnWs237NmBlVTYCIQGV+Nr664K7fujU6PbsKljQ9evTw9u3bBpaquHNw+JnPfo4RHfOVy5eRXWPQKUKMlbPUpJiZWYpRzeq6bjNZwUzUsv706gtjIwwBwEibJ8FG1+5apNbhpO1Dd0IH3eW+BvSmmo+LA46fWCtfNgdz0dHOwfLkrtWaZoYEZsAO/ACYZPYQHAOAmkWRdgeb92amREyUUgRCZm4OaETv9q9eHlw+SrGWFHf2d+5+8OF4PD66dPnStafzXi8LPnOBmJUUDE2MEE1kVk59lgGyJBVJdYoxSRIFACRSi8oZZj00A7Vmj0ezlWKBcFeJaIFeM0rmL4uaC5XmPJ/BMogBTyZ2u4g/8crAxasZIGcJnBkSIRioaTQBMDAN3kGTU4nI7NVAVRABEMGjQ+KMLGVZr/DEKUYfwvBwHxCJEQ2BMZlpSmBKTOgcSh3rEpHVTERNRFUAwTGDAqCD0GuOeIQLrfyOn6tr+SgsJ6Zd69TJZ9903Szeu62ht7XaW5fJ6qVljvVmT0vQFZCccRAp0TvHjIgSaxURAAEDx4gAjKKszaMBIiESoIEjBk9ETPttylNe9AwsWTJp5bqapphQyRGR8yY1EaCSqMF8JwYAa6qTJcx6jWpIq5mLK9oaADTnG84JaMPhios1b5u+lG2l2Uc6v2ltS2nH2L2gCVwRKFt6bXVKmwvf0JfZTNQyh957ITIVh0AIzSl0QKxqSWpFcOzYENWYnClILQSWuR77TFXSWVlLjYGCD0KGmlJKs7MREhY7A0/kQyBmiSqNVm/myCmgAUV05PK5+mCwGCSsuEpaXtMCanNNb42VL9SJLbBvClXX9QRj9/bVct7q25wP2yDzOWkAgCkAhTxNqeGthIQeTckheM+I0JwPbWLlZJqS9Pp9RZZZWdWpTgqGrGizuuj1pa7PRqPIiJ4oeM594SnWs3feeUtS/anPvOKGQxdyYlCpELE5HpaYJSVRMVcgMS4zuVZMjS3jX/16HkFYBRSXh690+cwaA9gSObqAGW0tW7Ql6ByDtFguLUtE8rmgixLrlLxzzGyIxETsiTFJNIMYyzsffPjm628NB3tZlsdZiYbOBUdEZg7AuVCV5eh0VJuagXqIAHVVm8nO/vDS5R2wRIFdCKbRGseCQRP3ixKnVcT+keKStFewWzW1txgxrVG6icwyPtRtcg091+VfLX9YHFz0OEm56nyYT3HXM9A40Tr+dwMz55V8FacBNTAjIjMDgpqBgvMh1rVJ3D04+ORnd+9/cK+alp7zQFQ4H4DQc29/z2e5JTkaneXOI8KkrGqHvheG+/3+Xo8Kx2A+yxBBYpQkKoqEhFTFOKvqOhnmgwUvWNIZwZMkMXaZyIrPvfPlBbcvTzaa68sN01pHfLv/YaUseBrOg1CIXQW29VSYAlroV7NRkIoYiZkBxQCbgCYShpD7rLfnQOHZm0+XZ5NyVNez6GrJ8yw/PNq5fpO8M4PJ3fvl/bt1OQ4ge5eGxcHACLIi58wbKIPGaharqopJFJ0jUZnVs7IuI/czH2wjM2UT8UW2YRfcBp81TBo2snIm+3mgXwDrCqKr3y8I/AJL7DxdFRG5vxMffDhlhWntianXI2SJCdQcKrNrIubsGcACFlRkRZnS2QTVqsmj03crdh4QNNaUaSjyPPTQs6CGkCFTw8okJaljXceUDNmpWllV0+msqmrae0rBoenFj9Dgu9AaH+vPehJzx7pBjMU9W9G/ANmt1c7rvjUiXNB8MJvcB1VEA6SQ+QzIRE3FBwDHiKpI7ByYmlWaQ8j6KgoKdSyTTJMqoYXcIyE4JEfee2ZulVNVjamuqrqKaoygSWQ6m5V1XQrn/f2FrnzeI6yPef63q0lfcBdszN+inJuCsTarF8/hmrl0MeLNO3dweXp2v9YaK0MYD6Qwx47Y1IiEXbv7v+FRIWSKSVQQQcVUAQgDenbsHCOYc56cR0YkQFAwRDOVFOsUoyqAgsyqcjyb1lFwcIShj83umCf1fSw3/Tcfu7rMefxk2/cGC9C7nGjTf9Ytj1Ucu2xna1NmZmCcD8LBU/H4A4Y0qcTMMu9Co6AwA5XEAa3Z/GxI7IJnc2ZqhpmhiDA3W+GBukHcZpkbqEpd1VUVo5io1CmOptNkWlOvOLrROIy6iHd5yHlPt9TIVtXHLs1tvR3nh32ZGSySjRYALbwH3bYey6o2+dLmYlyZEgNFyg6elvFJXT4Cx6WWYBkYIHqv2mRwIZFJarZ2ECERASEhmZFoe5gMEaqm5oiNdvAERJiSNmHwmKSKcVaVMdbR9fKrt1xW2AZjOQ8yWKGzJ10XW9rotOa6cJ8nJc7jG1tl6aLmeYTTDMFQMXhwLok028URkBDZcYziYiT2RAzIZkqEwAxEYADMZtjof83JI5CMsPnxAANVAFLRVNcpSVJNqmVdT6tSgfzOZT88bH6AoJmeTZf1ecU6CeKrmvljZmLTibLiT18j1RWIl2eBLDtdn6SOjr5G6evCaj7zlBWzukJEYWZEL14NkmiKwj5Je9A4EpES2vx4cEZujDwzE1UgMEMkMhEDaCJxSaQ5yqisy1k1i0mjaQj9JkY4N/Rt9WyFiwzAje/mlnzXC3YO/mvYbnHtbmom7fg2xrU6MYawLpbO50uGyIjGWcZk08k0MqsmMW1yFKFGdDWRETvmDLjdXIPMYtBsrgADAGlOl7GFUYagIiKxqtOskklZjqfTstHUibDRbZYj75rrF5UNcl5JPrfHTduaeNtystGSXjtmbsfEWXGKbbXHHv8MAGBqgETeFEJwdZ0m09IAgEjBeljYRACKLCNiMFVQA2ZTVQEzabLfzAxNDBREzBSbYGhMs7I8PTs7m0zHk8msKusUCYBdQGLrjNS2ENKTjX9jDpbvzo+RLt67ebLB4loTBW0J4eK+V9ZHh7vg+d0vxoiIZhiyHnNoxHZKcVbOtEmbM9U8R2Ygr1ATMxCCKLMZgKoCkjYc3FQloSmAgkFMMZazk9PT49HZrCzLsowpIRoRq6H3RVSlbRzvsWVDh14+eJfcHqs+IqKDjhe43Ty5ypefwAfTuoW3eg6212/sF+Cdnd1T5xmAmbzjOqa6rkYjrWKqyyqmJABFpkxEzgGSypSYAZHJGag2qrYZmIBIY3OejUcPj08ms1mdomlyTMzODJ3L+7s7Z7MK2jTkrVqZbZDakpBWZB607xeMpkNw643MA/otLPNko1W9E1aRX+5Bnzv7t9j3ba7SRcXmG78NMc3KH/zozf/+F37+oyxHMfReRInrOtYiqZzNRKBKVlZx0C+yvHDemaqZOueJm8Q8E5GmWVUF1aoqR+Pp6dm4KivVqJqcI+/ZsTcFyPrDnb3vff/rN27eDCFslzcbpLO8sqJSdz23G89I64203pv5t24V8Y1xNC5HW2Y8bfUBPInPAQCAUK35pSn5D7/5mz/5xZ/J+zv9gyvx0W0mEieNuRIhikqqK0IcA0+rsfezEDyjiSR2nGV5Q2IiIqoxJRERhbKMIhqTqiUADZ7ZsWPnXVDD3uUbg+Hw5PTktf/4Z7/8y/+SmC8Y9nKZYoeDzDluY+N0EW/r45xFb+DY/dAenIZbEDfY8DV2R3OBkn5uMWvO/PjmN7793e/9xb/6n/4XDP7qrU/f/v6xR3XW/GoAMXFMUVVSnKUUncuS+FnZhlJFxeAMwZrfNE4CBsjNL82YplRqKomEiZiZiL3zzJ794OnnP42Et2594v/89X//7DPPfPFnfvbcYTbhaZgndyI2XsauO30d1FWHwrnkiAbWHPsKBivnqjWzuST/7omZnTDWk2byzZ+kbfn+3btf+69f6/cHN65fR8JLN5+bPXivevDh4lDDxuppfphUVEVmMU6ao5TaI1ObI6vQFkfgaCzVEoAwIztCJCJidkzOsSef7Vz7xOVrT49m5dXLV4fDnd/76lc/9fLLw73dtR+1NYUuYXf+bldIuo+P0Lp7105RXwGqyXxb4tHaC4/Dbp4TTPOzG7vM7pxbGgYFCDCdTL7yla/Us+rmzZv9Xl/NKMuvvvQFyIZM5B1nwedFXhRFnmfNeby+OSydkVHJKtSZxanW41Se1uVJrE4tjQETkYbgHHsics57n2WceRcCe3T7z7zyEwKESLt7w8tXLs/K8j/9x98C0e4I5zandSFuv9kAZvvDrnsXtrueqNvrYxFfw7Elivm9W+dMO6duPXr48P/6jd+4/eFtALh+/QYROudSSoPDp2588rMxYXNUd+aDZxd88N5nWebYe+fzkGVZ8N4773xwzTHe3vnQTIwn75skXudd5jkLHLzzwblK3XOf+ynXH0ZVYsqL4uaNm2bw5ltv/sav//uqLBcjbOXdXFduqHDBTDeJ/TH6+NJuX6/j1u5c0WM62ykX55+0gzOAZaPrSTnd7hv/pZm9/sYbv/s7vz2blpISIl27fh3RmBiBkqXhzZeujss7P/izopcpCACIKDsvIoRJVVWFgB05NVWRNjLVHA6LaNYcCQrNT8Q2k8eEVaXPfOZn9q4/ryk5IgTnvL/29A1Cl5K8/c47//v/+r/96//xXz997VrTiM4Pc+rCarbyRBeUzWnYqsyshOsWIrj9RhesY7XLhWDfdtBVdw6a96r62re//Yd/+IcmmpKYIjvq93fYMRG3bk+mp17+HLG/98PvMENwXliTKAEyUlIxY0kJgFTViBfoNOLUVGn+sx2emNl5dmWdnv7UT135xKcATZHNBACYuTfcQQaJVtW1qP7ar/3aL/7iL7766qswh3tTWVh/8i5MG3CvO7Q7p6y1oHfl7CbBXuxUWGNVm25lM5tOp3/w+7/3V9//vqpBc+InIKgCIDEDUuOfNTDw/NQrn836+duvfdO7kp1D1ObwLwYnIkxORZqUw/npu3Mm0AAOyOQcoYFEpauf+unrn/4JC06kZqQm6735GRgEMLMYIxGJyG/91m+9//77X/7yl/Nerz1AULeQ/FZi71ota1S41dkH50WOzqt9QdkckKm+/vrrX/svXzs+fqja7J21VsNFGI/Hjh0CEjMTG4CBErmj5z8V8v5b3/mTup4wY5PQC2ApiURVElUBAG2PjF1CgwAESOwk1bGka69+7vorX4DcmZhnLwYw37U3m80aFm1gMcYmafLb3/72hx9++HM/93MvvPRSk6nRBfSxvGWrIrcVQDNzzQ+Gmm2S7dwBYF2F8nxrAtqdBURUVuX777733e98560335KkOge6GR0YEPH9+/fbjEYEZGJAA1Q0Bh7eeOalXvHWt/94+uheyJmdA1AijpZUIAFA85uBcyMF2/gRWlSJdSX0zOd/5uqnX2WfC6hjBwiqCaQVkqePThAACZtzXxdS57333/vN3/wPz9269aUvfemZZ5+ba81m80xonNv4MH+eNd7QRek8xGG+E2NLRHyu/kBXYHamZGPdGRDivbt3f/jDH/7gh397/OChSbP3GQmp+ZUDk7Ydx+7O7Q+rKvZ7rcucmBEJAE2VgXpHVz/53/zjd/7824/uvKla5yGAI2Yfq5oktmMwAwNtpSdancpYxYQv/ezPX33xVWAURIcOiQwQa2nsxRjl4YNjREYUWov0A8aYfvi3P3zv3XdfeOHFz3zmM7duPZcXPTXtMs8WK1zH5GIC72I4d3jhyvzYqnth6+y13SOQAZq9/967f/qnf/rW22/XdXTMaNis5kYhs+aEU2xTNUXTycmjs7NJv5ebNgpye2Q5EJsoMPvdg+e/+A/vvXX5g796rZxMs15AdszEHNofS2/9TAZgkmQ8ndQaXvnyPzu69VKzY9ezIzRAEvn/+/rSJ7mOI7/MrKrungvEgCAOHgAFECApEqAkXuZhabkbDq+9sbFf7O/7zf6HfHyyFOEPCn9ZrR3hI+wQRZHiAVK4iGOEc2YwgwHmnumZ7n79XlWmP2RVvdc91L5ADGb6eK8qKyvzl0dlsoCwBBHY6/Z2dneIgICExvGujqQohrdu3bp3797MzMyZM2cuXLxw+tRprTtyUIxkEfdPmCljEmIkBWPko2Oe29F9UOsK5jt37nz55VcrT1aqsiIiZ1vKsNEqw2xAx1xVEQbmalhurG88++zhNhFwlPVEhIisCcfMNNE5/vpbh5898eD7S4P1ZYuVabUAwZJBIgisXq9yMBwUQ+kcev9f/tvJ544bzXsxTuv1hhDLRgug935ne7fX2yciLdKrGP0HxbGWX79548bc3Nzhw4cvXLhw8a23pmdm1MvWJMtBsv7TVyL6QXiSBlLvPiIRRkAQMUT9fv/alavffXtpa2cnFfc0zrQwdtKjeGgLOJsHSgIQQELvq4X5xTNnXnaWRIyI5DbAxhgRECIApuDoxIs/Pjz76PJXT+9et6HfmZwkSwgRxHgfyv4AWoc+/Dd/76aniKzEO4jRVD3Qw3wAgMGHne3tfm+PiIwlz6FpTjd3s47Eew8AzLK+vv7pp7/78suvXnvt9ffee+/Y8WPMATAXNIuyJtKnQcIfwBepU8APXnEEsZuEQWAhJGHe2tr87rs/Xrt2bdDvo7YOBiAkZx0k4ZilniT0K6CuFDZkQwBreWVlpaz8hDjF8iJGBCiibc2uNwACGNzk1On3P5l89ujy1a+GXmxgIkYC73nY77eOn3rvr/6WnjliURjQREyIAKB8HlLmf/Cwuvp0WAyMReMMV1x5HyM2f8acrqrKWouIhKYcVjeu37j5/c2Tz5/82ds/eeXcOa1YHvkdBPXMyahqHbGEEPAgZBxbnKzZUWA4HC7Oz1/+4+X5hXnvgyp1XRVEtNahtn9GkIhXolWFiCEEHypEICIAERYQWHnyRAT09Eu0OQkAjGrWxHFAREGkhfjC6z955sWXFr/8/WD7sbdk2QThE2++f+ZnP8dOB018fB6+nstWBUBEAERkVldXRQTRGAKldeU9p5JFGSCqzaUECSFYa6NxIGAMPXmy8r//58rk1NT5V8+/eeHCc8eOWWMU4+FBQv8ZnP4D0kV5XUCQYGdr59bNm9euXt3Y2Ei0qNuwM7OzLcr2iZYzyEcNAFgCiwdlhLgSEiRsbqyDiLBoWX4RZkaR2BODiDRrgIUdEhjT7/WKoZl98/3Du+vVsE8dNzl1aPal862pCWFGQgE0EUViqtjOWdHpufSN9VUk3XaCiC3nEMB7fxCf5D+Z2XtvUh9ZZkYgAdjf379y5cr3168//8ILb7755o/OnJmemRnj2h+EN9kijWONOFGAEIV5bW3t8uXLc3Nz+3v7zJxcl5GkLAxxQBYICEkA9OCWiAiJCAau1NtpiESnpA0XhHt7e8VgMHNoirQ8iCS+EIBUBR4E9vYGN2/MffX1N4vzK+Jl9ujsq6+dmz0yI1Lcu3Nna/P/Xfzp66+9fv5HZ05NTnR0oRrwGRMuQjJUBb++sYFo1J4NLIhijEEwgX0IPvEm6K7NQYkQggRwzgURY4zqX21BVwa/uPBo6dHyzMzMK6+cfePNN44dP26d42SAQYOjlb655U6OEAEhlmW5uLhw88aN+/fvDwaDkB1MgFAH74QQATEwb+1uzcw8M9GeUOwsCEQowJX3At5aJ6LNmCMttNV5OSy6O7vHThxFo5CLAVBEq/oLEQ2K/m9/+/V//8ffP3j4qPLeWCMC/s7i//ndJRC2xlrXCkE++/r7yc7kmbOnPv7w4gcfXnz51IuE6Fm3r9oABACGQlEUe3vdtNs0M5sRkCwhR+JGZk9RTQRhYUQsfQmI1lpmJkRpdEsAMCFwt7t37eq1mzduHjt+7Ny5c+fOn5s9coST3zxqDhDJ9dNZWJXk2urq3bt3bt+e29hY994nS1XUBMn7RbgOibZaLQHY7e6UneHM5IxBAhAW9r4SqIFto6wgAxgUCew3tzbPm3MQDQVKN2dA/PTTL/7Lr36zuPREY/+I5NUjTuRaHUJCtK1Wi4whtAJ8+87DK1cu/8f/VH388bv//t/9/alTz4sf6YtNBgf9fjEY5FckOmwRAQip1Wp571XUsDCpoEMAgcFwWA6HbiZFVgVSZ1dJZ5YhhMAA3oelxeXHSyvffnPpxVMvvv7GGy+//HKn0+GM6LXHtCHa2965devW3Nzc2tp6WZZ6yrghkpCogc3jpfoaCaBtXYtofzAoyvLooVkRCeIVt6XdimkvxY2iHtq19bWUu2oiQzCsr67O3Zz7D//5vy48XkGyhlrGWiILwAzAwoAkSM5ZImNNi5l9OSwGO73BDlfVt5eufvTuO08Xl1559dWZ2RkduUqMvW6XfUXJS67iNFvfCMYYJDRBK2YwI6L3vN/ft9bOHj5iMflkEEAabf+SuyARSBigNxjcu3tvYX5henr6zJkzF3/y1tFjx3Qk9sny8qVvLs0vLhRF4b1vIv+sVXRAkSgAmOp1pYMWRAhg7aFpW/mqKAfaDhNRTx/V4yEAbamGyEgWAdbX1ggJBUGEDBLRla8u/eHTzw4fnv3ko3d++d9+48vSU+Wk4xyQcYimZSeMdcZYIiRslVVR9PeqctAvdqUcdKYO/d3f/HXH0b1bt29f//7djz44++p5MkYkKHTxHHKQTyVDKu4SER2SQcLgyWvBh/3e4UPPTLQ7jbDEAfeWIjARQSAiFBAWBkGiqgzb27uXr1y9dv36yRMn3n777bPnz9lf/upXCSbHn5mXM6cjpvY78e9UrEI/TCgMhIjWWWdDCJgq9YyfpIqAKq5BYF59+hRYbXTobuxe+vzz3e2d119/w01MlsPy43d/+unXl6Eq9X4O0NoY/CQiQiMi/X63v7clXIVq37ip9y78+OIbZw5NTU22z+7ubl/79rv7c3ff/ejDw0dnQWR1dTU3YE1CL4X4k1eWiNQ2duR6/d6xZ48640QEUmO1zIvZiMkzQiLg3KcCgggCI6CwhMDLSyuPl1cOzx6xIYToykj0HfslX1l/5gfHZzNbckQkwHFkLACo1jdEjKydfVM1DfVWcVhbXev3i2mipfmFlfml4ydOvvWztzsz00Rm2OsxyN2FpSdPVkMo0cfBGNdBNETGkCmHxbDYK8t9FLbGnjx+7KMP3n7+1AuHDh1GMD4MB73+3nZ3eX5xeenRS6dPrz59HGP8DUEXSZkcWJGaBoTp8KFZDTZLDJzWvr/8yTFaYQ6zjroeRQQIQGBne9tmJJvXuQmTo7LQL6cQSPNhKgU1aiZCUXOCRE9vM1KIAMCYIvoCHCTs7u4uLiwZ4GePzv6zv/y5czaAOGdJpJhsn3/jtb/+i49/878+3epueV/qLNoTwVAsBhW4qoZ99qW17uiR5//qw/de+/G5o0ePTUx1EIxwkGePwGmCwAv3H87duL20sAgECgritkZMgkaBWaQRM8eoPQIjizBKnGhM0Aig5vZYMFrtUnU15aXFJPQRwLO3I4JidLkASZ0XKCCkSAAxPkmMsbqfRISBCQ0IRthZF9wkjGfohUXtF8gpDixSFP3NtdVffPLPyRGiIUcQGAHBgMPW0WNHP/z5h+ubO//391/0iyL4ElC8V8vWMPtisFdVhSBOTk2/c/G1X/zlBy+dOj0x2bHGiYA2QjXG9MvhS2dfnjz0THe/K8yIBuOkarbQXkQ6NBaEFLKPZaOgjqCqAgCpj69EhgLWhHfE5MZAEBECFI6lMwH1saMCRDk9Uz9aw0oGIQQCoeA9xR2BwmmpgYW0URrnu+U92NzL2gBP4Zp2jZuenkbEEDxqm8LAwoLA7XbrhZee/+ij9944d67VciylH5a+GgowIntfDvo7wlW71T535uzPP37n9Ms/6sxMEFlmEQnx8AZAVVWdTnu/t98fDDLS0NoPqvNYWEDqim5N/4kgCImg9slTbm0eJUjCB2JFRQTAEaTXJK8+nTJpNI5eEzqZT6q5IOZ+CGitoERUdaNgw2LOGiK9WO++rBXS7yIcnqw+AYPGGOEgIoQxJCQMaGhiavJHr5z+5Bcfnn7xBSIDyBy8ztP7IoTCGvvcs0f+xScfnD1/dmJmIhYsacw5Aieira3Nqiy1cmm0qlF9FvpPEhKunV+JC/UFQRTQxMAMd5R11CkTSRA5LFP2APXTW8oUFFPR8gGIJOZAAPWRGsbDsqqCpoQjEEbEmskdI/TJY9B8pMahE5MAEq6vrzGzdj4IIaBBQSA01lrn3OTkxPGTJ376zoW/+9f/qu0mAldVVQx6W7297WKww8E727l48cK777119MRJ66wRJCJjKLOO98EYQ4jbm5sgKQIHLCCsFZCBRKKTSAUHJzQSWVkLWurJYjI60yqZflEZJOu37hcceT+SHNTYyfwdCXzATSPA2joLGmf9RcQY471HQhEGQYR0TKIhT9Lna1xUb0aRBE8BAddX12PDJyRmBgQySIAASACGsN1qP/fc0ffe/9n5V85MTT9zZPbYwsPrC/PXRRjIkoFP/uKj506cnJzqWDJkyZg8O0TEqvLOOUDY3FgnMkB5j+pRfFVUFCmgaok5wkFgBd8ietCXUvFS0OLCuoaGTDIiMQmEOFuM3h8EQkFhCMKi8sQQ2jG6QONKGw8zIxOR0l39QlqTqylDmnfAxjW2rgCwtbVV9AcAAASKX4kogAaNRRM3Op3OkaNHimFF1Gq1Dk1MztiWabUPzR45YZ05cfLE1NSkcxaxKdaivq7K0loLiCsrK9YYAEAAkvgx5bkY5m5MWVtRB4nFEjR8q+ITAKqqssalXQxp5um7o9ikgbADAFShiv5KSkfVkqHQuBr9h/N6GGOCV9nKLCFtoBFDHw9cTTtC5TIz73X31AlljAVBZfYsCZmZDLpO+97DR09W1421PgyILIoty5617UHhP//iq06nhY05syo3RObAPhBiCGHt6Wpu7coNPVQzWWIUFbMGiUOofCXAAEKEnFibmY2JiVtN1J+Jj6OVbxBrmVpWQ0qqQ5pEUl6uaQfQjFcAgLMj+XjqrmqySZ5Mk8cJDaFBIGEIIdZLGZbFkyerAEhkojwFHaPEoucAE5Pt3332FQB2OlPd3Q1Cg8RlWTjbcq79xz9e5sSDcbipHA4HEWAkKofD9Y0NJSsDS63MG9IvazikWM4dDaROoVHJI+RUGd0GgmM8CtErjCh6JAeBJYCIBuWrqtL3aZR8o0IgRVWksWVAhIzxyVEjErN/xkQQNXaJkiLuDARKDrCyrB4tLcVdH3cDjG44unt38bvvroZQtduTvd4OEiLZajhEIkPm/v35S5eupK8QQgZ2EEJQ6bi3u7+9tR2RRyP1oaF+MPOmqtXI79qPNyiUBBCofNlqtVQHpMUDAEhBbkx+koygCBgzilPPsCIixeAoLJmytbzTOlpZKCMiorH2z8nxpviu900OYkRmFEAtlxgeLSzqaJGMisGYWqJCCfDXv/4fm1ubSEjGDocDZ9vOTgZfgUC7Pckh/PKXvwa0RJT5R6Uih6Arv7m+vre/p5KwyeNNDhu79F1D1pAzZBGMiHAINJKvH6UJkiABYdMBXsdAkBAFmaXyHqPBCiLAgAw4ArobGkAgyZZIMURC9CFIShFtjj7jE/0zpUAING6OSQkAytLSkvdBb13Hj5IEmF9Y/ObSt2U5sGaCtQiVbU1MzoiEygfb6gSRK1euP3gwH5Gr1KJWRQEALC4uijBQcmmMXs2VyLszCfp6fyNiURTWjgSWCSlZjgZSI3Oo5xGRPAAww7AsrbWEuuNY1YSCVtTi5pBURKKlWkhJbwBYIvY+LrdgjMOlTVqj9fpnrZDj/VAIcW31aVEUgFkCqZw0gECGPv/8653drrCQQebgXMsYOz0zS8YJe0SLaILIP/zDPzrnsk8IkGIDY2MAzf0HD4UZGFGDY5A0loCkV1kCqLLE2H0dommS14AFwLlWU59FaiQaa2m9eOwNIaebC7JAqKqq5RxxjSmjnYrJDsoOxagThCEFLvSy1lZVhZhzHiWaS6OAJ95Bxn1vEm0S3N7e3tnaHtnnCEQAiMWg+sMfvgmhioxPptOZNMa1XGd6ZtY5PTLQMZY+++zzXq9PWOs1EQlBcxll/uFDY020Q0Fn1/CbxmgMgRCnoyYYJW8tJ33w7Va78cUkptKHk2LA9HdTSUQfg7WWkuEuzX7eKh6aBGo+qaZMehSn2tzNt0aGVc9PGrdVH6/0B/2nT5+OPQsBiPDR0vLC4jJLQAAWMcY6N2GtJTJTU7N6rsi1Osa2u/vDK1evYeKJdCsBg97z4+VlNSjVb5GlXz0pUUGRaRREBESN1bhZq8rbmLoxwlJpXvEXbkiv/GsIoSxLQ4Qax0lWPoxxd5OyaiJkLtK3iMg5V5ZleqtG+gfXKS9IZkN1uwNCCGFp6dEBOUuIeOv27f5goCkPIVRE5FoTgMjM1rUCe8Rg2+2WmybT+e3vPidT54bE/U6m3++tr2+oxlA8ABA9WWmBI3jPklSShz3fTa225oxq0uelkhq05Ptklea9bzlHgNrYXIV/VF6ZrNHcTIZM9JKPXtElgDlfIZkM9U0iiTH6JGtyAAqioiWen18MPLJRWDgEf+fOQ4mijzj4fm97+tCRiYnDABC40tSYtmvbliOkq1dud3f3gYNRzRMYBEhodeXxoNhnIEEUFBIiMShqSgoyAZDGVyi6oXTwIzNm5pZpCUCQkZiPyghuikudILA6g+MuCVx575xjAcoJ8AAgPEqUFIbA5Iwco7h+0jkXQoCEGfI19snk20MAMEnHBmEWRsCHDx74qspeKv1KVVXzDxeilAREhP5+d7+7ORzsDgd7vioQgcja1gShabn29s7ewvzjLJGZGQGI6P6Dh80RcfI7HmSO2pYHjKnGSawzM9naG9iYW/yJDU9toj9koOS9hxjeY9LB1RbdGJkiZhmx35pkxaROo65OC9bEi9LggnT3OmkNAAjh8ePH+929qExABEFE9vf7q2vrIpCUMyFyVfYHg13vBwovEAjREhEDMpu5P91LTxI9IkNEt27dymOO6j4NTxpqDDTEjoiCCFpkmvUjlfcmhSw0pta8snc9SxIiQjQgxBIEAkvwvjLWGjIsIRE9DaLJa1lJqMRoJqqNLY+1VvRYGI6sTV6q+p556fMoRQCwu7O7vrYGUQFG3tnc3N7d3YtpZaiWmm21Jicmpp2bMOQ4cH4DkQDNw4eLEe0BgGYag8zdvq2gVlJ1j1yQQWGrgrVGjo+6RSAGaoADB4XnTebJdMhboUn3pEUjI3nvnXMAEHLiYFPvZWWdcdUPXvl5ImIslb5iYC34OvaBfNu4gREBoiMCAERYAIth8ejRcvxK8sOvPl3vD4eYvPCEhsgaa+NhLTJIqLV5jW3ZliNjV56uMidkzQKExaB4tLCAFFNCULPhENGQIGgjmJhMCVmDUvSqCAEiCxuC7PjTvAkY3dZpGwmgZqSkNkoqWwIzs3NOGDgTnRurdxB4jPF18xeJhyhGrbiGWyP/MrYYeWnVfrPWPnhwH5IKFQBBePp0VR3P2fuv2byRgVAQjS4bxvNibmen673a+sgiBPh0dXV3b4+ZNROhFixpYKCJc4mIADGOkUwcCcFbG4ud5SBPJpQ0rhzqUcaRJHh88ERkNGEiEh0xxG0OYxTJIkIOvDu2AMbaCGOSEtO3mnZpc+VG5RgboocPHyT1Ha/VtQ2DRvUT6HFIia5E7ZyjNiKLEFpEQ8YWRVVWlVqdDADG3L17T2Ve7hzddFokKmuPwRG5keSPAIDRPqr5xVHvaZ6Uhkm1r4zehEV8CKWvrDGIoH0RonLw3kvjHM+YXNaR1KbTqGdGfxJqQ0WWhitGf2ZnWdNdXC+ggFrOiwuLg0EBmPPKYWNjW519iFp7K/FmcvLXUA0AiYwxVZDBYCDaKCmwMebGze+dbUWTH+PGEmHmILWLMWuaWqJqmkZVVYRGRFvUpCAwQkwwbTix80gAkDkZ6Bx8CMF75xwiBg6KYcgaIxqi4lrxQ2KKhnwgpXiSy9AkLiGSMWFUzUoEJzEu2uSO5iPUJN7a3FxfW81cw4F7vcK1WpiOQgOQfiml2QiAUEqh0PsOS7+722UOCryMMffu3zGWiFDU+RKTABhQYkZDExCnXzI7g4iqUIoJgXFBIFa1igZj4nbIYWSAyBPMTAAt56JnSYSyHAgprp9HkCWDLgmnQ1HNDdUkrjV6knxcmOSrmbyXJIyK1IAoQz+8d+8B6zFfgeDDXnefrCV0SBbR1Gm9IqKlY6SJppCMZZb19e3g1QLkYjB48vgxiORosIhgQugqU6XRMGdMUldVBTnOPpr0IMAsEkIIErQaJ0tQDcWBWYJC3yASQlBlkGFNygBAjIkVo3yKjZVP1KzlOGehkzekMWN4HxowK31kpKRQHAgiAl6/fp2AiAhEqsr3+n1CS8Ya42L+IsXT5syc8lMgOzx0v22sb6tU9T4sP37c3ekiELOk9JbagmuknORUnJqHAMB7b41VMkFjvUUkNSKBGItGSd4qTNBJOJ3isM5hw1iLnG6NCb7i+vANHFx2HDHYQEQIRkxVFHHWeu+bgwvMDDEtJL9YK1J1+okIizH25s1bvgqEKEDDYTkYDPUstKTkZhW7+oNDnpcektM74c7urggEYV+Fu3N3JbCgCoeaaZJzihN60dMw0euHKUtJRMhQtJ0lNIWnuupYj1eJGgGYfF2YEpeYmX3w1risD0SPqKgrh4UD++wWa7Jqg81F8UPzA0nEIyLapOLzTejAXqnVAFHj/khET1Ye7+/3lCbFoNjv9aJzIf3TiYQoUyRDpHRzBsRud08HFwLf/P5GClemYzvUOI5Fmr2VIYJia0aAEEJRFO12GyMbg0hEBCCSgt+sruxIg8SRzCwcMyS89wjYbrVZK/9qUYjMeiJSBd/U6VnSNbXfOEhKGjWJfraJ2cccKSMrkcKneulXEXF/v/vo0aLuil6vPyyKmqYN2MpcnzzR12qFD9jt7qnSq8rq/v37iakzJwlg7ceKRNRKVtmLmyxwjG6DKB11jyn8zlAtbaDI//F/EBBR8GOMoXRYMHKbyn4QNERRrEO+wzgOGaN480Z5nfQARtb+BAjceF7DssiyK/80hLdv3QJACWG/16sqXbzIS+m7gEDIFH2jAMK1WYCExXCo8+5299fW1hBB7RGNq9XbLsoERgCKWURqWBIIDIdDLSPYBAssgcEH8By97QepBJxKVClmCCGo9Z/nq2AGCMEYMtZWVaU79qCEOUj6JrF0rBoqBCFrrZ7oYObsvYpLgtkJl91z6tNnAW63OlevXNZ84KI/DKzhQdIAmzCqJNWzDhDlggiEnO2CSL39giWwyPraSjEYENocC9IVSlwj0Z8FaSMpNhUR4LIakkGBIMLRAGPO+baaHJBkdG3iaikPgcDiIxQWaTmnoei89UlSao4CmLRlRizSvAA/GIdLixQ0tI0kxpjckLLpIMu/x6xMQETMnbAJCYn+9Kc/FcWQRfb397Rra8ThCuwAgkgQ8RJ0oEF70WE8Oysiu7t7VRVA8PHykoiPEoAFhAl1wRCEhBHBBElskUCCxCIwhNlMA1FLsuGSjLaFCpBhOfCh9KHKSlEdt6X3gGgayDvONHEAqE+hqqomCzcvzCUtEvwYSWtpAHxM5lx+a2yv6MdzGiVE8CsI0O3uLi8vMUtRlIQ1QNYJU3IJ5CXEuCSZUaCsOHhGoMVHC9nBrdnxMQVOcmxSalukITAHg4FzLsn3yEmALMIhXT5UPlQikkFwhhjZHNFQUUTojYsyPyKgtbasqqwcDl5jRkTTjZmnraR3zqWzgaPvRrmsL3PkLdAs8eik/OKLPyDgYFA0g3851kvpJAc2xhhCpRAAAIZlWZbVcFgsLiwAqB+R9XxDUACvRmPMjYUMhXUzhRCa/qI8xxDYC1feVyEwgOY55wFkiy9TQF90zoHUN0HNYKw/BGKMqaqK1YiAEQ4a+3NM7IwpHGjIryxSlLWzXccioRFMAAQkQSTn3DdffwkEg2GhOjSmGxMIxTBmwoscgs8AkjmE4Fl4WFaDYri6tra29hRUHTSshLFZIECUitHBicWgbLmO+i/VZFWeBRFU6wYA0gKr07E5cb25DyEwI6AzLS19kkiEAPj/AXU4wTdD/NLgAAAAAElFTkSuQmCC" alt="정유석 프로필 사진" />
+            </div>
+            <div class="portrait-meta">
+              <div class="portrait-name">정유석</div>
+              <div class="portrait-en">YU-SEOK JUNG</div>
+              <div class="portrait-role">산업안전보건(EHS) 전문가<br />AI 기반 웹앱 빌더</div>
+            </div>
+          </div>
+
+          <div>
+            <h2 class="about-lead">현장의 문제를 가장 먼저 정의하고,<br />AI와 웹 기술로 작동하는 해결책까지 직접 만듭니다.</h2>
+            <p class="about-desc">
+              8년 8개월간 작업환경측정과 제조업 보건관리 위탁 현장을 누비며 쌓아온 산업안전보건(EHS) 도메인 전문성에
+              생성형 AI와 최신 웹 개발 스택을 결합해 왔습니다. 복잡한 법규 검토, 수작업 기술계산, 아날로그 점검 업무를
+              실제 현장에서 즉시 쓸 수 있는 맞춤형 웹앱과 자동화 시스템으로 전환하며, 기업이 필요로 하는 어떤 과제든
+              기획부터 프로토타이핑·배포까지 끝까지 구현합니다.
+            </p>
+
+            <div class="kpi-strip">
+              <div class="kpi-box">
+                <div class="kpi-num">8년 8개월+</div>
+                <div class="kpi-label">작업환경측정 · 제조업 보건관리 실무 경력</div>
+              </div>
+              <div class="kpi-box">
+                <div class="kpi-num">4종+</div>
+                <div class="kpi-label">직접 기획·개발·배포한 현장 맞춤형 웹앱</div>
+              </div>
+              <div class="kpi-box">
+                <div class="kpi-num">최우수상</div>
+                <div class="kpi-label">2025 안전보건공단 이사장상 · 75% 개선 성과</div>
+              </div>
+            </div>
+
+            <div class="skill-pills">
+              <span class="skill-pill">React</span>
+              <span class="skill-pill">Next.js</span>
+              <span class="skill-pill">TypeScript</span>
+              <span class="skill-pill">Supabase</span>
+              <span class="skill-pill">Firebase</span>
+              <span class="skill-pill">Vercel</span>
+              <span class="skill-pill">ChatGPT · Gemini · Claude</span>
+              <span class="skill-pill">On-Premise LLM</span>
+              <span class="skill-pill">ISO 45001 선임심사원</span>
+              <span class="skill-pill">산업안전·산업위생관리기사</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Career & Credentials -->
+    <section id="career" class="section-wrap section-divider">
+      <div class="editorial-grid">
+        <div class="section-kicker">
+          02 / CAREER
+          <strong>경력 및 이력</strong>
+        </div>
+
+        <div>
+          <div class="timeline-list">
+            <article class="timeline-item">
+              <div>
+                <div class="timeline-period">2021.04 — 현재</div>
+                <span class="timeline-badge">재직중 · 5년 7개월+</span>
+              </div>
+              <div>
+                <div class="timeline-org">대한산업보건협회 대구지역본부</div>
+                <div class="timeline-role">보건관리국 · 과장 | 스마트 SHE 구축 및 제조업 보건관리</div>
+                <ul class="timeline-points">
+                  <li>‘HEALTH-HUB’, 산업환기 계산기, 밀폐공간·일반 위험성평가 등 실무 웹앱 4종을 AI와 협업해 직접 기획·개발하고 페이퍼리스 보건관리 전환 주도</li>
+                  <li>제지업 배합공정 생식독성물질(사붕소산나트륨)을 저유해성 ‘액체 붕사’로 대체하고 자동주입장치 공학 설계를 도입해 집중관리 대상 8개소 중 6개소(75%) 개선 완료</li>
+                  <li>기상청 API 연동 온열질환 모니터링 시스템 구축 및 최신 산업안전보건법·KOSHA Guide 기반 컴플라이언스 대응 지원</li>
+                  <li>고용노동부·안전보건공단 연계 밀폐공간(맨홀) 질식재해 예방 현장 안전조치 전문가로 활동하며 안전작업허가(PTW) 현장 검증 수행 (2024–2026)</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="timeline-item">
+              <div>
+                <div class="timeline-period">2026.06</div>
+                <span class="timeline-badge">대외 자문</span>
+              </div>
+              <div>
+                <div class="timeline-org">대구경북 제지업 협의체</div>
+                <div class="timeline-role">자문위원 | 민관 합동 산업재해 예방 네트워크</div>
+                <ul class="timeline-points">
+                  <li>고용노동부·안전보건공단 및 지역 주요 제지업체 안전보건관리자들과 산업재해 예방 대책 및 법령 개정 대응방안 논의</li>
+                  <li>생식독성물질 대체 및 국소배기장치 설치 등 공학적 개선 우수사례를 동종 업계에 확산</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="timeline-item">
+              <div>
+                <div class="timeline-period">2018.01 — 2021.03</div>
+                <span class="timeline-badge">3년 3개월</span>
+              </div>
+              <div>
+                <div class="timeline-org">대한산업보건협회 광주지역본부</div>
+                <div class="timeline-role">환경위생팀 · 대리 | 작업환경측정 및 공학적 노출 저감</div>
+                <ul class="timeline-points">
+                  <li>광주·전남 제조 사업장 대상 화학물질·소음·분진 등 유해인자 작업환경측정 및 정량적 노출 수준 평가 수행</li>
+                  <li>국소배기장치 제어풍속·환기 효율 검증 및 노출 기준 초과 공정 원인 분석, 맞춤형 보호구 선정·노출 저감 대책 기술지도</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+
+          <div class="credentials-grid">
+            <div class="cred-card">
+              <div class="cred-label">Education &amp; Research</div>
+              <div class="cred-entry">
+                <div class="cred-title">한성대학교 대학원 석사과정</div>
+                <div class="cred-sub">산업위생공학전공 (2025.03 – 2027.02 예정)<br />혈중 납 농도(BEI) 특수건강진단 연구 · 2026 교내 학술대회 발표</div>
+              </div>
+              <div class="cred-entry">
+                <div class="cred-title">대구한의대학교 학사 졸업</div>
+                <div class="cred-sub">산업안전보건전공 (2012.03 – 2018.02)</div>
+              </div>
+            </div>
+
+            <div class="cred-card">
+              <div class="cred-label">Award</div>
+              <div class="cred-entry">
+                <div class="cred-title">한국산업안전보건공단 이사장상</div>
+                <div class="cred-sub">2025년 보건관리전문기관 우수사례 발표대회 최우수상 (2025.07)<br />생식독성물질 대체·자동주입장치 공학적 개선 모델 확산 및 기관평가 S등급 기여</div>
+              </div>
+            </div>
+
+            <div class="cred-card">
+              <div class="cred-label">Certifications</div>
+              <div class="cred-entry">
+                <div class="cred-title">ISO 45001:2018 심사원 / 선임심사원</div>
+                <div class="cred-sub">GPC 글로벌 인증 자격 취득 · 40시간 교육 수료 (2025.09)</div>
+              </div>
+              <div class="cred-entry">
+                <div class="cred-title">산업위생관리기사 · 산업안전기사</div>
+                <div class="cred-sub">한국산업인력공단 국가기술자격 (2017)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Selected Web Apps -->
+    <section id="projects" class="section-wrap section-divider">
+      <div class="editorial-grid">
+        <div class="section-kicker">
+          03 / WEB APPS
+          <strong>직접 구현한 웹앱</strong>
+        </div>
+
+        <div>
+          <p class="projects-intro">
+            현장의 반복적인 비효율을 해결하기 위해 생성형 AI와 협업하여 직접 기획·개발·배포한 4종의 실무 웹앱입니다.
+            각 카드를 클릭하면 개발 배경과 핵심 기능을 확인하고 <strong>Live Demo</strong>로 바로 실행해 보실 수 있습니다.
+          </p>
+
+          <div class="projects-grid" id="projectsGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: AI DX Capabilities -->
+    <section id="capabilities" class="section-wrap section-divider">
+      <div class="editorial-grid">
+        <div class="section-kicker">
+          04 / AI DX
+          <strong>문제 해결 방식</strong>
+        </div>
+
+        <div class="cap-grid">
+          <div class="cap-card">
+            <div class="cap-index">01 · SECURITY-FIRST AI</div>
+            <h3 class="cap-title">온프레미스 EHS LLM 설계</h3>
+            <p class="cap-desc">
+              기업 보안을 최우선으로 고려해 로컬 환경(VRAM 6GB 제한)에서 외부 유출 없이 구동되는
+              산업안전보건 전용 LLM 프로토타입을 설계했습니다. 방대한 산안법·KOSHA Guide 교차 검증 시간을 획기적으로 단축합니다.
+            </p>
+          </div>
+
+          <div class="cap-card">
+            <div class="cap-index">02 · RAPID CUSTOM BUILD</div>
+            <h3 class="cap-title">현장 맞춤형 웹앱 풀스택 구현</h3>
+            <p class="cap-desc">
+              React, Next.js, TypeScript와 Firebase·Supabase·Vercel을 AI 코딩 워크플로우와 결합해
+              기업의 요구사항을 문서에 머무르지 않고 즉시 동작하는 웹앱·대시보드·자동화 도구로 빠르게 구현합니다.
+            </p>
+          </div>
+
+          <div class="cap-card">
+            <div class="cap-index">03 · FIELD ADOPTION</div>
+            <h3 class="cap-title">실무 정착과 시청각 교육 혁신</h3>
+            <p class="cap-desc">
+              QR 스마트 스티커를 전국 고객사에 도입하고, Google Vids·Hailuo AI 등으로 맞춤형 안전보건 시청각 교육 콘텐츠를 제작합니다.
+              팀원들에게 AI 활용법을 전파해 조직 전체의 디지털 실행력을 끌어올립니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Contact -->
+    <section id="contact" class="section-wrap section-divider">
+      <div class="editorial-grid">
+        <div class="section-kicker">
+          05 / CONTACT
+          <strong>협업 및 연락</strong>
+        </div>
+
+        <div class="contact-panel">
+          <h2 class="contact-headline">기업이 원하는 어떤 현장 과제든<br />AI와 맞춤형 웹앱으로 함께 해결합니다.</h2>
+          <p class="contact-sub">
+            안전보건 디지털 전환(DX), 현장 맞춤형 웹앱 구축, AI 기반 업무 자동화 및 채용·협업 제안은
+            아래 이메일로 편하게 연락해 주세요.
+          </p>
+          <div class="contact-actions">
+            <button id="copyEmailBtn" class="btn-primary" type="button">
+              <span>yusuk1548@gmail.com 복사</span>
+            </button>
+            <a class="btn-secondary" href="https://youtu.be/2khffYZldyA" target="_blank" rel="noopener noreferrer">
+              <span>포트폴리오 영상 (YouTube) ↗</span>
+            </a>
+            <button id="backToTopBtn" class="btn-secondary" type="button">
+              <span>↑ 3D 인트로로 돌아가기</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div>© 2026 YU-SEOK JUNG. ALL RIGHTS RESERVED.</div>
+      <div>BUILT WITH AI · CRAFTED FOR IMPACT.</div>
+    </footer>
+  </main>
+
+  <!-- Project Detail Modal -->
+  <div id="projectModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-dialog">
+      <div id="modalBanner" class="modal-banner theme-hub">
+        <div>
+          <div id="modalKicker" class="modal-banner-kicker"></div>
+          <h3 id="modalTitle" class="modal-banner-title"></h3>
+          <div id="modalSubtitle" class="modal-banner-sub"></div>
+        </div>
+        <button id="modalCloseBtn" class="modal-close" type="button" aria-label="닫기">×</button>
+      </div>
+
+      <div class="modal-content">
+        <div>
+          <div class="modal-block-label">기획 배경 및 해결한 문제</div>
+          <p id="modalProblem" class="modal-text"></p>
+        </div>
+
+        <div>
+          <div class="modal-block-label">AI 활용 및 구현 방식</div>
+          <p id="modalSolution" class="modal-text"></p>
+        </div>
+
+        <div>
+          <div class="modal-block-label">핵심 기능</div>
+          <ul id="modalFeatures" class="modal-features"></ul>
+        </div>
+
+        <div>
+          <div class="modal-block-label">적용 기술 스택</div>
+          <div id="modalStack" class="skill-pills"></div>
+        </div>
+
+        <div class="modal-actions">
+          <span id="modalUrlText" class="modal-url-preview"></span>
+          <a id="modalLiveLink" class="btn-primary" href="https://health-hub-workspace.vercel.app" target="_blank" rel="noopener noreferrer">
+            <span>Live Demo 새 탭에서 열기 ↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      // =========================================================================
+      // 0. PORTFOLIO WEB APPS DATA
+      // =========================================================================
+      const PROJECTS = [
+        {
+          id: 'health-hub',
+          kicker: 'WEB APP 01 · SMART EHS PLATFORM',
+          status: 'Live Service',
+          themeClass: 'theme-hub',
+          brand: 'HEALTH-HUB',
+          domain: 'health-hub-workspace.vercel.app',
+          url: 'https://health-hub-workspace.vercel.app',
+          title: 'HEALTH-HUB 스마트 보건관리 통합 플랫폼',
+          subtitle: '아날로그 보건관리 업무를 페이퍼리스로 전환한 통합 디지털 워크스페이스',
+          summary: 'MSDS 법적 규제대상 자동 분류와 기상청 API 연동 온열질환 실시간 모니터링을 하나의 플랫폼에 통합해 행정 오류와 검토 시간을 대폭 줄였습니다.',
+          problem: '제조업 위탁 사업장 보건관리 현장에서 방대한 MSDS 문서를 수작업으로 대조해 법적 규제 대상을 분류하고, 하절기 체감온도를 매번 개별 확인하는 과정에 많은 시간과 인적 오류 위험이 발생했습니다.',
+          solution: 'AI 코딩 협업과 React·Next.js 기반 웹앱 아키텍처를 결합해 MSDS 첨부 시 내부 알고리즘과 AI 분석으로 산안법·화관법 규제 물질을 자동 추출하도록 구현하고, 기상청 API를 연동해 현장별 온열질환 리스크를 실시간 수치화했습니다.',
+          features: [
+            'MSDS 문서 첨부 시 산안법·화관법 규제대상 물질 자동 분류',
+            '기상청 API 연동 현장별 실시간 체감온도 및 온열질환 모니터링',
+            '최신 산업안전보건법 및 KOSHA Guide 기반 컴플라이언스 검토 지원',
+            '아날로그 서류 중심 보건관리 업무의 페이퍼리스(Paperless) 통합 관리'
+          ],
+          stack: ['React', 'Next.js', 'TypeScript', 'AI Analysis', '기상청 API', 'Vercel'],
+          iconSvg: '<path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4"/>'
+        },
+        {
+          id: 'local-ventilation',
+          kicker: 'WEB APP 02 · ENGINEERING CALCULATOR',
+          status: 'Field Verified',
+          themeClass: 'theme-vent',
+          brand: 'Local Ventilation',
+          domain: 'localventilation.netlify.app',
+          url: 'https://localventilation.netlify.app/',
+          title: '산업환기 기술계산 웹앱',
+          subtitle: '현장에서 스마트폰으로 즉시 환기량과 산출 근거를 검증하는 공학 계산 도구',
+          summary: '복잡한 후드 유형별 환기량 수식을 엑셀 대신 모바일·PC 웹앱으로 옮겨, 출장 현장에서도 계산 결과와 산출 과정을 즉시 확인할 수 있게 구현했습니다.',
+          problem: '산업환기 기술지도 시 후드 유형별 제어풍속·필요환기량 계산식을 매번 엑셀에서 찾아 입력해야 했고, 출장 현장에서 즉각 결과를 확인하고 사업장 담당자에게 근거를 설명하기 어려웠습니다.',
+          solution: '코딩 경험 없이 생성형 AI와 협업해 시작한 첫 현장 혁신 프로젝트로, 후드 유형별 계산식·단위·표기 방식을 산업환기 원리와 직접 교차 검증하며 오류를 잡았고 결과값과 산출 과정을 함께 보여주도록 설계했습니다.',
+          features: [
+            '후드 유형별 필요환기량 및 제어풍속 정밀 기술계산 엔진',
+            '단순 결과값뿐 아니라 단계별 산출 공식과 계산 근거 투명 표시',
+            '출장 현장 모바일 환경과 사무실 PC 모두에 최적화된 반응형 UI',
+            '국소배기장치 성능 검증 및 공학적 개선안 제안 속도 획기적 단축'
+          ],
+          stack: ['JavaScript', 'Industrial Ventilation', 'Generative AI', 'Responsive UI', 'Netlify'],
+          iconSvg: '<path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/>'
+        },
+        {
+          id: 'kiha-safety',
+          kicker: 'WEB APP 03 · CONFINED SPACE SAFETY',
+          status: 'Live Service',
+          themeClass: 'theme-kiha',
+          brand: 'KIHA Safety Web',
+          domain: 'kiha-safety-web.vercel.app',
+          url: 'https://kiha-safety-web.vercel.app/',
+          title: '밀폐공간 위험성평가 & 안전조치 웹앱',
+          subtitle: '맨홀 등 고위험 밀폐공간 질식재해를 사전 통제하는 현장 점검 솔루션',
+          summary: '산소·유해가스 농도 측정, 환기팬 가동, 공기호흡기 비치, 감시인 배치 등 필수 안전작업허가(PTW) 요건을 현장에서 직관적으로 검증합니다.',
+          problem: '하절기 맨홀 등 밀폐공간 작업은 단 한 번의 절차 누락이 치명적인 질식사고로 이어지지만, 기존 서류 위주의 점검표는 현장에서 실시간 위험성평가와 필수 안전조치 확인에 한계가 있었습니다.',
+          solution: '고용노동부·안전보건공단 연계 밀폐공간 질식재해 예방 전문가로 현장을 점검하며 쌓은 실무 노하우를 AI 웹 개발로 시스템화해, 작업 전 적정공기 확인부터 안전작업허가 검증까지 체계적으로 수행할 수 있게 구현했습니다.',
+          features: [
+            '밀폐공간 작업 전 산소·유해가스 농도(적정공기) 기준 체크 및 평가',
+            '환기팬 가동·공기호흡기 비치·감시인 배치 등 필수 안전조치 검증',
+            '서류 점검을 대체하는 현장 밀착형 안전작업허가(PTW) 프로세스 지원',
+            '사고 후 대응이 아닌 작업 전 위험요인 선제 통제 중심의 UX 설계'
+          ],
+          stack: ['React', 'TypeScript', 'PTW Checklist', 'AI Workflow', 'Vercel'],
+          iconSvg: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'
+        },
+        {
+          id: 'sif-master',
+          kicker: 'WEB APP 04 · RISK ASSESSMENT PWA',
+          status: '부서 실무 도입',
+          themeClass: 'theme-sif',
+          brand: 'SIF Master PWA',
+          domain: 'sif-master-pwa.vercel.app',
+          url: 'https://sif-master-pwa.vercel.app/',
+          title: 'SIF Master 일반 위험성평가 PWA',
+          subtitle: '소속 부서 실제 업무에 도입되어 활용 중인 현장 중심 위험성평가 앱',
+          summary: '실무자가 실제 현장에서 업무를 수행하는 순서 그대로 화면을 설계해, 위험요인 발굴부터 개선대책 수립까지 매끄럽게 이어지는 PWA 웹앱입니다.',
+          problem: '기존 위험성평가 도구는 현장 동선과 동떨어진 복잡한 양식 중심이어서 실무자들이 현장에서 즉시 기록하고 개선조치로 연결하는 데 부담이 컸습니다.',
+          solution: '앞선 환기·밀폐공간 웹앱 개발 경험을 발전시켜 현장 실무자의 실제 작업 순서를 반영한 PWA(Progressive Web App)로 직접 기획·개발했고, 개인 학습을 넘어 소속 부서의 실제 업무 도구로 채택되었습니다.',
+          features: [
+            '현장 실무자 업무 흐름에 맞춘 단계별 위험성평가 입력 및 평가 인터페이스',
+            '중대재해 고위험요인(SIF) 중심의 체계적 위험도 판정 및 개선대책 관리',
+            '모바일 홈 화면 설치 및 현장 접근성을 높인 PWA 구조 적용',
+            '개인 프로젝트를 넘어 조직 내부 실제 업무 프로세스에 정식 적용'
+          ],
+          stack: ['React', 'Next.js', 'PWA', 'Supabase / Firebase', 'Vercel'],
+          iconSvg: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12l2 2 4-4"/><path d="M7 8h10"/>'
+        }
+      ];
+
+      const projectsGrid = document.getElementById('projectsGrid');
+      PROJECTS.forEach(function (proj) {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'project-card';
+        card.setAttribute('data-project-id', proj.id);
+        card.innerHTML = `
+          <div class="project-visual ${proj.themeClass}">
+            <div class="pv-top">
+              <span>${proj.kicker}</span>
+              <span class="pv-status">${proj.status}</span>
+            </div>
+            <div class="pv-mockup">
+              <div>
+                <div class="pv-brand">${proj.brand}</div>
+                <div class="pv-domain">${proj.domain}</div>
+              </div>
+              <div class="pv-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">${proj.iconSvg}</svg>
+              </div>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-title">${proj.title}</div>
+            <p class="project-summary">${proj.summary}</p>
+            <div class="project-footer">
+              <div class="project-tags">
+                ${proj.stack.slice(0, 3).map(function (t) { return '<span class="project-tag">' + t + '</span>'; }).join('')}
+              </div>
+              <span class="project-cta">상세 보기 →</span>
+            </div>
+          </div>
+        `;
+        card.addEventListener('click', function () {
+          openProjectModal(proj);
+        });
+        projectsGrid.appendChild(card);
+      });
+
+      // Project Detail Modal
+      const projectModal = document.getElementById('projectModal');
+      const modalBanner = document.getElementById('modalBanner');
+      const modalKicker = document.getElementById('modalKicker');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalSubtitle = document.getElementById('modalSubtitle');
+      const modalProblem = document.getElementById('modalProblem');
+      const modalSolution = document.getElementById('modalSolution');
+      const modalFeatures = document.getElementById('modalFeatures');
+      const modalStack = document.getElementById('modalStack');
+      const modalUrlText = document.getElementById('modalUrlText');
+      const modalLiveLink = document.getElementById('modalLiveLink');
+      const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+      function openProjectModal(proj) {
+        modalBanner.className = 'modal-banner ' + proj.themeClass;
+        modalKicker.textContent = proj.kicker + ' · ' + proj.status;
+        modalTitle.textContent = proj.title;
+        modalSubtitle.textContent = proj.subtitle;
+        modalProblem.textContent = proj.problem;
+        modalSolution.textContent = proj.solution;
+        modalFeatures.innerHTML = proj.features.map(function (f) { return '<li>' + f + '</li>'; }).join('');
+        modalStack.innerHTML = proj.stack.map(function (s) { return '<span class="skill-pill">' + s + '</span>'; }).join('');
+        modalUrlText.textContent = proj.url;
+        modalLiveLink.href = proj.url;
+
+        projectModal.classList.add('is-open');
+        document.body.classList.add('modal-open');
+      }
+
+      function closeProjectModal() {
+        projectModal.classList.remove('is-open');
+        document.body.classList.remove('modal-open');
+      }
+
+      modalCloseBtn.addEventListener('click', closeProjectModal);
+      projectModal.addEventListener('click', function (e) {
+        if (e.target === projectModal) closeProjectModal();
+      });
+
+      // Toast & Copy Email
+      const toastEl = document.getElementById('toast');
+      let toastTimer = null;
+      function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('is-visible');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          toastEl.classList.remove('is-visible');
+        }, 2200);
+      }
+
+      const copyEmailBtn = document.getElementById('copyEmailBtn');
+      copyEmailBtn.addEventListener('click', function () {
+        const email = 'yusuk1548@gmail.com';
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(email).then(function () {
+            showToast('이메일 주소(yusuk1548@gmail.com)가 복사되었습니다.');
+          }).catch(function () {
+            fallbackCopy(email);
+          });
+        } else {
+          fallbackCopy(email);
+        }
+      });
+
+      function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+          showToast('이메일 주소(' + text + ')가 복사되었습니다.');
+        } catch (e) {
+          showToast('이메일: ' + text);
+        }
+        document.body.removeChild(ta);
+      }
+
+      // =========================================================================
+      // 1. THEME STATE (Light / Dark mode + shortcut 'D' + OS sync)
+      // =========================================================================
+      const rootEl = document.documentElement;
+      const themeToggleBtn = document.getElementById('themeToggleBtn');
+      const themeIconSun = document.getElementById('themeIconSun');
+      const themeIconMoon = document.getElementById('themeIconMoon');
+      const themeLabel = document.getElementById('themeLabel');
+
+      let isDark = false;
+      try {
+        const savedTheme = localStorage.getItem('portfolio_theme');
+        if (savedTheme === 'dark') isDark = true;
+      } catch (e) {}
+
+      function applyTheme(dark) {
+        isDark = dark;
+        if (dark) {
+          rootEl.setAttribute('data-theme', 'dark');
+          themeIconSun.style.display = 'block';
+          themeIconMoon.style.display = 'none';
+          themeLabel.textContent = 'Light';
+        } else {
+          rootEl.removeAttribute('data-theme');
+          themeIconSun.style.display = 'none';
+          themeIconMoon.style.display = 'block';
+          themeLabel.textContent = 'Dark';
+        }
+        try {
+          localStorage.setItem('portfolio_theme', dark ? 'dark' : 'light');
+        } catch (e) {}
+      }
+
+      applyTheme(isDark);
+
+      themeToggleBtn.addEventListener('click', function () {
+        applyTheme(!isDark);
+      });
+
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && projectModal.classList.contains('is-open')) {
+          closeProjectModal();
+          return;
+        }
+        if (e.key === 'd' || e.key === 'D') {
+          if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+          applyTheme(!isDark);
+        }
+      });
+
+      if (window.matchMedia) {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        if (mediaQuery.addEventListener) {
+          mediaQuery.addEventListener('change', function (e) {
+            applyTheme(e.matches);
+          });
+        }
+      }
+
+      // =========================================================================
+      // 2. PROCEDURAL ABSTRACT BLUE / INDIGO / WHITE INK-CLOUD FLUID CANVAS
+      // =========================================================================
+      const fluidCanvas = document.createElement('canvas');
+      fluidCanvas.width = 768;
+      fluidCanvas.height = 480;
+      const fCtx = fluidCanvas.getContext('2d');
+
+      const transitionCanvas = document.getElementById('fluid-transition-canvas');
+      const tCtx = transitionCanvas.getContext('2d');
+
+      function resizeTransitionCanvas() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        transitionCanvas.width = Math.floor(window.innerWidth * dpr);
+        transitionCanvas.height = Math.floor(window.innerHeight * dpr);
+      }
+      resizeTransitionCanvas();
+
+      const inkShapes = [
+        { cx: 0.48, cy: 0.52, rx: 0.36, ry: 0.44, angle: -0.45, speed: 0.18, driftX: 0.04, driftY: 0.03, color: [16, 30, 50], alpha: 0.72, mode: 'multiply' },
+        { cx: 0.36, cy: 0.42, rx: 0.30, ry: 0.46, angle: 0.35, speed: -0.14, driftX: 0.05, driftY: 0.04, color: [42, 68, 102], alpha: 0.62, mode: 'multiply' },
+        { cx: 0.62, cy: 0.58, rx: 0.34, ry: 0.38, angle: -0.75, speed: 0.16, driftX: 0.04, driftY: 0.05, color: [76, 106, 146], alpha: 0.56, mode: 'multiply' },
+        { cx: 0.25, cy: 0.62, rx: 0.32, ry: 0.30, angle: 0.6, speed: 0.12, driftX: 0.06, driftY: 0.03, color: [98, 134, 178], alpha: 0.58, mode: 'multiply' },
+        { cx: 0.52, cy: 0.35, rx: 0.26, ry: 0.42, angle: -0.25, speed: -0.20, driftX: 0.03, driftY: 0.04, color: [22, 40, 68], alpha: 0.68, mode: 'multiply' },
+        { cx: 0.70, cy: 0.44, rx: 0.28, ry: 0.34, angle: 0.85, speed: 0.15, driftX: 0.05, driftY: 0.04, color: [122, 156, 198], alpha: 0.50, mode: 'multiply' },
+        { cx: 0.44, cy: 0.68, rx: 0.28, ry: 0.36, angle: -0.15, speed: -0.17, driftX: 0.04, driftY: 0.03, color: [12, 24, 42], alpha: 0.75, mode: 'multiply' },
+        { cx: 0.18, cy: 0.36, rx: 0.26, ry: 0.32, angle: 0.42, speed: 0.13, driftX: 0.04, driftY: 0.05, color: [110, 148, 194], alpha: 0.52, mode: 'multiply' },
+        { cx: 0.58, cy: 0.72, rx: 0.25, ry: 0.30, angle: -0.62, speed: 0.19, driftX: 0.05, driftY: 0.03, color: [52, 82, 120], alpha: 0.55, mode: 'multiply' }
+      ];
+
+      const lightWisps = [
+        { cx: 0.88, cy: 0.18, r: 0.44, speed: 0.14, alpha: 0.92 },
+        { cx: 0.92, cy: 0.34, r: 0.32, speed: -0.11, alpha: 0.72 },
+        { cx: 0.14, cy: 0.86, r: 0.34, speed: 0.16, alpha: 0.65 },
+        { cx: 0.64, cy: 0.24, r: 0.22, speed: -0.18, alpha: 0.42 }
+      ];
+
+      const grainCanvas = document.createElement('canvas');
+      grainCanvas.width = 128;
+      grainCanvas.height = 128;
+      const gCtx = grainCanvas.getContext('2d');
+      const gImg = gCtx.createImageData(128, 128);
+      for (let i = 0; i < gImg.data.length; i += 4) {
+        const v = 120 + Math.floor(Math.random() * 60);
+        gImg.data[i] = v;
+        gImg.data[i + 1] = v + 8;
+        gImg.data[i + 2] = v + 18;
+        gImg.data[i + 3] = 16;
+      }
+      gCtx.putImageData(gImg, 0, 0);
+      const grainPattern = fCtx.createPattern(grainCanvas, 'repeat');
+
+      function drawInkFluid(t) {
+        const w = fluidCanvas.width;
+        const h = fluidCanvas.height;
+
+        const bgGrad = fCtx.createLinearGradient(0, h, w, 0);
+        bgGrad.addColorStop(0, '#c8daf0');
+        bgGrad.addColorStop(0.45, '#e8f1fa');
+        bgGrad.addColorStop(0.8, '#f7fbff');
+        bgGrad.addColorStop(1, '#ffffff');
+        fCtx.globalCompositeOperation = 'source-over';
+        fCtx.fillStyle = bgGrad;
+        fCtx.fillRect(0, 0, w, h);
+
+        for (let i = 0; i < inkShapes.length; i++) {
+          const s = inkShapes[i];
+          const phase = t * s.speed + i * 1.37;
+          const x = (s.cx + Math.sin(phase) * s.driftX) * w;
+          const y = (s.cy + Math.cos(phase * 0.85) * s.driftY) * h;
+          const rx = s.rx * w * (0.94 + 0.08 * Math.sin(phase * 1.1));
+          const ry = s.ry * h * (0.94 + 0.08 * Math.cos(phase * 0.9));
+          const rot = s.angle + Math.sin(phase * 0.6) * 0.22;
+
+          fCtx.save();
+          fCtx.translate(x, y);
+          fCtx.rotate(rot);
+          fCtx.globalCompositeOperation = s.mode;
+
+          const grad = fCtx.createRadialGradient(-rx * 0.15, -ry * 0.1, rx * 0.05, 0, 0, Math.max(rx, ry));
+          grad.addColorStop(0, `rgba(${s.color[0]}, ${s.color[1]}, ${s.color[2]}, ${s.alpha})`);
+          grad.addColorStop(0.55, `rgba(${s.color[0] + 18}, ${s.color[1] + 24}, ${s.color[2] + 32}, ${s.alpha * 0.72})`);
+          grad.addColorStop(0.88, `rgba(${s.color[0] + 45}, ${s.color[1] + 55}, ${s.color[2] + 68}, ${s.alpha * 0.26})`);
+          grad.addColorStop(1, `rgba(${s.color[0] + 60}, ${s.color[1] + 70}, ${s.color[2] + 85}, 0)`);
+
+          fCtx.fillStyle = grad;
+          fCtx.beginPath();
+          const w1 = rx * (0.9 + 0.12 * Math.sin(phase));
+          const h1 = ry * (0.95 + 0.1 * Math.cos(phase * 1.2));
+          fCtx.moveTo(0, -h1);
+          fCtx.bezierCurveTo(w1 * 0.95, -h1 * 0.7, w1 * 1.05, h1 * 0.45, w1 * 0.18, h1);
+          fCtx.bezierCurveTo(-w1 * 0.78, h1 * 0.85, -w1 * 1.05, -h1 * 0.35, 0, -h1);
+          fCtx.closePath();
+          fCtx.fill();
+          fCtx.restore();
+        }
+
+        fCtx.save();
+        fCtx.globalCompositeOperation = 'multiply';
+        const coreX = (0.47 + Math.sin(t * 0.21) * 0.03) * w;
+        const coreY = (0.56 + Math.cos(t * 0.17) * 0.03) * h;
+        const coreGrad = fCtx.createRadialGradient(coreX, coreY, w * 0.02, coreX, coreY, w * 0.28);
+        coreGrad.addColorStop(0, 'rgba(8, 16, 30, 0.82)');
+        coreGrad.addColorStop(0.5, 'rgba(20, 36, 58, 0.45)');
+        coreGrad.addColorStop(1, 'rgba(20, 36, 58, 0)');
+        fCtx.fillStyle = coreGrad;
+        fCtx.fillRect(0, 0, w, h);
+        fCtx.restore();
+
+        fCtx.globalCompositeOperation = 'screen';
+        for (let i = 0; i < lightWisps.length; i++) {
+          const lw = lightWisps[i];
+          const lx = (lw.cx + Math.sin(t * lw.speed + i) * 0.03) * w;
+          const ly = (lw.cy + Math.cos(t * lw.speed * 0.9 + i) * 0.03) * h;
+          const lr = lw.r * w;
+          const lg = fCtx.createRadialGradient(lx, ly, 0, lx, ly, lr);
+          lg.addColorStop(0, `rgba(255, 255, 255, ${lw.alpha})`);
+          lg.addColorStop(0.5, `rgba(232, 244, 255, ${lw.alpha * 0.55})`);
+          lg.addColorStop(1, 'rgba(232, 244, 255, 0)');
+          fCtx.fillStyle = lg;
+          fCtx.fillRect(0, 0, w, h);
+        }
+
+        fCtx.globalCompositeOperation = 'source-over';
+        fCtx.fillStyle = grainPattern;
+        fCtx.fillRect(0, 0, w, h);
+      }
+
+      // =========================================================================
+      // 3. THREE.JS SCENE: APPLE COMMERCIAL STUDIO LIGHTING + TRUE METALLIC
+      //    MACBOOK PRO (HIGH-CONTRAST ALUMINUM + JET-BLACK KEYBOARD & BEZEL)
+      // =========================================================================
+      const webglCanvas = document.getElementById('webgl-canvas');
+      const renderer = new THREE.WebGLRenderer({
+        canvas: webglCanvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance'
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 0.96;
+      renderer.outputEncoding = THREE.sRGBEncoding;
+
+      const scene = new THREE.Scene();
+
+      const camera = new THREE.PerspectiveCamera(28, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.set(0, 0.35, 9.0);
+
+      // TRUE HIGH-CONTRAST COMMERCIAL PRODUCT STUDIO ENV MAP
+      // Dark studio room with crisp bright softbox strips -> real metallic aluminum gradients!
+      function createCommercialStudioEnvMap() {
+        const pmrem = new THREE.PMREMGenerator(renderer);
+        pmrem.compileEquirectangularShader();
+        const envScene = new THREE.Scene();
+        envScene.background = new THREE.Color(0x3a3f48);
+
+        const brightStrip = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const softSilver = new THREE.MeshBasicMaterial({ color: 0xc2c8d2 });
+        const deepShadow = new THREE.MeshBasicMaterial({ color: 0x161920 });
+
+        // Crisp overhead narrow key softbox (creates signature silver gradient across aluminum lid!)
+        const overheadKey = new THREE.Mesh(new THREE.PlaneGeometry(16, 4.5), brightStrip);
+        overheadKey.position.set(0, 9.5, 2.5);
+        overheadKey.rotation.x = Math.PI / 2;
+        envScene.add(overheadKey);
+
+        // Secondary rear rim light strip
+        const rearRim = new THREE.Mesh(new THREE.PlaneGeometry(18, 3.0), softSilver);
+        rearRim.position.set(0, 6.5, -8.5);
+        rearRim.rotation.x = 0.5;
+        envScene.add(rearRim);
+
+        // Left & right crisp vertical rim cards (gives CNC chamfered edges real specular gleam!)
+        const leftCard = new THREE.Mesh(new THREE.PlaneGeometry(5, 11), softSilver);
+        leftCard.position.set(-10, 2.5, 2);
+        leftCard.rotation.y = Math.PI / 2;
+        envScene.add(leftCard);
+
+        const rightCard = new THREE.Mesh(new THREE.PlaneGeometry(5, 11), brightStrip);
+        rightCard.position.set(10, 3.0, -1);
+        rightCard.rotation.y = -Math.PI / 2;
+        envScene.add(rightCard);
+
+        // Dark horizon floor for rich metal contrast
+        const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), deepShadow);
+        floor.position.set(0, -6.5, 0);
+        floor.rotation.x = -Math.PI / 2;
+        envScene.add(floor);
+
+        const envRT = pmrem.fromScene(envScene, 0.04);
+        pmrem.dispose();
+        return envRT.texture;
+      }
+
+      scene.environment = createCommercialStudioEnvMap();
+
+      // Balanced Commercial Lighting (zero overexposure!)
+      const hemiLight = new THREE.HemisphereLight(0xf2f5fa, 0x4b515c, 0.55);
+      scene.add(hemiLight);
+
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.05);
+      keyLight.position.set(-4.0, 9.0, 6.0);
+      scene.add(keyLight);
+
+      const rimLight = new THREE.DirectionalLight(0xdce8ff, 0.65);
+      rimLight.position.set(6.0, 4.5, -5.0);
+      scene.add(rimLight);
+
+      // 3A. Bold Diagonal 3D Particle Silk-Wave Ribbon
+      const cols = 240;
+      const rows = 92;
+      const totalPts = cols * rows;
+      const wavePositions = new Float32Array(totalPts * 3);
+      const waveUVs = new Float32Array(totalPts * 2);
+
+      let idx = 0;
+      let uvIdx = 0;
+      for (let i = 0; i < cols; i++) {
+        const u = i / (cols - 1);
+        for (let j = 0; j < rows; j++) {
+          const v = j / (rows - 1);
+          wavePositions[idx++] = (u - 0.5) * 23.0;
+          wavePositions[idx++] = (v - 0.5) * 5.8;
+          wavePositions[idx++] = 0;
+          waveUVs[uvIdx++] = u;
+          waveUVs[uvIdx++] = v;
+        }
+      }
+
+      const waveGeo = new THREE.BufferGeometry();
+      waveGeo.setAttribute('position', new THREE.BufferAttribute(wavePositions, 3));
+      waveGeo.setAttribute('aUv', new THREE.BufferAttribute(waveUVs, 2));
+
+      const waveUniforms = {
+        uTime: { value: 0 },
+        uColor: { value: new THREE.Color(isDark ? 0xebebf2 : 0x26262a) },
+        uOpacity: { value: isDark ? 0.85 : 0.72 },
+        uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 2) },
+        uMouse: { value: new THREE.Vector2(99.0, 99.0) },
+        uMouseEnergy: { value: 0.0 }
+      };
+
+      const waveMat = new THREE.ShaderMaterial({
+        uniforms: waveUniforms,
+        transparent: true,
+        depthWrite: false,
+        vertexShader: `
+          attribute vec2 aUv;
+          uniform float uTime;
+          uniform float uPixelRatio;
+          uniform vec2 uMouse;
+          uniform float uMouseEnergy;
+          varying float vAlpha;
+          varying float vShade;
+
+          void main() {
+            float u = aUv.x;
+            float v = aUv.y;
+            float vc = v - 0.5;
+            vec3 pos = position;
+
+            float flow = u * 6.8 - uTime * 0.65;
+            float flow2 = u * 3.6 - uTime * 0.38;
+            float spineY = sin(flow2) * 0.95 + cos(u * 2.4 + uTime * 0.25) * 0.45;
+
+            float twistAngle = sin(flow * 0.55) * 1.15 + cos(u * 4.2 - uTime * 0.42) * 0.55;
+            float localY = vc * 5.4;
+            float localZ = sin(flow + vc * 5.2) * 0.92 + cos(u * 9.0 - uTime * 0.75 - vc * 3.8) * 0.42;
+
+            float ct = cos(twistAngle);
+            float st = sin(twistAngle);
+            float foldedY = localY * ct - localZ * st;
+            float foldedZ = localY * st + localZ * ct;
+
+            pos.y = spineY + foldedY * 0.78;
+            pos.z = foldedZ * 0.95;
+
+            // Real-time mouse cursor 3D silk ripple & gentle magnetic swell
+            vec2 toMouse = pos.xy - uMouse;
+            float dist = length(toMouse);
+            float influence = exp(-dist * dist * 0.16);
+            float ripple = sin(dist * 2.8 - uTime * 5.2) * exp(-dist * 0.38);
+            vec2 pushDir = dist > 0.001 ? normalize(toMouse) : vec2(0.0);
+
+            float activeStrength = 0.55 + uMouseEnergy * 0.95;
+            pos.xy += pushDir * influence * 0.42 * activeStrength;
+            pos.z += (influence * 1.15 + ripple * 0.55) * activeStrength;
+
+            float vEdge = smoothstep(0.0, 0.14, v) * smoothstep(1.0, 0.86, v);
+            float uEdge = smoothstep(0.0, 0.06, u) * smoothstep(1.0, 0.94, u);
+            float crest = 0.55 + 0.45 * abs(sin(v * 3.14159265 * 2.0 + flow * 0.4));
+            float depthGlow = smoothstep(-2.4, 2.2, pos.z);
+            vShade = clamp(mix(0.42, 1.0, depthGlow) + influence * 0.35 * activeStrength, 0.0, 1.25);
+            vAlpha = vEdge * uEdge * crest;
+
+            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+            float sizeBase = mix(17.5, 29.0, depthGlow) + influence * 9.5 * activeStrength;
+            gl_PointSize = clamp((sizeBase * uPixelRatio) / -mvPosition.z, 1.7, 5.4);
+            gl_Position = projectionMatrix * mvPosition;
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 uColor;
+          uniform float uOpacity;
+          varying float vAlpha;
+          varying float vShade;
+
+          void main() {
+            float d = length(gl_PointCoord - vec2(0.5));
+            if (d > 0.5) discard;
+            float disc = smoothstep(0.5, 0.18, d);
+            gl_FragColor = vec4(uColor, clamp(disc * vAlpha * vShade * uOpacity, 0.0, 0.96));
+          }
+        `
+      });
+
+      const particleWave = new THREE.Points(waveGeo, waveMat);
+      particleWave.position.set(0.0, 0.15, -2.8);
+      particleWave.rotation.set(0.14, 0.04, -0.46);
+      scene.add(particleWave);
+
+      // 3B. COMMERCIAL-GRADE 3D MACBOOK PRO (True Silver Aluminum + Jet-Black Keyboard)
+      function createRoundedRectShape(width, height, radius) {
+        const s = new THREE.Shape();
+        const x = -width / 2;
+        const y = -height / 2;
+        s.moveTo(x + radius, y);
+        s.lineTo(x + width - radius, y);
+        s.quadraticCurveTo(x + width, y, x + width, y + radius);
+        s.lineTo(x + width, y + height - radius);
+        s.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        s.lineTo(x + radius, y + height);
+        s.quadraticCurveTo(x, y + height, x, y + height - radius);
+        s.lineTo(x, y + radius);
+        s.quadraticCurveTo(x, y, x + radius, y);
+        return s;
+      }
+
+      function createRoundedPlaneGeometry(width, height, radiusTop, radiusBottom) {
+        const s = new THREE.Shape();
+        const x = -width / 2;
+        const y = -height / 2;
+        s.moveTo(x + radiusBottom, y);
+        s.lineTo(x + width - radiusBottom, y);
+        s.quadraticCurveTo(x + width, y, x + width, y + radiusBottom);
+        s.lineTo(x + width, y + height - radiusTop);
+        s.quadraticCurveTo(x + width, y + height, x + width - radiusTop, y + height);
+        s.lineTo(x + radiusTop, y + height);
+        s.quadraticCurveTo(x, y + height, x, y + height - radiusTop);
+        s.lineTo(x, y + radiusBottom);
+        s.quadraticCurveTo(x, y, x + radiusBottom, y);
+
+        const geo = new THREE.ShapeGeometry(s, 18);
+        const pos = geo.attributes.position;
+        const uvs = new Float32Array(pos.count * 2);
+        for (let i = 0; i < pos.count; i++) {
+          uvs[i * 2] = (pos.getX(i) - x) / width;
+          uvs[i * 2 + 1] = (pos.getY(i) - y) / height;
+        }
+        geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+        return geo;
+      }
+
+      function createLidLogoTexture() {
+        const c = document.createElement('canvas');
+        c.width = 512;
+        c.height = 512;
+        const ctx = c.getContext('2d');
+        ctx.clearRect(0, 0, 512, 512);
+        ctx.save();
+        ctx.translate(256, 266);
+        ctx.scale(1.18, 1.18);
+
+        const grad = ctx.createLinearGradient(-50, -65, 50, 70);
+        grad.addColorStop(0, '#2a2e36');
+        grad.addColorStop(0.45, '#0c0d10');
+        grad.addColorStop(0.75, '#191c22');
+        grad.addColorStop(1, '#3c424d');
+        ctx.fillStyle = grad;
+
+        ctx.beginPath();
+        ctx.moveTo(0, -34);
+        ctx.bezierCurveTo(18, -42, 46, -34, 52, -8);
+        ctx.bezierCurveTo(36, 0, 34, 24, 52, 34);
+        ctx.bezierCurveTo(44, 56, 28, 72, 14, 72);
+        ctx.bezierCurveTo(6, 72, 2, 66, -4, 66);
+        ctx.bezierCurveTo(-10, 66, -15, 72, -24, 72);
+        ctx.bezierCurveTo(-40, 72, -58, 42, -58, 12);
+        ctx.bezierCurveTo(-58, -22, -36, -42, -14, -40);
+        ctx.bezierCurveTo(-6, -39, -2, -34, 0, -34);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(2, -46);
+        ctx.bezierCurveTo(2, -62, 16, -74, 28, -74);
+        ctx.bezierCurveTo(28, -58, 15, -45, 2, -46);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        const tex = new THREE.CanvasTexture(c);
+        tex.anisotropy = 8;
+        tex.encoding = THREE.sRGBEncoding;
+        return tex;
+      }
+
+      // Rich metallic silver deck with DEEP JET-BLACK anodized keyboard well & laser speaker grilles
+      function createTopDeckTexture() {
+        const c = document.createElement('canvas');
+        c.width = 1400;
+        c.height = 960;
+        const ctx = c.getContext('2d');
+
+        const deckGrad = ctx.createLinearGradient(0, 0, 0, c.height);
+        deckGrad.addColorStop(0, '#b9c0c8');
+        deckGrad.addColorStop(0.5, '#cbd1d9');
+        deckGrad.addColorStop(1, '#b6bdc6');
+        ctx.fillStyle = deckGrad;
+        ctx.fillRect(0, 0, c.width, c.height);
+
+        // Speaker grilles
+        ctx.fillStyle = 'rgba(18, 20, 24, 0.58)';
+        for (let side = 0; side < 2; side++) {
+          const sx = side === 0 ? 58 : 1258;
+          for (let r = 0; r < 34; r++) {
+            for (let col = 0; col < 8; col++) {
+              ctx.beginPath();
+              ctx.arc(sx + col * 11, 124 + r * 12, 1.7, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+        }
+
+        // Deep jet-black anodized keyboard well
+        const kx = 176, ky = 104, kw = 1048, kh = 434;
+        ctx.fillStyle = '#08090b';
+        ctx.beginPath();
+        ctx.roundRect(kx, ky, kw, kh, 16);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Force Touch Trackpad with subtle recessed metallic contrast
+        const tw = 472, th = 312, tx = (c.width - tw) / 2, ty = 576;
+        const tpGrad = ctx.createLinearGradient(tx, ty, tx + tw, ty + th);
+        tpGrad.addColorStop(0, '#aeb5be');
+        tpGrad.addColorStop(0.5, '#bcc3cc');
+        tpGrad.addColorStop(1, '#a9b0ba');
+        ctx.fillStyle = tpGrad;
+        ctx.beginPath();
+        ctx.roundRect(tx, ty, tw, th, 18);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(16, 18, 22, 0.34)';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Subtle front thumb scoop shadow
+        const scoopGrad = ctx.createLinearGradient(0, c.height - 28, 0, c.height);
+        scoopGrad.addColorStop(0, 'rgba(18,20,24,0)');
+        scoopGrad.addColorStop(1, 'rgba(18,20,24,0.34)');
+        ctx.fillStyle = scoopGrad;
+        ctx.beginPath();
+        ctx.roundRect(c.width / 2 - 120, c.height - 22, 240, 26, 12);
+        ctx.fill();
+
+        const tex = new THREE.CanvasTexture(c);
+        tex.anisotropy = 8;
+        tex.encoding = THREE.sRGBEncoding;
+        return tex;
+      }
+
+      function createContactShadowTexture() {
+        const c = document.createElement('canvas');
+        c.width = 512;
+        c.height = 512;
+        const ctx = c.getContext('2d');
+        ctx.clearRect(0, 0, 512, 512);
+
+        const g1 = ctx.createRadialGradient(256, 256, 65, 256, 256, 245);
+        g1.addColorStop(0, 'rgba(0, 0, 0, 0.36)');
+        g1.addColorStop(0.58, 'rgba(0, 0, 0, 0.14)');
+        g1.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = g1;
+        ctx.fillRect(0, 0, 512, 512);
+
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.44)';
+        ctx.filter = 'blur(14px)';
+        ctx.beginPath();
+        ctx.roundRect(96, 128, 320, 256, 28);
+        ctx.fill();
+
+        return new THREE.CanvasTexture(c);
+      }
+
+      const macbookGroup = new THREE.Group();
+      scene.add(macbookGroup);
+
+      const W = 3.56;
+      const D = 2.44;
+      const baseH = 0.098;
+      const lidH = 0.038;
+
+      // Authentic Brushed Apple Silver Aluminum PBR (rich metallic shading, never blown-out white!)
+      const silverTopMat = new THREE.MeshStandardMaterial({
+        color: 0xc9cfd8,
+        metalness: 0.84,
+        roughness: 0.24,
+        envMapIntensity: 1.05
+      });
+
+      const silverRimMat = new THREE.MeshStandardMaterial({
+        color: 0xb0b7c2,
+        metalness: 0.90,
+        roughness: 0.18,
+        envMapIntensity: 1.15
+      });
+
+      const silverUnderMat = new THREE.MeshStandardMaterial({
+        color: 0x878f9b,
+        metalness: 0.85,
+        roughness: 0.30
+      });
+
+      // True deep matte black (non-reflective so keyboard stays JET-BLACK like a real MacBook Pro!)
+      const matteBlackMat = new THREE.MeshStandardMaterial({
+        color: 0x090a0d,
+        metalness: 0.04,
+        roughness: 0.86
+      });
+
+      const keycapMat = new THREE.MeshStandardMaterial({
+        color: 0x111216,
+        metalness: 0.04,
+        roughness: 0.84
+      });
+
+      const glossyBezelMat = new THREE.MeshStandardMaterial({
+        color: 0x050608,
+        metalness: 0.12,
+        roughness: 0.14,
+        envMapIntensity: 0.55
+      });
+
+      // Lower chassis upper aluminum tier
+      const baseMainShape = createRoundedRectShape(W, D, 0.15);
+      const baseMainGeo = new THREE.ExtrudeGeometry(baseMainShape, {
+        depth: baseH * 0.68,
+        bevelEnabled: true,
+        bevelSegments: 5,
+        steps: 1,
+        bevelSize: 0.015,
+        bevelThickness: 0.015
+      });
+      baseMainGeo.rotateX(Math.PI / 2);
+      const baseMainMesh = new THREE.Mesh(baseMainGeo, [silverTopMat, silverRimMat]);
+      baseMainMesh.position.y = baseH;
+      macbookGroup.add(baseMainMesh);
+
+      // Tapered lower aluminum belly
+      const baseLowerShape = createRoundedRectShape(W - 0.14, D - 0.14, 0.13);
+      const baseLowerGeo = new THREE.ExtrudeGeometry(baseLowerShape, {
+        depth: baseH * 0.34,
+        bevelEnabled: true,
+        bevelSegments: 4,
+        steps: 1,
+        bevelSize: 0.032,
+        bevelThickness: 0.022
+      });
+      baseLowerGeo.rotateX(Math.PI / 2);
+      const baseLowerMesh = new THREE.Mesh(baseLowerGeo, [silverUnderMat, silverRimMat]);
+      baseLowerMesh.position.y = baseH * 0.34;
+      macbookGroup.add(baseLowerMesh);
+
+      // Top deck plane
+      const topDeckTex = createTopDeckTexture();
+      const topDeckPlane = new THREE.Mesh(
+        new THREE.PlaneGeometry(W - 0.06, D - 0.06),
+        new THREE.MeshStandardMaterial({
+          map: topDeckTex,
+          metalness: 0.42,
+          roughness: 0.38,
+          envMapIntensity: 0.65
+        })
+      );
+      topDeckPlane.rotation.x = -Math.PI / 2;
+      topDeckPlane.position.y = baseH + 0.0162;
+      macbookGroup.add(topDeckPlane);
+
+      // 3D Sculpted Jet-Black Keycaps
+      const keyList = [];
+      const wellW = (W - 0.06) * (1048 / 1400);
+      const wellStartX = -wellW / 2;
+      const wellStartZ = -(D - 0.06) / 2 + (D - 0.06) * (104 / 960);
+
+      const kbRows = [
+        { h: 0.115, keys: [1.3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.1] },
+        { h: 0.150, keys: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.55] },
+        { h: 0.150, keys: [1.55, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] },
+        { h: 0.150, keys: [1.8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.8] },
+        { h: 0.150, keys: [2.3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2.3] },
+        { h: 0.155, keys: [1, 1, 1, 1.3, 5.1, 1.3, 1, 1, 1, 1] }
+      ];
+
+      const rowGap = 0.022;
+      const keyGap = 0.020;
+      let zCursor = wellStartZ + 0.030;
+      for (let r = 0; r < kbRows.length; r++) {
+        const row = kbRows[r];
+        const sumUnits = row.keys.reduce(function (a, b) { return a + b; }, 0);
+        const usableW = wellW - 0.056 - keyGap * (row.keys.length - 1);
+        const unitW = usableW / sumUnits;
+        let xCursor = wellStartX + 0.028;
+        for (let k = 0; k < row.keys.length; k++) {
+          const kw = row.keys[k] * unitW;
+          keyList.push({ x: xCursor + kw / 2, z: zCursor + row.h / 2, w: kw, d: row.h });
+          xCursor += kw + keyGap;
+        }
+        zCursor += row.h + rowGap;
+      }
+
+      const keyBoxGeo = new THREE.BoxGeometry(1, 0.018, 1);
+      const keyInstanced = new THREE.InstancedMesh(keyBoxGeo, keycapMat, keyList.length);
+      const dummy = new THREE.Object3D();
+      for (let i = 0; i < keyList.length; i++) {
+        const kd = keyList[i];
+        dummy.position.set(kd.x, baseH + 0.024, kd.z);
+        dummy.scale.set(kd.w, 1, kd.d);
+        dummy.updateMatrix();
+        keyInstanced.setMatrixAt(i, dummy.matrix);
+      }
+      keyInstanced.instanceMatrix.needsUpdate = true;
+      macbookGroup.add(keyInstanced);
+
+      // Front carved metallic thumb-scoop groove
+      const scoopArcGeo = new THREE.CylinderGeometry(0.016, 0.016, 0.46, 16);
+      scoopArcGeo.rotateZ(Math.PI / 2);
+      const scoopGroove = new THREE.Mesh(scoopArcGeo, silverUnderMat);
+      scoopGroove.position.set(0, baseH + 0.002, D / 2 + 0.007);
+      macbookGroup.add(scoopGroove);
+
+      // Side CNC Ports
+      const portMat = new THREE.MeshBasicMaterial({ color: 0x0b0c0e });
+      [
+        { z: -0.62, w: 0.11, h: 0.024 },
+        { z: -0.38, w: 0.08, h: 0.022 },
+        { z: -0.22, w: 0.08, h: 0.022 },
+        { z: -0.06, w: 0.026, h: 0.026 }
+      ].forEach(function (p) {
+        const m = new THREE.Mesh(new THREE.PlaneGeometry(p.w, p.h), portMat);
+        m.rotation.y = -Math.PI / 2;
+        m.position.set(-W / 2 - 0.0158, baseH * 0.65, p.z);
+        macbookGroup.add(m);
+      });
+
+      [
+        { z: -0.58, w: 0.13, h: 0.026 },
+        { z: -0.36, w: 0.08, h: 0.022 },
+        { z: -0.14, w: 0.17, h: 0.018 }
+      ].forEach(function (p) {
+        const m = new THREE.Mesh(new THREE.PlaneGeometry(p.w, p.h), portMat);
+        m.rotation.y = Math.PI / 2;
+        m.position.set(W / 2 + 0.0158, baseH * 0.65, p.z);
+        macbookGroup.add(m);
+      });
+
+      // Dark Matte Rubber Feet (clearly visible under corners like real MacBook Pro!)
+      const footGeo = new THREE.CylinderGeometry(0.13, 0.115, 0.026, 24);
+      [
+        [-W * 0.39, -D * 0.36],
+        [W * 0.39, -D * 0.36],
+        [-W * 0.39, D * 0.36],
+        [W * 0.39, D * 0.36]
+      ].forEach(function (pos) {
+        const foot = new THREE.Mesh(footGeo, matteBlackMat);
+        foot.position.set(pos[0], -0.020, pos[1]);
+        macbookGroup.add(foot);
+      });
+
+      // Recessed Matte-Black Hinge Clutch Bar
+      const hingeClutch = new THREE.Mesh(new THREE.BoxGeometry(W * 0.74, 0.048, 0.09), matteBlackMat);
+      hingeClutch.position.set(0, baseH + 0.014, -D / 2 + 0.045);
+      macbookGroup.add(hingeClutch);
+
+      // Studio Contact Shadow
+      const shadowMat = new THREE.MeshBasicMaterial({
+        map: createContactShadowTexture(),
+        transparent: true,
+        depthWrite: false,
+        opacity: 0.82
+      });
+      const shadowPlane = new THREE.Mesh(new THREE.PlaneGeometry(W * 1.48, D * 1.48), shadowMat);
+      shadowPlane.rotation.x = -Math.PI / 2;
+      shadowPlane.position.y = -0.034;
+      macbookGroup.add(shadowPlane);
+
+      // Lid Pivot Group
+      const lidPivot = new THREE.Group();
+      lidPivot.position.set(0, baseH + 0.022, -D / 2 + 0.038);
+      macbookGroup.add(lidPivot);
+
+      const lidShape = createRoundedRectShape(W, D, 0.15);
+      const lidGeo = new THREE.ExtrudeGeometry(lidShape, {
+        depth: lidH,
+        bevelEnabled: true,
+        bevelSegments: 5,
+        steps: 1,
+        bevelSize: 0.012,
+        bevelThickness: 0.011
+      });
+      lidGeo.rotateX(Math.PI / 2);
+      const lidShell = new THREE.Mesh(lidGeo, [silverTopMat, silverRimMat]);
+      lidShell.position.set(0, lidH, D / 2 - 0.038);
+      lidPivot.add(lidShell);
+
+      // Glossy Dark Chrome Emblem on Outer Lid
+      const lidLogoPlane = new THREE.Mesh(
+        new THREE.PlaneGeometry(0.58, 0.58),
+        new THREE.MeshBasicMaterial({ map: createLidLogoTexture(), transparent: true, opacity: 0.94 })
+      );
+      lidLogoPlane.rotation.x = -Math.PI / 2;
+      lidLogoPlane.position.set(0, lidH + 0.012, D / 2 - 0.038);
+      lidPivot.add(lidLogoPlane);
+
+      // Deep Obsidian-Black Glass Bezel
+      const bezelGeo = createRoundedPlaneGeometry(W - 0.032, D - 0.032, 0.136, 0.136);
+      const innerBezel = new THREE.Mesh(bezelGeo, glossyBezelMat);
+      innerBezel.rotation.x = Math.PI / 2;
+      innerBezel.position.set(0, -0.0115, D / 2 - 0.038);
+      lidPivot.add(innerBezel);
+
+      // Live Animated Liquid Retina XDR Screen
+      const screenTexture = new THREE.CanvasTexture(fluidCanvas);
+      screenTexture.encoding = THREE.sRGBEncoding;
+      screenTexture.minFilter = THREE.LinearFilter;
+      screenTexture.magFilter = THREE.LinearFilter;
+
+      const screenW = W - 0.145;
+      const screenH = D - 0.195;
+      const screenGeo = createRoundedPlaneGeometry(screenW, screenH, 0.085, 0.024);
+      const screenMesh = new THREE.Mesh(
+        screenGeo,
+        new THREE.MeshBasicMaterial({ map: screenTexture, toneMapped: false })
+      );
+      screenMesh.rotation.x = Math.PI / 2;
+      screenMesh.position.set(0, -0.0135, D / 2 - 0.016);
+      lidPivot.add(screenMesh);
+
+      // Subtle glossy display reflection
+      const glassSheen = new THREE.Mesh(
+        screenGeo,
+        new THREE.MeshStandardMaterial({
+          color: 0xffffff,
+          metalness: 0.1,
+          roughness: 0.04,
+          transparent: true,
+          opacity: 0.045,
+          depthWrite: false
+        })
+      );
+      glassSheen.rotation.x = Math.PI / 2;
+      glassSheen.position.set(0, -0.0143, D / 2 - 0.016);
+      lidPivot.add(glassSheen);
+
+      // Authentic Rounded-Bottom Camera Notch
+      const notchGeo = createRoundedPlaneGeometry(0.38, 0.092, 0.004, 0.028);
+      const notchMesh = new THREE.Mesh(notchGeo, new THREE.MeshBasicMaterial({ color: 0x050608 }));
+      notchMesh.rotation.x = Math.PI / 2;
+      notchMesh.position.set(0, -0.0155, D - 0.150);
+      lidPivot.add(notchMesh);
+
+      const camLens = new THREE.Mesh(new THREE.CircleGeometry(0.014, 16), new THREE.MeshBasicMaterial({ color: 0x16243a }));
+      camLens.rotation.x = Math.PI / 2;
+      camLens.position.set(0, -0.0162, D - 0.151);
+      lidPivot.add(camLens);
+
+      // =========================================================================
+      // 4. PRELOADER + INTRO + SCROLL CHOREOGRAPHY + ACCURATE VIEWPORT NAV SYNC
+      // =========================================================================
+      const preloader = document.getElementById('preloader');
+      const hexProgress = document.getElementById('hexProgress');
+      const topControls = document.getElementById('topControls');
+      const floatingNav = document.getElementById('floatingNav');
+      const navLinks = Array.from(floatingNav.querySelectorAll('a'));
+      const heroCopy = document.getElementById('heroCopy');
+      const heroBottomBar = document.getElementById('heroBottomBar');
+      const scrollIndicator = document.getElementById('scrollIndicator');
+      const scrollIndicatorFill = document.getElementById('scrollIndicatorFill');
+      const scrollTrack = document.getElementById('scrollTrack');
+      const replayBtn = document.getElementById('replayBtn');
+      const backToTopBtn = document.getElementById('backToTopBtn');
+
+      const HEX_LEN = 168;
+      let introState = 'preloader';
+      let introStartTime = 0;
+      let preloaderStartTime = performance.now();
+
+      let targetHeroP = 0;
+      let currentHeroP = 0;
+      let isHeroInView = true;
+
+      let mouseX = 0;
+      let mouseY = 0;
+      let smoothMouseX = 0;
+      let smoothMouseY = 0;
+      let mouseActive = false;
+      let targetMouseEnergy = 0;
+      let smoothMouseEnergy = 0;
+      let prevClientX = 0;
+      let prevClientY = 0;
+
+      window.addEventListener('mousemove', function (e) {
+        const dx = e.clientX - prevClientX;
+        const dy = e.clientY - prevClientY;
+        prevClientX = e.clientX;
+        prevClientY = e.clientY;
+        const speed = Math.min(1.0, Math.hypot(dx, dy) / 38);
+        targetMouseEnergy = Math.max(targetMouseEnergy, 0.35 + speed * 0.85);
+        mouseActive = true;
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+      });
+
+      const sectionIds = ['about', 'career', 'projects', 'capabilities', 'contact'];
+      const sectionEls = sectionIds.map(function (id) { return document.getElementById(id); });
+      const aboutEl = document.getElementById('about');
+
+      function updateScrollState() {
+        const heroMax = Math.max(1, scrollTrack.offsetHeight - window.innerHeight);
+        targetHeroP = Math.max(0, Math.min(1, window.scrollY / heroMax));
+        isHeroInView = window.scrollY < scrollTrack.offsetHeight + 120;
+
+        // Global scroll progress bar
+        const docMax = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        const docP = Math.max(0, Math.min(1, window.scrollY / docMax));
+        scrollIndicatorFill.style.height = (docP * 100).toFixed(1) + '%';
+
+        // Show floating nav ONLY once About section enters the upper viewport
+        const aboutRect = aboutEl.getBoundingClientRect();
+        if (aboutRect.top <= window.innerHeight * 0.55 && introState !== 'preloader') {
+          floatingNav.classList.add('is-visible');
+        } else {
+          floatingNav.classList.remove('is-visible');
+        }
+
+        // Viewport-relative active tab calculation (100% immune to offsetParent bugs!)
+        const triggerLine = window.innerHeight * 0.38;
+        let activeId = sectionIds[0];
+
+        // If scrolled all the way to the very bottom, activate Contact
+        if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 24) {
+          activeId = sectionIds[sectionIds.length - 1];
+        } else {
+          for (let i = 0; i < sectionEls.length; i++) {
+            const el = sectionEls[i];
+            if (el && el.getBoundingClientRect().top <= triggerLine) {
+              activeId = sectionIds[i];
+            }
+          }
+        }
+
+        navLinks.forEach(function (link) {
+          if (link.getAttribute('href') === '#' + activeId) {
+            link.classList.add('is-active');
+          } else {
+            link.classList.remove('is-active');
+          }
+        });
+      }
+
+      window.addEventListener('scroll', updateScrollState, { passive: true });
+      updateScrollState();
+
+      backToTopBtn.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      function startSequence() {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        targetHeroP = 0;
+        currentHeroP = 0;
+        introState = 'preloader';
+        preloaderStartTime = performance.now();
+        preloader.classList.remove('is-hidden');
+        topControls.classList.remove('is-visible');
+        floatingNav.classList.remove('is-visible');
+        scrollIndicator.classList.remove('is-visible');
+        heroCopy.style.opacity = '0';
+        heroBottomBar.style.opacity = '0';
+        hexProgress.style.strokeDashoffset = String(HEX_LEN);
+      }
+
+      replayBtn.addEventListener('click', startSequence);
+
+      function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
+      function easeInOutCubic(x) { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+      function clamp01(x) { return Math.max(0, Math.min(1, x)); }
+      function lerp(a, b, t) { return a + (b - a) * t; }
+
+      function getBaseCameraZ() {
+        const aspect = window.innerWidth / Math.max(1, window.innerHeight);
+        if (aspect < 0.85) return 12.6;
+        if (aspect < 1.2) return 10.6;
+        return 9.1;
+      }
+
+      window.addEventListener('resize', function () {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        waveUniforms.uPixelRatio.value = Math.min(window.devicePixelRatio || 1, 2);
+        resizeTransitionCanvas();
+        updateScrollState();
+      });
+
+      const lightWaveColor = new THREE.Color(0x26262a);
+      const darkWaveColor = new THREE.Color(0xebebf2);
+
+      // =========================================================================
+      // 5. MAIN ANIMATION LOOP (60fps)
+      //    0.00 -> 0.42: Crisp full MacBook Pro opening (headline stays visible!)
+      //    0.42 -> 0.62: Proud open-MacBook hero showcase hold
+      //    0.62 -> 0.98: Smooth zoom straight into the glowing ink-cloud screen
+      //    Immediately followed by #about with ZERO blank void!
+      // =========================================================================
+      let lastTime = performance.now();
+      let elapsed = 0;
+
+      function animate(now) {
+        requestAnimationFrame(animate);
+        const dt = Math.min(0.05, (now - lastTime) / 1000);
+        lastTime = now;
+        elapsed += dt;
+
+        if (introState === 'preloader') {
+          const pElapsed = (now - preloaderStartTime) / 1000;
+          const loadProg = clamp01(pElapsed / 1.75);
+          hexProgress.style.strokeDashoffset = String(HEX_LEN * (1 - easeInOutCubic(loadProg)));
+
+          if (pElapsed >= 2.05) {
+            preloader.classList.add('is-hidden');
+            introState = 'entering';
+            introStartTime = now;
+            topControls.classList.add('is-visible');
+            scrollIndicator.classList.add('is-visible');
+            updateScrollState();
+          }
+        }
+
+        if (!isHeroInView && introState === 'ready') return;
+
+        drawInkFluid(elapsed);
+        screenTexture.needsUpdate = true;
+
+        const targetWaveCol = isDark ? darkWaveColor : lightWaveColor;
+        waveUniforms.uColor.value.lerp(targetWaveCol, 0.08);
+        const targetWaveOpacity = isDark ? 0.86 : 0.72;
+        shadowMat.opacity = lerp(shadowMat.opacity, isDark ? 0.42 : 0.82, 0.08);
+        waveUniforms.uTime.value = elapsed;
+
+        smoothMouseX = lerp(smoothMouseX, mouseX, 0.075);
+        smoothMouseY = lerp(smoothMouseY, mouseY, 0.075);
+        targetMouseEnergy = Math.max(0.0, targetMouseEnergy - dt * 1.4);
+        smoothMouseEnergy = lerp(smoothMouseEnergy, targetMouseEnergy, 0.10);
+        currentHeroP = lerp(currentHeroP, targetHeroP, 0.12);
+
+        // Automatic intro sequence (independent of scroll!):
+        // 0.0s -> 1.15s: MacBook sweeps in from sleek 3/4 angle to front center
+        // 0.45s -> 1.85s: MacBook lid automatically opens all the way on its own!
+        let introElapsed = 0;
+        if (introState === 'entering') {
+          introElapsed = (now - introStartTime) / 1000;
+          if (introElapsed >= 2.0) introState = 'ready';
+        } else if (introState === 'ready') {
+          introElapsed = 2.0;
+        }
+
+        const enterT = easeOutCubic(clamp01(introElapsed / 1.15));
+        const autoOpenP = easeInOutCubic(clamp01((introElapsed - 0.42) / 1.38));
+
+        // Scroll drives zoom straight into the open MacBook screen -> About Me!
+        const zoomP = easeInOutCubic(clamp01((currentHeroP - 0.08) / 0.86));
+        const fluidInP = easeInOutCubic(clamp01((currentHeroP - 0.68) / 0.28));
+
+        // Lid opens automatically to ~93 deg upright facing viewer, stays open regardless of scroll
+        lidPivot.rotation.x = -autoOpenP * (Math.PI * 0.515);
+
+        const parallaxWeight = (1 - zoomP) * enterT;
+        const macY = lerp(-1.42, -1.32, autoOpenP);
+        macbookGroup.position.set(
+          smoothMouseX * 0.11 * parallaxWeight,
+          macY + smoothMouseY * -0.04 * parallaxWeight,
+          0
+        );
+        macbookGroup.rotation.set(
+          lerp(0.16, 0.11, autoOpenP) + smoothMouseY * 0.055 * parallaxWeight,
+          lerp(-0.56, 0, enterT) + smoothMouseX * 0.12 * parallaxWeight,
+          lerp(-0.05, 0, enterT) - smoothMouseX * 0.02 * parallaxWeight
+        );
+
+        // Project mouse cursor onto the diagonal 3D wave's local plane for accurate real-time ripples!
+        const baseZ = getBaseCameraZ();
+        if (mouseActive) {
+          const waveDist = baseZ - particleWave.position.z;
+          const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5)) * waveDist;
+          const halfW = halfH * camera.aspect;
+          const worldMX = smoothMouseX * halfW - particleWave.position.x;
+          const worldMY = -smoothMouseY * halfH - particleWave.position.y;
+          const invAngle = -particleWave.rotation.z;
+          const cA = Math.cos(invAngle);
+          const sA = Math.sin(invAngle);
+          waveUniforms.uMouse.value.set(
+            worldMX * cA - worldMY * sA,
+            worldMX * sA + worldMY * cA
+          );
+          waveUniforms.uMouseEnergy.value = smoothMouseEnergy * (1 - zoomP);
+        }
+
+        particleWave.position.x = -smoothMouseX * 0.34 * parallaxWeight;
+        particleWave.position.y = 0.15 + smoothMouseY * 0.22 * parallaxWeight;
+        particleWave.rotation.x = 0.14 + smoothMouseY * 0.08 * parallaxWeight;
+        particleWave.rotation.y = 0.04 + smoothMouseX * 0.09 * parallaxWeight;
+        waveUniforms.uOpacity.value = lerp(waveUniforms.uOpacity.value, targetWaveOpacity * (1 - zoomP * 0.9), 0.12);
+
+        // Camera framing: eye-level Apple product perspective, then zooms straight into screen on scroll
+        const screenCenterY = macY + baseH + 0.022 + (D / 2 - 0.016);
+        const openCamY = lerp(0.42, 0.22, autoOpenP);
+        const openLookY = lerp(-0.08, -0.02, autoOpenP);
+
+        const camZ = lerp(baseZ, 1.52, zoomP);
+        const camY = lerp(openCamY, screenCenterY + 0.02, zoomP);
+        const lookY = lerp(openLookY, screenCenterY + 0.02, zoomP);
+
+        camera.position.set(0, camY, camZ);
+        camera.lookAt(0, lookY, -D / 2 + 0.038);
+
+        // Hero headline fades in smoothly with the opening MacBook, fades out cleanly on scroll zoom
+        const introCopyFade = easeOutCubic(clamp01((introElapsed - 0.35) / 0.75));
+        const zoomCopyFade = 1 - clamp01((currentHeroP - 0.10) / 0.28);
+        const copyOpacity = introCopyFade * zoomCopyFade;
+
+        heroCopy.style.opacity = copyOpacity.toFixed(3);
+        heroCopy.style.transform = `translate(-50%, ${lerp(18, 0, introCopyFade) - zoomP * 34}px)`;
+        heroBottomBar.style.opacity = (introCopyFade * (1 - clamp01((currentHeroP - 0.08) / 0.22))).toFixed(3);
+
+        // Fullscreen glowing ink-cloud transition (stays vibrant right up to #about — ZERO blank void!)
+        transitionCanvas.style.opacity = fluidInP.toFixed(3);
+        if (fluidInP > 0.005) {
+          const scale = lerp(1.06, 1.0, fluidInP);
+          transitionCanvas.style.transform = `scale(${scale.toFixed(4)})`;
+          tCtx.clearRect(0, 0, transitionCanvas.width, transitionCanvas.height);
+          tCtx.drawImage(fluidCanvas, 0, 0, transitionCanvas.width, transitionCanvas.height);
+        }
+
+        renderer.render(scene, camera);
+      }
+
+      requestAnimationFrame(animate);
+    })();
+  </script>
+</body>
+</html>

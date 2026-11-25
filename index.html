@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YU-SEOK JUNG · PORTFOLIO · 2026</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="preload" href="/studio.hdr" as="fetch" crossorigin />
+  <link rel="preload" href="/macbook.glb" as="fetch" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    :root {
+      --bg: #f6f6f2;
+      --surface: #ffffff;
+      --surface-subtle: #efefea;
+      --text: #161618;
+      --text-secondary: #48484f;
+      --muted: #86868b;
+      --border: rgba(22, 22, 24, 0.11);
+      --border-strong: rgba(22, 22, 24, 0.22);
+      --pill-bg: rgba(22, 22, 24, 0.05);
+      --pill-hover: rgba(22, 22, 24, 0.11);
+      --accent: #1d3557;
+      --accent-soft: rgba(29, 53, 87, 0.08);
+      --modal-backdrop: rgba(16, 16, 18, 0.56);
+      --theme-transition: 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg: #151517;
+      --surface: #1d1d21;
+      --surface-subtle: #232328;
+      --text: #f3f3ef;
+      --text-secondary: #b9b9c2;
+      --muted: #8a8a92;
+      --border: rgba(243, 243, 239, 0.12);
+      --border-strong: rgba(243, 243, 239, 0.24);
+      --pill-bg: rgba(243, 243, 239, 0.08);
+      --pill-hover: rgba(243, 243, 239, 0.16);
+      --accent: #8cb4e8;
+      --accent-soft: rgba(140, 180, 232, 0.13);
+      --modal-backdrop: rgba(0, 0, 0, 0.74);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color var(--theme-transition), color var(--theme-transition);
+      scroll-behavior: smooth;
+      overflow-x: clip;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background-color var(--theme-transition), color var(--theme-transition);
+      overflow-x: clip;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    /* Preloader Splash Screen (00:00 - 00:03) */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background-color: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.42s ease, background-color var(--theme-transition);
+    }
+
+    #preloader.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .preloader-mark {
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: scale(1);
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+    }
+
+    #preloader.is-hidden .preloader-mark {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+
+    .hex-track {
+      fill: none;
+      stroke: var(--text);
+      stroke-opacity: 0.14;
+      stroke-width: 1.8;
+    }
+
+    .hex-progress {
+      fill: none;
+      stroke: var(--text);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 168;
+      stroke-dashoffset: 168;
+      transition: stroke-dashoffset 0.08s linear;
+    }
+
+    .hex-inner {
+      fill: var(--text);
+      opacity: 0.88;
+    }
+
+    .preloader-footer {
+      position: absolute;
+      bottom: 34px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    /* Floating Section Navigation Pill */
+    .floating-nav {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translate(-50%, -14px);
+      z-index: 115;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface) 84%, transparent);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), background-color var(--theme-transition);
+    }
+
+    .floating-nav.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+      pointer-events: auto;
+    }
+
+    .floating-nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 999px;
+      transition: color 0.2s ease, background-color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .floating-nav a:hover {
+      color: var(--text);
+    }
+
+    .floating-nav a.is-active {
+      color: var(--bg);
+      background: var(--text);
+      font-weight: 600;
+    }
+
+    /* Top-right minimal controls */
+    .top-controls {
+      position: fixed;
+      top: 18px;
+      right: 24px;
+      z-index: 120;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .top-controls.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .icon-btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: color-mix(in srgb, var(--surface) 76%, transparent);
+      color: var(--text);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 999px;
+      height: 34px;
+      padding: 0 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      background: var(--pill-hover);
+      transform: translateY(-1px);
+    }
+
+    .icon-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ===================================================================== */
+    /* HERO 3D SCROLL STAGE (MacBook Pro + Diagonal Silk Wave + Zoom Intro)  */
+    /* ===================================================================== */
+    .scroll-track {
+      position: relative;
+      height: 210vh;
+      height: 210dvh;
+      width: 100%;
+    }
+
+    .sticky-stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      height: 100dvh;
+      width: 100%;
+      overflow: hidden;
+      background-color: var(--bg);
+      transition: background-color var(--theme-transition);
+    }
+
+    #webgl-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 2;
+    }
+
+    .hero-copy {
+      position: absolute;
+      top: clamp(46px, 7.5vh, 80px);
+      left: 50%;
+      transform: translate(-50%, 16px);
+      z-index: 10;
+      text-align: center;
+      width: min(92vw, 820px);
+      pointer-events: none;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    .hero-copy h1 {
+      font-size: clamp(25px, 3.5vw, 48px);
+      font-weight: 700;
+      line-height: 1.24;
+      letter-spacing: -0.035em;
+      color: var(--text);
+      transition: color var(--theme-transition);
+      word-break: keep-all;
+    }
+
+    .hero-bottom-bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 26px;
+      padding: 0 clamp(20px, 3.5vw, 44px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0;
+      will-change: opacity;
+    }
+
+    .micro-label {
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color var(--theme-transition);
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .scroll-arrow {
+      display: inline-block;
+      animation: floatDown 2s ease-in-out infinite;
+    }
+
+    @keyframes floatDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(3px); }
+    }
+
+    #fluid-transition-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 25;
+      pointer-events: none;
+      opacity: 0;
+      will-change: opacity, transform;
+    }
+
+    /* ===================================================================== */
+    /* PORTFOLIO MAIN CONTENT (Zero Blank Gap — Immediate Seamless Reveal!)  */
+    /* ===================================================================== */
+    .portfolio-main {
+      position: relative;
+      z-index: 40;
+      background-color: var(--bg);
+      transition: background-color var(--theme-transition);
+    }
+
+    .section-wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: clamp(72px, 9.5vh, 112px) clamp(20px, 5vw, 64px);
+      scroll-margin-top: 24px;
+    }
+
+    #about.section-wrap {
+      padding-top: clamp(78px, 10vh, 108px);
+    }
+
+    .section-divider {
+      border-top: 1px solid var(--border);
+    }
+
+    .editorial-grid {
+      display: grid;
+      grid-template-columns: minmax(170px, 240px) 1fr;
+      gap: 28px 56px;
+      align-items: start;
+    }
+
+    .section-kicker {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      position: sticky;
+      top: 86px;
+    }
+
+    .section-kicker strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      text-transform: none;
+      color: var(--text);
+    }
+
+    /* Section 1: About Me + Profile Photo */
+    .about-profile-layout {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 36px;
+      align-items: start;
+    }
+
+    .portrait-card {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .portrait-frame {
+      width: 100%;
+      aspect-ratio: 31 / 40;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface-subtle);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.06);
+    }
+
+    .portrait-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      image-rendering: auto;
+      display: block;
+    }
+
+    .portrait-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .portrait-name {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .portrait-en {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .portrait-role {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+
+    .about-lead {
+      font-size: clamp(20px, 2.2vw, 28px);
+      font-weight: 600;
+      line-height: 1.42;
+      letter-spacing: -0.028em;
+      color: var(--text);
+      word-break: keep-all;
+      margin-bottom: 20px;
+    }
+
+    .about-desc {
+      font-size: 15.5px;
+      line-height: 1.82;
+      color: var(--text-secondary);
+      word-break: keep-all;
+      margin-bottom: 28px;
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    .kpi-box {
+      padding: 18px 18px;
+      border-radius: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      transition: background-color var(--theme-transition), border-color var(--theme-transition);
+    }
+
+    .kpi-num {
+      font-size: clamp(19px, 1.9vw, 24px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .kpi-label {
+      margin-top: 6px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+      word-break: keep-all;
+    }
+
+    .skill-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .skill-pill {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--pill-bg);
+      border: 1px solid var(--border);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    /* Section 2: Career Timeline */
+    .timeline-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 12px 28px;
+      padding: 26px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .timeline-item:first-child {
+      padding-top: 0;
+    }
+
+    .timeline-item:last-child {
+      border-bottom: none;
+    }
+
+    .timeline-period {
+      font-size: 12.5px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      color: var(--muted);
+      padding-top: 3px;
+    }
+
+    .timeline-badge {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 3px 8px;
+      border-radius: 6px;
+      line-height: 1.35;
+    }
+
+    .timeline-org {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .timeline-role {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-top: 3px;
+      margin-bottom: 12px;
+    }
+
+    .timeline-points {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .timeline-points li {
+      position: relative;
+      padding-left: 14px;
+      font-size: 14.5px;
+      line-height: 1.68;
+      color: var(--text-secondary);
+      word-break: keep-all;
+    }
+
+    .timeline-points li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+
+    /* Credentials Sub-grid */
+    .credentials-grid {
+      margin-top: 36px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .cred-card {
+      padding: 20px 22px;
+      border-radius: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      transition: background-color var(--theme-transition), border-color var(--theme-transition);
+    }
+
+    .cred-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .cred-entry + .cred-entry {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .cred-title {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+
+    .cred-sub {
+      margin-top: 4px;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      word-break: keep-all;
+    }
+
+    /* Section 3: Selected Web Apps Grid */
+    .projects-intro {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
+    }
+
+    .project-card {
+      appearance: none;
+      text-align: left;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.35s ease, background-color var(--theme-transition);
+    }
+
+    .project-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--border-strong);
+      box-shadow: 0 20px 44px rgba(0, 0, 0, 0.08);
+    }
+
+    .project-visual {
+      position: relative;
+      height: 176px;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .project-visual.theme-hub {
+      background: linear-gradient(135deg, #0f1f38 0%, #1d3c63 55%, #376191 100%);
+      color: #f4f8ff;
+    }
+
+    .project-visual.theme-vent {
+      background: linear-gradient(135deg, #16242b 0%, #244554 55%, #447285 100%);
+      color: #f2f9fc;
+    }
+
+    .project-visual.theme-kiha {
+      background: linear-gradient(135deg, #1c1d26 0%, #2e344d 55%, #4b5678 100%);
+      color: #f4f5fa;
+    }
+
+    .project-visual.theme-sif {
+      background: linear-gradient(135deg, #1d1a24 0%, #372d4a 55%, #5b4c75 100%);
+      color: #f8f5fc;
+    }
+
+    .pv-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.82;
+    }
+
+    .pv-status {
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(6px);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+    }
+
+    .pv-mockup {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .pv-brand {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    .pv-domain {
+      margin-top: 4px;
+      font-size: 11px;
+      opacity: 0.72;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .pv-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.13);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .pv-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .project-body {
+      padding: 22px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: 12px;
+    }
+
+    .project-title {
+      font-size: 17.5px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .project-summary {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      word-break: keep-all;
+      flex: 1;
+    }
+
+    .project-footer {
+      margin-top: 6px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .project-tag {
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--pill-bg);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .project-cta {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Section 4: Capabilities */
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .cap-card {
+      padding: 26px 24px;
+      border-radius: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: background-color var(--theme-transition), border-color var(--theme-transition);
+    }
+
+    .cap-index {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+    }
+
+    .cap-title {
+      font-size: 16.5px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+
+    .cap-desc {
+      font-size: 14px;
+      line-height: 1.72;
+      color: var(--text-secondary);
+      word-break: keep-all;
+    }
+
+    /* Section 5: Contact */
+    .contact-panel {
+      padding: clamp(32px, 5vw, 56px);
+      border-radius: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      transition: background-color var(--theme-transition), border-color var(--theme-transition);
+    }
+
+    .contact-headline {
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.32;
+      color: var(--text);
+      word-break: keep-all;
+    }
+
+    .contact-sub {
+      font-size: 15px;
+      line-height: 1.72;
+      color: var(--text-secondary);
+      max-width: 620px;
+      word-break: keep-all;
+    }
+
+    .contact-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .btn-primary {
+      appearance: none;
+      border: none;
+      background: var(--text);
+      color: var(--bg);
+      border-radius: 999px;
+      padding: 12px 22px;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      appearance: none;
+      border: 1px solid var(--border-strong);
+      background: transparent;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--pill-bg);
+      transform: translateY(-1px);
+    }
+
+    .site-footer {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px clamp(20px, 5vw, 64px) 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 11.5px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    /* Project Detail Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: var(--modal-backdrop);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .modal-backdrop.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .modal-dialog {
+      width: min(100%, 720px);
+      max-height: 90vh;
+      max-height: 90dvh;
+      overflow-y: auto;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+      border-radius: 24px;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.28);
+      transform: translateY(18px) scale(0.98);
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), background-color var(--theme-transition);
+    }
+
+    .modal-backdrop.is-open .modal-dialog {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-banner {
+      padding: 26px 28px 24px;
+      color: #f6f8fc;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .modal-banner-kicker {
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.78;
+      margin-bottom: 6px;
+    }
+
+    .modal-banner-title {
+      font-size: clamp(20px, 2.5vw, 26px);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.25;
+    }
+
+    .modal-banner-sub {
+      margin-top: 6px;
+      font-size: 13.5px;
+      opacity: 0.86;
+    }
+
+    .modal-close {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      line-height: 1;
+      flex-shrink: 0;
+      transition: background-color 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.24);
+    }
+
+    .modal-content {
+      padding: 26px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .modal-block-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .modal-text {
+      font-size: 14.5px;
+      line-height: 1.75;
+      color: var(--text-secondary);
+      word-break: keep-all;
+    }
+
+    .modal-features {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .modal-features li {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--text);
+      word-break: keep-all;
+    }
+
+    .modal-actions {
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .modal-url-preview {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      word-break: break-all;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translate(-50%, 16px);
+      z-index: 600;
+      background: var(--text);
+      color: var(--bg);
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .toast.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .scroll-indicator {
+      position: fixed;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2px;
+      height: 72px;
+      background: var(--border);
+      border-radius: 2px;
+      z-index: 90;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .scroll-indicator.is-visible {
+      opacity: 0.7;
+    }
+
+    .scroll-indicator-fill {
+      width: 100%;
+      height: 0%;
+      background: var(--text);
+      border-radius: 2px;
+      transition: background-color var(--theme-transition);
+    }
+
+    /* Apple-style Scroll Reveal Motion */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+                  background-color var(--theme-transition),
+                  border-color 0.3s ease,
+                  box-shadow 0.35s ease;
+      transition-delay: var(--reveal-delay, 0ms), var(--reveal-delay, 0ms), 0ms, 0ms, 0ms;
+      will-change: opacity, transform;
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal.is-settled {
+      transition-delay: 0ms;
+      will-change: auto;
+    }
+
+    .project-card.reveal.is-visible:hover {
+      transform: translateY(-5px);
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color 0.3s ease,
+                  box-shadow 0.35s ease,
+                  background-color var(--theme-transition);
+      transition-delay: 0ms;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+
+    @media (max-width: 960px) {
+      .editorial-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .section-kicker {
+        position: static;
+      }
+
+      .credentials-grid,
+      .cap-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-copy {
+        top: clamp(58px, 8.5dvh, 86px);
+        width: min(90vw, 480px);
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(22px, 6vw, 32px);
+        line-height: 1.28;
+      }
+
+      .hero-bottom-bar {
+        bottom: max(18px, env(safe-area-inset-bottom));
+        padding: 0 18px;
+        gap: 8px;
+      }
+
+      .micro-label {
+        font-size: 9px;
+        letter-spacing: 0.11em;
+      }
+
+      /* Keep floating nav cleanly visible on 1 row for 375px~430px mobile */
+      .floating-nav {
+        display: flex;
+        top: max(12px, env(safe-area-inset-top));
+        gap: 2px;
+        padding: 3px;
+        max-width: calc(100vw - 16px);
+      }
+
+      .floating-nav a {
+        font-size: 11px;
+        padding: 6px 9px;
+        letter-spacing: -0.01em;
+      }
+
+      .top-controls {
+        top: max(12px, env(safe-area-inset-top));
+        right: 12px;
+        gap: 6px;
+      }
+
+      /* Avoid top overlap with floating nav once scrolled into portfolio sections */
+      .floating-nav.is-visible ~ .top-controls {
+        top: auto;
+        bottom: max(18px, env(safe-area-inset-bottom));
+        right: 14px;
+      }
+
+      .icon-btn span {
+        display: none;
+      }
+
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        justify-content: center;
+      }
+
+      .section-wrap {
+        padding: 58px 20px;
+      }
+
+      #about.section-wrap {
+        padding-top: 68px;
+      }
+
+      .about-profile-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .portrait-frame {
+        max-width: 176px;
+      }
+
+      .kpi-strip,
+      .projects-grid,
+      .modal-features {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-num {
+        white-space: normal;
+      }
+
+      .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .project-visual {
+        height: auto;
+        min-height: 158px;
+        padding: 18px;
+      }
+
+      .pv-top {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .pv-brand {
+        font-size: 20px;
+      }
+
+      .project-body {
+        padding: 18px 18px 20px;
+      }
+
+      .project-footer {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .contact-panel {
+        padding: 26px 20px;
+        border-radius: 20px;
+      }
+
+      .contact-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .contact-actions .btn-primary,
+      .contact-actions .btn-secondary {
+        justify-content: center;
+        width: 100%;
+      }
+
+      .modal-backdrop {
+        padding: 12px;
+      }
+
+      .modal-dialog {
+        border-radius: 20px;
+        max-height: 88vh;
+        max-height: 88dvh;
+      }
+
+      .modal-banner {
+        padding: 20px 18px 18px;
+      }
+
+      .modal-content {
+        padding: 20px 18px 22px;
+        gap: 18px;
+      }
+
+      .modal-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .modal-actions .btn-primary {
+        justify-content: center;
+        width: 100%;
+      }
+
+      .toast {
+        max-width: calc(100vw - 32px);
+        text-align: center;
+        font-size: 12px;
+      }
+
+      .scroll-indicator {
+        right: 6px;
+      }
+
+      .site-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 24px 20px 48px;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .floating-nav a {
+        font-size: 10.5px;
+        padding: 5px 7px;
+      }
+
+      .hero-bottom-bar {
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Preloader (00:00 - 00:03) -->
+  <div id="preloader" aria-label="Loading portfolio">
+    <div class="preloader-mark">
+      <svg viewBox="0 0 60 60" width="52" height="52" aria-hidden="true">
+        <polygon class="hex-track" points="30,4 52,17 52,43 30,56 8,43 8,17" />
+        <polygon id="hexProgress" class="hex-progress" points="30,4 52,17 52,43 30,56 8,43 8,17" />
+        <path class="hex-inner" d="M21 20h3.4l5.6 9.2L35.6 20H39l-7.4 11.9V40h-3.2v-8.1L21 20z" />
+      </svg>
+    </div>
+    <div class="preloader-footer">YU-SEOK JUNG &nbsp;·&nbsp; PORTFOLIO &nbsp;·&nbsp; 2026</div>
+  </div>
+
+  <!-- Minimal Floating Navigation (viewport-accurate active highlighting) -->
+  <nav id="floatingNav" class="floating-nav" aria-label="포트폴리오 섹션 이동">
+    <a href="#about">About</a>
+    <a href="#career">Career</a>
+    <a href="#projects">Web Apps</a>
+    <a href="#capabilities">AI DX</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <!-- Minimal Top-Right Controls -->
+  <div id="topControls" class="top-controls">
+    <button id="replayBtn" class="icon-btn" type="button" title="인트로 애니메이션 다시 보기">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+        <path d="M3 3v5h5" />
+      </svg>
+      <span>Replay</span>
+    </button>
+    <button id="themeToggleBtn" class="icon-btn" type="button" title="라이트/다크 모드 전환 (단축키: D)" aria-label="Toggle color theme">
+      <svg id="themeIconSun" viewBox="0 0 24 24" style="display:none;" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+      </svg>
+      <svg id="themeIconMoon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+      </svg>
+      <span id="themeLabel">Dark</span>
+    </button>
+  </div>
+
+  <!-- Subtle Scroll Indicator -->
+  <div id="scrollIndicator" class="scroll-indicator" aria-hidden="true">
+    <div id="scrollIndicatorFill" class="scroll-indicator-fill"></div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- HOME: 3D MACBOOK PRO & DIAGONAL WAVE INTRO STAGE                      -->
+  <!-- ===================================================================== -->
+  <section class="scroll-track" id="scrollTrack" aria-label="Intro Showcase">
+    <div class="sticky-stage">
+      <canvas id="webgl-canvas"></canvas>
+
+      <header class="hero-copy" id="heroCopy">
+        <h1>기업이 원하는 모든 상상을<br />AI로 구현하는 맞춤형 인재</h1>
+      </header>
+
+      <div class="hero-bottom-bar" id="heroBottomBar">
+        <div class="micro-label">BUILT WITH AI · CRAFTED FOR IMPACT.</div>
+        <div class="micro-label">SCROLL TO EXPLORE <span class="scroll-arrow">↓</span></div>
+      </div>
+
+      <canvas id="fluid-transition-canvas"></canvas>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- PORTFOLIO CONTENT: IMMEDIATELY FOLLOWS WITHOUT ANY BLANK VOID         -->
+  <!-- ===================================================================== -->
+  <main class="portfolio-main">
+    <!-- Section 1: About Me -->
+    <section id="about" class="section-wrap">
+      <div class="editorial-grid">
+        <div class="section-kicker reveal" style="--reveal-delay: 0ms;">
+          01 / ABOUT ME
+          <strong>프로필 &amp; 소개</strong>
+        </div>
+
+        <div class="about-profile-layout">
+          <div class="portrait-card reveal" style="--reveal-delay: 90ms;">
+            <div class="portrait-frame">
+              <img src="/profile.png" alt="정유석 프로필 사진" decoding="async" onerror="if(!this.dataset.fb){this.dataset.fb='1';this.src='/profile.jpg';}" />
+            </div>
+            <div class="portrait-meta">
+              <div class="portrait-name">정유석</div>
+              <div class="portrait-en">YU-SEOK JUNG</div>
+              <div class="portrait-role">산업안전보건(EHS) 전문가<br />AI 기반 웹앱 빌더</div>
+            </div>
+          </div>
+
+          <div>
+            <h2 class="about-lead reveal" style="--reveal-delay: 150ms;">현장의 문제를 가장 먼저 정의하고,<br />AI와 웹 기술로 작동하는 해결책까지 직접 만듭니다.</h2>
+            <p class="about-desc reveal" style="--reveal-delay: 230ms;">
+              8년 8개월간 작업환경측정과 제조업 보건관리 위탁 현장을 누비며 쌓아온 산업안전보건(EHS) 도메인 전문성에
+              생성형 AI와 최신 웹 개발 스택을 결합해 왔습니다. 복잡한 법규 검토, 수작업 기술계산, 아날로그 점검 업무를
+              실제 현장에서 즉시 쓸 수 있는 맞춤형 웹앱과 자동화 시스템으로 전환하며, 기업이 필요로 하는 어떤 과제든
+              기획부터 프로토타이핑·배포까지 끝까지 구현합니다.
+            </p>
+
+            <div class="kpi-strip">
+              <div class="kpi-box reveal" style="--reveal-delay: 120ms;">
+                <div class="kpi-num">8년 8개월+</div>
+                <div class="kpi-label">작업환경측정 · 제조업 보건관리 실무 경력</div>
+              </div>
+              <div class="kpi-box reveal" style="--reveal-delay: 210ms;">
+                <div class="kpi-num">4종+</div>
+                <div class="kpi-label">직접 기획·개발·배포한 현장 맞춤형 웹앱</div>
+              </div>
+              <div class="kpi-box reveal" style="--reveal-delay: 300ms;">
+                <div class="kpi-num">최우수상</div>
+                <div class="kpi-label">2025 안전보건공단 이사장상 · 75% 개선 성과</div>
+              </div>
+            </div>
+
+            <div class="skill-pills reveal" style="--reveal-delay: 340ms;">
+              <span class="skill-pill">React</span>
+              <span class="skill-pill">Next.js</span>
+              <span class="skill-pill">TypeScript</span>
+              <span class="skill-pill">Supabase</span>
+              <span class="skill-pill">Firebase</span>
+              <span class="skill-pill">Vercel</span>
+              <span class="skill-pill">ChatGPT · Gemini · Claude</span>
+              <span class="skill-pill">On-Premise LLM</span>
+              <span class="skill-pill">ISO 45001 선임심사원</span>
+              <span class="skill-pill">산업안전·산업위생관리기사</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Career & Credentials -->
+    <section id="career" class="section-wrap section-divider">
+      <div class="editorial-grid">
+        <div class="section-kicker reveal" style="--reveal-delay: 0ms;">
+          02 / CAREER
+          <strong>경력 및 이력</strong>
+        </div>
+
+        <div>
+          <div class="timeline-list">
+            <article class="timeline-item reveal" style="--reveal-delay: 90ms;">
+              <div>
+                <div class="timeline-period">2021.04 — 현재</div>
+                <span class="timeline-badge">재직중 · 5년 7개월+</span>
+              </div>
+              <div>
+                <div class="timeline-org">대한산업보건협회 대구지역본부</div>
+                <div class="timeline-role">보건관리국 · 과장 | 스마트 SHE 구축 및 제조업 보건관리</div>
+                <ul class="timeline-points">
+                  <li>‘HEALTH-HUB’, 산업환기 계산기, 밀폐공간·일반 위험성평가 등 실무 웹앱 4종을 AI와 협업해 직접 기획·개발하고 페이퍼리스 보건관리 전환 주도</li>
+                  <li>제지업 배합공정 생식독성물질(사붕소산나트륨)을 저유해성 ‘액체 붕사’로 대체하고 자동주입장치 공학 설계를 도입해 집중관리 대상 8개소 중 6개소(75%) 개선 완료</li>
+                  <li>기상청 API 연동 온열질환 모니터링 시스템 구축 및 최신 산업안전보건법·KOSHA Guide 기반 컴플라이언스 대응 지원</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="timeline-item reveal" style="--reveal-delay: 180ms;">
+              <div>
+                <div class="timeline-period">2025 — 2026</div>
+                <span class="timeline-badge">고용노동부 · 안전보건공단 연계</span>
+              </div>
+              <div>
+                <div class="timeline-org">고용노동부 · 안전보건공단 연계 밀폐공간(맨홀) 안전관리</div>
+                <div class="timeline-role">맨홀작업 안전지킴이 · 안전조치 검토 전문가</div>
+                <ul class="timeline-points">
+                  <li>2025~2026년 하절기 질식사고 고위험군인 밀폐공간(맨홀) 작업 현장 밀착 점검 및 전문 기술지도 수행</li>
+                  <li>작업 전 산소·유해가스 농도 측정(적정공기 평가), 환기팬 가동, 공기호흡기 비치, 감시인 배치 등 필수 안전조치 및 안전작업허가(PTW) 현장 검증으로 중대재해 사전 차단</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="timeline-item reveal" style="--reveal-delay: 270ms;">
+              <div>
+                <div class="timeline-period">2026.06</div>
+                <span class="timeline-badge">대외 자문</span>
+              </div>
+              <div>
+                <div class="timeline-org">대구경북 제지업 협의체</div>
+                <div class="timeline-role">자문위원 | 민관 합동 산업재해 예방 네트워크</div>
+                <ul class="timeline-points">
+                  <li>고용노동부·안전보건공단 및 지역 주요 제지업체 안전보건관리자들과 산업재해 예방 대책 및 법령 개정 대응방안 논의</li>
+                  <li>생식독성물질 대체 및 국소배기장치 설치 등 공학적 개선 우수사례를 동종 업계에 확산</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="timeline-item reveal" style="--reveal-delay: 360ms;">
+              <div>
+                <div class="timeline-period">2018.01 — 2021.03</div>
+                <span class="timeline-badge">3년 3개월</span>
+              </div>
+              <div>
+                <div class="timeline-org">대한산업보건협회 광주지역본부</div>
+                <div class="timeline-role">환경위생팀 · 대리 | 작업환경측정 및 공학적 노출 저감</div>
+                <ul class="timeline-points">
+                  <li>광주·전남 제조 사업장 대상 화학물질·소음·분진 등 유해인자 작업환경측정 및 정량적 노출 수준 평가 수행</li>
+                  <li>국소배기장치 제어풍속·환기 효율 검증 및 노출 기준 초과 공정 원인 분석, 맞춤형 보호구 선정·노출 저감 대책 기술지도</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+
+          <div class="credentials-grid">
+            <div class="cred-card reveal" style="--reveal-delay: 90ms;">
+              <div class="cred-label">Education &amp; Research</div>
+              <div class="cred-entry">
+                <div class="cred-title">한성대학교 대학원 석사과정</div>
+                <div class="cred-sub">산업위생공학전공 (2025.03 – 2027.02 예정)<br />혈중 납 농도(BEI) 특수건강진단 연구 · 2026 교내 학술대회 발표</div>
+              </div>
+              <div class="cred-entry">
+                <div class="cred-title">대구한의대학교 학사 졸업</div>
+                <div class="cred-sub">산업안전보건전공 (2012.03 – 2018.02)</div>
+              </div>
+            </div>
+
+            <div class="cred-card reveal" style="--reveal-delay: 180ms;">
+              <div class="cred-label">Award</div>
+              <div class="cred-entry">
+                <div class="cred-title">한국산업안전보건공단 이사장상</div>
+                <div class="cred-sub">2025년 보건관리전문기관 우수사례 발표대회 최우수상 (2025.07)<br />생식독성물질 대체·자동주입장치 공학적 개선 모델 확산 및 기관평가 S등급 기여</div>
+              </div>
+            </div>
+
+            <div class="cred-card reveal" style="--reveal-delay: 270ms;">
+              <div class="cred-label">Certifications</div>
+              <div class="cred-entry">
+                <div class="cred-title">ISO 45001:2018 심사원 / 선임심사원</div>
+                <div class="cred-sub">GPC 글로벌 인증 자격 취득 · 40시간 교육 수료 (2025.09)</div>
+              </div>
+              <div class="cred-entry">
+                <div class="cred-title">산업위생관리기사 · 산업안전기사</div>
+                <div class="cred-sub">한국산업인력공단 국가기술자격 (2017)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Selected Web Apps -->
+    <section id="projects" class="section-wrap section-divider">
+      <div class="editorial-grid">
+        <div class="section-kicker reveal" style="--reveal-delay: 0ms;">
+          03 / WEB APPS
+          <strong>직접 구현한 웹앱</strong>
+        </div>
+
+        <div>
+          <p class="projects-intro reveal" style="--reveal-delay: 90ms;">
+            현장의 반복적인 비효율을 해결하기 위해 생성형 AI와 협업하여 직접 기획·개발·배포한 4종의 실무 웹앱입니다.
+            각 카드를 클릭하면 개발 배경과 핵심 기능을 확인하고 <strong>Live Demo</strong>로 바로 실행해 보실 수 있습니다.
+          </p>
+
+          <div class="projects-grid" id="projectsGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: AI DX Capabilities -->
+    <section id="capabilities" class="section-wrap section-divider">
+      <div class="editorial-grid">
+        <div class="section-kicker reveal" style="--reveal-delay: 0ms;">
+          04 / AI DX
+          <strong>문제 해결 방식</strong>
+        </div>
+
+        <div class="cap-grid">
+          <div class="cap-card reveal" style="--reveal-delay: 90ms;">
+            <div class="cap-index">01 · SECURITY-FIRST AI</div>
+            <h3 class="cap-title">온프레미스 EHS LLM 설계</h3>
+            <p class="cap-desc">
+              기업 보안을 최우선으로 고려해 로컬 환경(VRAM 6GB 제한)에서 외부 유출 없이 구동되는
+              산업안전보건 전용 LLM 프로토타입을 설계했습니다. 방대한 산안법·KOSHA Guide 교차 검증 시간을 획기적으로 단축합니다.
+            </p>
+          </div>
+
+          <div class="cap-card reveal" style="--reveal-delay: 180ms;">
+            <div class="cap-index">02 · RAPID CUSTOM BUILD</div>
+            <h3 class="cap-title">현장 맞춤형 웹앱 풀스택 구현</h3>
+            <p class="cap-desc">
+              React, Next.js, TypeScript와 Firebase·Supabase·Vercel을 AI 코딩 워크플로우와 결합해
+              기업의 요구사항을 문서에 머무르지 않고 즉시 동작하는 웹앱·대시보드·자동화 도구로 빠르게 구현합니다.
+            </p>
+          </div>
+
+          <div class="cap-card reveal" style="--reveal-delay: 270ms;">
+            <div class="cap-index">03 · FIELD ADOPTION</div>
+            <h3 class="cap-title">실무 정착과 시청각 교육 혁신</h3>
+            <p class="cap-desc">
+              QR 스마트 스티커를 전국 고객사에 도입하고, Google Vids·Hailuo AI 등으로 맞춤형 안전보건 시청각 교육 콘텐츠를 제작합니다.
+              팀원들에게 AI 활용법을 전파해 조직 전체의 디지털 실행력을 끌어올립니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Contact -->
+    <section id="contact" class="section-wrap section-divider">
+      <div class="editorial-grid">
+        <div class="section-kicker reveal" style="--reveal-delay: 0ms;">
+          05 / CONTACT
+          <strong>협업 및 연락</strong>
+        </div>
+
+        <div class="contact-panel reveal" style="--reveal-delay: 100ms;">
+          <h2 class="contact-headline">기업이 원하는 어떤 현장 과제든<br />AI와 맞춤형 웹앱으로 함께 해결합니다.</h2>
+          <p class="contact-sub">
+            안전보건 디지털 전환(DX), 현장 맞춤형 웹앱 구축, AI 기반 업무 자동화 및 채용·협업 제안은
+            아래 이메일로 편하게 연락해 주세요.
+          </p>
+          <div class="contact-actions">
+            <button id="copyEmailBtn" class="btn-primary" type="button">
+              <span>yusuk1548@gmail.com 복사</span>
+            </button>
+            <a class="btn-secondary" href="https://youtu.be/2khffYZldyA" target="_blank" rel="noopener noreferrer">
+              <span>포트폴리오 영상 (YouTube) ↗</span>
+            </a>
+            <button id="backToTopBtn" class="btn-secondary" type="button">
+              <span>↑ 3D 인트로로 돌아가기</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer reveal" style="--reveal-delay: 80ms;">
+      <div>© 2026 YU-SEOK JUNG. ALL RIGHTS RESERVED.</div>
+      <div>BUILT WITH AI · CRAFTED FOR IMPACT.</div>
+    </footer>
+  </main>
+
+  <!-- Project Detail Modal -->
+  <div id="projectModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-dialog">
+      <div id="modalBanner" class="modal-banner theme-hub">
+        <div>
+          <div id="modalKicker" class="modal-banner-kicker"></div>
+          <h3 id="modalTitle" class="modal-banner-title"></h3>
+          <div id="modalSubtitle" class="modal-banner-sub"></div>
+        </div>
+        <button id="modalCloseBtn" class="modal-close" type="button" aria-label="닫기">×</button>
+      </div>
+
+      <div class="modal-content">
+        <div>
+          <div class="modal-block-label">기획 배경 및 해결한 문제</div>
+          <p id="modalProblem" class="modal-text"></p>
+        </div>
+
+        <div>
+          <div class="modal-block-label">AI 활용 및 구현 방식</div>
+          <p id="modalSolution" class="modal-text"></p>
+        </div>
+
+        <div>
+          <div class="modal-block-label">핵심 기능</div>
+          <ul id="modalFeatures" class="modal-features"></ul>
+        </div>
+
+        <div>
+          <div class="modal-block-label">적용 기술 스택</div>
+          <div id="modalStack" class="skill-pills"></div>
+        </div>
+
+        <div class="modal-actions">
+          <span id="modalUrlText" class="modal-url-preview"></span>
+          <a id="modalLiveLink" class="btn-primary" href="https://health-hub-workspace.vercel.app" target="_blank" rel="noopener noreferrer">
+            <span>Live Demo 새 탭에서 열기 ↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
