@@ -271,17 +271,29 @@ if (window.matchMedia) {
 }
 
 // =========================================================================
-// 2. APPLE-STYLE HIGH-RES (1280x800) "AI × EHS" PORTAL RING SCREEN CANVAS
-//    Matches page background (#f6f6f2 / #151517) seamlessly for zero-seam zoom
+// 2. APPLE-STYLE 2K (2048x1280) TITANIUM & SAPPHIRE GLASS "AI × EHS" PORTAL
+//    - Continuous createConicGradient sweep (0% dotted artifacts!)
+//    - Multi-layer recessed 3D depth + layered mouse/touch parallax
+//    - Matches var(--bg) (#f6f6f2 / #151517) 1:1 for seamless vector handoff
 // =========================================================================
 const portalCanvas = document.createElement('canvas');
-portalCanvas.width = 1280;
-portalCanvas.height = 800;
+portalCanvas.width = 2048;
+portalCanvas.height = 1280;
 const pCtx = portalCanvas.getContext('2d');
 
 // Physical MacBook Pro 14" display aspect ratio is 30.076 / 19.32 = 1.5567,
-// while canvas is 1280 / 800 = 1.60 -> subtle X scale keeps the ring a 100% true circle in 3D
-const SCREEN_ASPECT_COMP = (1280 / 800) / 1.5567;
+// while canvas is 2048 / 1280 = 1.60 -> subtle X scale keeps the ring a 100% true circle in 3D
+const SCREEN_ASPECT_COMP = (2048 / 1280) / 1.5567;
+const CANVAS_RING_RADIUS = 350; // 350 / 1280 = 0.2734375 of display height
+
+// 4K Vector Baton-Pass Overlay DOM refs
+const portalVectorOverlay = document.getElementById('portal-vector-overlay');
+const portalVectorStage = document.getElementById('portalVectorStage');
+const portalVectorLabel = document.getElementById('portalVectorLabel');
+const pvLayerOuter = document.getElementById('pvLayerOuter');
+const pvLayerMain = document.getElementById('pvLayerMain');
+const pvLayerInner = document.getElementById('pvLayerInner');
+const pvSweepGroup = document.getElementById('pvSweepGroup');
 
 let themeBlend = isDark ? 1 : 0;
 
@@ -298,188 +310,220 @@ function mixRgba(c1, c2, t, a1, a2) {
   return `rgba(${mixChan(c1[0], c2[0], t)}, ${mixChan(c1[1], c2[1], t)}, ${mixChan(c1[2], c2[2], t)}, ${a.toFixed(4)})`;
 }
 
-const LIGHT_BG = [246, 246, 242]; // #f6f6f2 (matches :root --bg)
-const DARK_BG = [21, 21, 23];     // #151517 (matches [data-theme="dark"] --bg)
-const LIGHT_RING = [15, 31, 56];  // #0f1f38 deep Apple navy
-const DARK_RING = [232, 238, 248]; // #e8eef8 crisp silver-ice
-const LIGHT_RING_HI = [38, 69, 114];
+const LIGHT_BG = [246, 246, 242];    // #f6f6f2 (:root --bg)
+const DARK_BG = [21, 21, 23];        // #151517 ([data-theme="dark"] --bg)
+const LIGHT_RING_HI = [37, 69, 117]; // #254575 brushed titanium highlight
 const DARK_RING_HI = [255, 255, 255];
-const LIGHT_RING_LO = [8, 18, 36];
-const DARK_RING_LO = [174, 192, 218];
-const LIGHT_ACCENT = [54, 96, 152];
-const DARK_ACCENT = [140, 180, 232];
+const LIGHT_RING = [15, 31, 56];     // #0f1f38 deep Apple navy-titanium
+const DARK_RING = [220, 229, 244];   // #dce5f4 silver-titanium
+const LIGHT_RING_LO = [6, 16, 32];   // #061020 deep chamfer shadow
+const DARK_RING_LO = [150, 173, 201];
+const LIGHT_ACCENT = [54, 96, 152];  // #366098
+const DARK_ACCENT = [140, 180, 232]; // #8cb4e8
 
-function drawPortalScreen(t, mx = 0, my = 0, expandP = 0) {
+function drawPortalScreen(t, mx = 0, my = 0, contentAlpha = 1, parallaxDamp = 1) {
   const w = portalCanvas.width;
   const h = portalCanvas.height;
   const tb = themeBlend;
 
-  // 1) Pure theme-matched background (1:1 identical to var(--bg) so perimeter is seamless)
+  // 1) Pure theme-matched background (1:1 identical to var(--bg))
   pCtx.globalCompositeOperation = 'source-over';
   pCtx.globalAlpha = 1;
   pCtx.fillStyle = mixRgb(LIGHT_BG, DARK_BG, tb);
   pCtx.fillRect(0, 0, w, h);
 
-  // Portal fade-out as camera flies through the ring into #about
-  const portalAlpha = Math.max(0, 1 - Math.pow(expandP, 1.35));
-  if (portalAlpha <= 0.002) return;
+  if (contentAlpha <= 0.002) return;
 
-  const parallaxFade = 1 - expandP;
-  const ringShiftX = mx * 16 * parallaxFade;
-  const ringShiftY = my * 11 * parallaxFade;
-  const textShiftX = mx * 24 * parallaxFade;
-  const textShiftY = my * 16 * parallaxFade;
+  const R = CANVAS_RING_RADIUS;
+  const ringW = R * 0.0955; // ~33.4px (exact match to SVG 21/220)
+  const pScale = parallaxDamp; // unified parallax damping matched with 4K vector overlay
 
-  const cx = w * 0.5 + ringShiftX;
-  const cy = h * 0.5 + ringShiftY;
+  // Multi-layer depth parallax offsets (outer 0.55x, main 1.0x, inner 1.18x, text 1.55x)
+  const outX = mx * 15 * pScale;
+  const outY = my * 10 * pScale;
+  const mainX = mx * 26 * pScale;
+  const mainY = my * 18 * pScale;
+  const inX = mx * 31 * pScale;
+  const inY = my * 21 * pScale;
+  const txtX = mx * 41 * pScale;
+  const txtY = my * 28 * pScale;
 
-  const ringScale = 1 + expandP * 1.45;
-  const textScale = 1 + expandP * 0.72;
-  const baseRadius = 216 * ringScale;
-  const ringWidth = (18 + expandP * 6) * (0.92 + 0.08 * Math.sin(t * 1.1));
+  const sweepAngle = t * 0.52 - Math.PI * 0.35;
 
   pCtx.save();
-  pCtx.globalAlpha = portalAlpha;
+  pCtx.globalAlpha = contentAlpha;
 
-  // Apply aspect compensation around portal center so circles are geometrically true in 3D
-  pCtx.translate(cx, cy);
+  // --- LAYER A: Outer studio aura + frosted glass bezel + hairline guide ---
+  pCtx.save();
+  pCtx.translate(w * 0.5 + outX, h * 0.5 + outY);
   pCtx.scale(SCREEN_ASPECT_COMP, 1);
 
-  // 2) Subtle outer atmospheric aura (fades well before screen edges -> zero edge seam)
-  const auraR = baseRadius * 1.52;
-  const auraGrad = pCtx.createRadialGradient(0, 0, baseRadius * 0.74, 0, 0, auraR);
-  auraGrad.addColorStop(0, mixRgba(LIGHT_ACCENT, DARK_ACCENT, tb, 0.0, 0.0));
-  auraGrad.addColorStop(0.42, mixRgba(LIGHT_ACCENT, DARK_ACCENT, tb, 0.085, 0.13));
+  const auraR = R * 1.545;
+  const auraGrad = pCtx.createRadialGradient(0, 0, R * 0.80, 0, 0, auraR);
+  auraGrad.addColorStop(0, mixRgba(LIGHT_ACCENT, DARK_ACCENT, tb, 0, 0));
+  auraGrad.addColorStop(0.38, mixRgba(LIGHT_ACCENT, DARK_ACCENT, tb, 0.10, 0.14));
   auraGrad.addColorStop(0.72, mixRgba(LIGHT_ACCENT, DARK_ACCENT, tb, 0.03, 0.05));
-  auraGrad.addColorStop(1, mixRgba(LIGHT_ACCENT, DARK_ACCENT, tb, 0.0, 0.0));
+  auraGrad.addColorStop(1, mixRgba(LIGHT_ACCENT, DARK_ACCENT, tb, 0, 0));
   pCtx.fillStyle = auraGrad;
   pCtx.beginPath();
   pCtx.arc(0, 0, auraR, 0, Math.PI * 2);
   pCtx.fill();
 
-  // 3) Hairline precision outer & inner guide rings (Apple hardware minimalism)
-  pCtx.save();
-  pCtx.lineWidth = 1.4;
-  pCtx.strokeStyle = mixRgba(LIGHT_RING, DARK_RING, tb, 0.11, 0.14);
+  // Outer fine orbital guide
+  pCtx.lineWidth = 2.0;
+  pCtx.strokeStyle = mixRgba(LIGHT_RING, DARK_RING, tb, 0.11, 0.13);
   pCtx.beginPath();
-  pCtx.arc(0, 0, baseRadius + 30 * ringScale, 0, Math.PI * 2);
+  pCtx.arc(0, 0, R * 1.22, 0, Math.PI * 2);
   pCtx.stroke();
 
-  pCtx.lineWidth = 1.1;
-  pCtx.strokeStyle = mixRgba(LIGHT_RING, DARK_RING, tb, 0.09, 0.12);
+  // Frosted-glass outer rim ring
+  const glassGrad = pCtx.createLinearGradient(-R * 1.15, -R * 1.15, R * 1.15, R * 1.15);
+  glassGrad.addColorStop(0, mixRgba([255, 255, 255], [255, 255, 255], tb, 0.55, 0.34));
+  glassGrad.addColorStop(0.5, mixRgba(LIGHT_RING, DARK_RING, tb, 0.15, 0.18));
+  glassGrad.addColorStop(1, mixRgba(LIGHT_RING_LO, DARK_RING_LO, tb, 0.22, 0.12));
+  pCtx.lineWidth = 7.6;
+  pCtx.strokeStyle = glassGrad;
   pCtx.beginPath();
-  pCtx.arc(0, 0, baseRadius - 24 * ringScale, 0, Math.PI * 2);
-  pCtx.stroke();
-  pCtx.restore();
-
-  // 4) Main sculpted circular portal ring with soft dimensional drop shadow
-  pCtx.save();
-  pCtx.shadowColor = mixRgba([15, 31, 56], [0, 0, 0], tb, 0.20, 0.58);
-  pCtx.shadowBlur = 28;
-  pCtx.shadowOffsetX = -mx * 5 * parallaxFade;
-  pCtx.shadowOffsetY = 9 - my * 4 * parallaxFade;
-
-  const ringGrad = pCtx.createLinearGradient(-baseRadius, -baseRadius, baseRadius, baseRadius);
-  ringGrad.addColorStop(0, mixRgb(LIGHT_RING_HI, DARK_RING_HI, tb));
-  ringGrad.addColorStop(0.45, mixRgb(LIGHT_RING, DARK_RING, tb));
-  ringGrad.addColorStop(1, mixRgb(LIGHT_RING_LO, DARK_RING_LO, tb));
-
-  pCtx.strokeStyle = ringGrad;
-  pCtx.lineWidth = ringWidth;
-  pCtx.beginPath();
-  pCtx.arc(0, 0, baseRadius, 0, Math.PI * 2);
+  pCtx.arc(0, 0, R * 1.155, 0, Math.PI * 2);
   pCtx.stroke();
   pCtx.restore();
 
-  // 5) Crisp inner bevel highlight along ring rim for refined optical depth
+  // --- LAYER B: Sculpted Titanium Main Ring + Continuous Conic Studio Specular ---
   pCtx.save();
-  pCtx.strokeStyle = mixRgba([255, 255, 255], [255, 255, 255], tb, 0.24, 0.42);
-  pCtx.lineWidth = 1.6;
+  pCtx.translate(w * 0.5 + mainX, h * 0.5 + mainY);
+  pCtx.scale(SCREEN_ASPECT_COMP, 1);
+
+  // Soft studio drop shadow underneath ring
+  pCtx.save();
+  pCtx.shadowColor = mixRgba([10, 22, 42], [0, 0, 0], tb, 0.24, 0.58);
+  pCtx.shadowBlur = 42;
+  pCtx.shadowOffsetX = -mx * 8 * pScale;
+  pCtx.shadowOffsetY = 16 - my * 6 * pScale;
+
+  const metalGrad = pCtx.createLinearGradient(-R * 0.78, -R * 0.80, R * 0.78, R * 0.80);
+  metalGrad.addColorStop(0, mixRgb(LIGHT_RING_HI, DARK_RING_HI, tb));
+  metalGrad.addColorStop(0.46, mixRgb(LIGHT_RING, DARK_RING, tb));
+  metalGrad.addColorStop(1, mixRgb(LIGHT_RING_LO, DARK_RING_LO, tb));
+
+  pCtx.strokeStyle = metalGrad;
+  pCtx.lineWidth = ringW;
   pCtx.beginPath();
-  pCtx.arc(0, 0, baseRadius - ringWidth * 0.42, 0, Math.PI * 2);
+  pCtx.arc(0, 0, R, 0, Math.PI * 2);
   pCtx.stroke();
   pCtx.restore();
 
-  // 6) Slowly orbiting specular light sweep gliding smoothly along the ring perimeter
-  const sweepAngle = t * 0.52 - Math.PI * 0.35;
-  const drawSpecularSweep = (centerAngle, arcSpan, peakAlpha, widthScale) => {
-    const steps = 22;
-    pCtx.save();
-    pCtx.lineCap = 'round';
-    pCtx.shadowColor = mixRgba([148, 192, 245], [255, 255, 255], tb, 0.55, 0.85);
-    pCtx.shadowBlur = 16;
-    for (let i = 0; i < steps; i++) {
-      const f0 = i / steps;
-      const f1 = (i + 1) / steps;
-      const mid = (f0 + f1) * 0.5;
-      // Smooth bell intensity peaked at center of arc
-      const intensity = Math.sin(mid * Math.PI);
-      const alpha = peakAlpha * intensity * intensity;
-      if (alpha < 0.01) continue;
+  // Precision outer & inner metallic chamfer highlights
+  pCtx.lineWidth = 3.3;
+  pCtx.strokeStyle = mixRgba([255, 255, 255], [255, 255, 255], tb, 0.58, 0.82);
+  pCtx.beginPath();
+  pCtx.arc(0, 0, R * 1.045, 0, Math.PI * 2);
+  pCtx.stroke();
 
-      const a0 = centerAngle - arcSpan * 0.5 + f0 * arcSpan;
-      const a1 = centerAngle - arcSpan * 0.5 + f1 * arcSpan + 0.012;
-      pCtx.strokeStyle = mixRgba([186, 214, 252], [255, 255, 255], tb, alpha, alpha * 1.12);
-      pCtx.lineWidth = ringWidth * widthScale * (0.45 + 0.55 * intensity);
-      pCtx.beginPath();
-      pCtx.arc(0, 0, baseRadius, a0, a1);
-      pCtx.stroke();
-    }
-    pCtx.restore();
-  };
+  pCtx.lineWidth = 3.0;
+  pCtx.strokeStyle = mixRgba([186, 212, 248], [255, 255, 255], tb, 0.42, 0.50);
+  pCtx.beginPath();
+  pCtx.arc(0, 0, R * 0.955, 0, Math.PI * 2);
+  pCtx.stroke();
 
-  drawSpecularSweep(sweepAngle, 1.05, 0.72, 0.46);
-  drawSpecularSweep(sweepAngle + Math.PI, 0.65, 0.28, 0.32);
-
+  // 100% Continuous Conic Gradient Specular Sweep (ZERO dots, ZERO stepping!)
+  pCtx.save();
+  let sweepStyle;
+  if (typeof pCtx.createConicGradient === 'function') {
+    const cg = pCtx.createConicGradient(sweepAngle, 0, 0);
+    cg.addColorStop(0.00, mixRgba([200, 224, 255], [255, 255, 255], tb, 0.0, 0.0));
+    cg.addColorStop(0.08, mixRgba([200, 224, 255], [255, 255, 255], tb, 0.32, 0.42));
+    cg.addColorStop(0.15, mixRgba([225, 240, 255], [255, 255, 255], tb, 0.86, 0.95));
+    cg.addColorStop(0.22, mixRgba([200, 224, 255], [255, 255, 255], tb, 0.28, 0.36));
+    cg.addColorStop(0.32, mixRgba([200, 224, 255], [255, 255, 255], tb, 0.0, 0.0));
+    cg.addColorStop(0.58, mixRgba([200, 224, 255], [255, 255, 255], tb, 0.0, 0.0));
+    cg.addColorStop(0.65, mixRgba([200, 224, 255], [255, 255, 255], tb, 0.30, 0.38));
+    cg.addColorStop(0.73, mixRgba([200, 224, 255], [255, 255, 255], tb, 0.0, 0.0));
+    cg.addColorStop(1.00, mixRgba([200, 224, 255], [255, 255, 255], tb, 0.0, 0.0));
+    sweepStyle = cg;
+  } else {
+    const lg = pCtx.createLinearGradient(
+      Math.cos(sweepAngle) * R, Math.sin(sweepAngle) * R,
+      -Math.cos(sweepAngle) * R, -Math.sin(sweepAngle) * R
+    );
+    lg.addColorStop(0, mixRgba([225, 240, 255], [255, 255, 255], tb, 0.85, 0.95));
+    lg.addColorStop(0.4, mixRgba([200, 224, 255], [255, 255, 255], tb, 0, 0));
+    lg.addColorStop(1, mixRgba([200, 224, 255], [255, 255, 255], tb, 0.28, 0.36));
+    sweepStyle = lg;
+  }
+  pCtx.strokeStyle = sweepStyle;
+  pCtx.lineWidth = ringW * 0.78;
+  pCtx.beginPath();
+  pCtx.arc(0, 0, R, 0, Math.PI * 2);
+  pCtx.stroke();
+  pCtx.restore();
   pCtx.restore();
 
-  // 7) Bold crisp centered "AI × EHS" sans-serif typography with layered parallax
+  // --- LAYER C: Concave Recessed Sapphire Bowl Inner Shadow + Silver Hairline ---
   pCtx.save();
-  pCtx.globalAlpha = Math.max(0, 1 - Math.pow(expandP * 1.18, 1.35));
-  pCtx.translate(w * 0.5 + textShiftX, h * 0.5 + textShiftY);
-  pCtx.scale(SCREEN_ASPECT_COMP * textScale, textScale);
+  pCtx.translate(w * 0.5 + inX, h * 0.5 + inY);
+  pCtx.scale(SCREEN_ASPECT_COMP, 1);
 
+  const bowlR = R * 0.952;
+  const bowlGrad = pCtx.createRadialGradient(0, 0, bowlR * 0.68, 0, 0, bowlR);
+  bowlGrad.addColorStop(0, mixRgba([10, 22, 42], [0, 0, 0], tb, 0.0, 0.0));
+  bowlGrad.addColorStop(0.68, mixRgba([10, 22, 42], [0, 0, 0], tb, 0.07, 0.18));
+  bowlGrad.addColorStop(1, mixRgba([10, 22, 42], [0, 0, 0], tb, 0.18, 0.44));
+  pCtx.fillStyle = bowlGrad;
+  pCtx.beginPath();
+  pCtx.arc(0, 0, bowlR, 0, Math.PI * 2);
+  pCtx.fill();
+
+  // Recessed silver hairline ring
+  pCtx.lineWidth = 2.5;
+  pCtx.strokeStyle = mixRgba(LIGHT_RING, DARK_RING, tb, 0.24, 0.34);
+  pCtx.beginPath();
+  pCtx.arc(0, 0, R * 0.865, 0, Math.PI * 2);
+  pCtx.stroke();
+  pCtx.restore();
+
+  // --- LAYER D: Bold Crisp "AI × EHS" Typography (foreground depth parallax) ---
+  pCtx.save();
+  pCtx.translate(w * 0.5 + txtX, h * 0.5 + txtY);
+  pCtx.scale(SCREEN_ASPECT_COMP, 1);
   pCtx.textAlign = 'center';
   pCtx.textBaseline = 'middle';
 
   const fontStack = "'Pretendard', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif";
-  const fontMain = `700 66px ${fontStack}`;
-  const fontCross = `500 58px ${fontStack}`;
+  const fontMain = `700 106px ${fontStack}`;
+  const fontCross = `500 94px ${fontStack}`;
 
   pCtx.font = fontMain;
-  const aiWidth = pCtx.measureText('AI').width;
-  const ehsWidth = pCtx.measureText('EHS').width;
+  const aiW = pCtx.measureText('AI').width;
+  const ehsW = pCtx.measureText('EHS').width;
   pCtx.font = fontCross;
-  const crossWidth = pCtx.measureText('×').width;
-  const gap = 20;
-  const totalW = aiWidth + gap + crossWidth + gap + ehsWidth;
+  const crossW = pCtx.measureText('×').width;
+  const gap = 21;
+  const totalW = aiW + gap + crossW + gap + ehsW;
   let cursorX = -totalW * 0.5;
 
-  pCtx.shadowColor = mixRgba([15, 31, 56], [0, 0, 0], tb, 0.09, 0.35);
-  pCtx.shadowBlur = 12;
-  pCtx.shadowOffsetY = 3;
+  pCtx.shadowColor = mixRgba([15, 31, 56], [0, 0, 0], tb, 0.11, 0.44);
+  pCtx.shadowBlur = 18;
+  pCtx.shadowOffsetY = 5;
 
-  // "AI"
   pCtx.font = fontMain;
   pCtx.fillStyle = mixRgb(LIGHT_RING, DARK_RING, tb);
-  pCtx.fillText('AI', cursorX + aiWidth * 0.5, 2);
-  cursorX += aiWidth + gap;
+  pCtx.fillText('AI', cursorX + aiW * 0.5, 3);
+  cursorX += aiW + gap;
 
-  // "×"
   pCtx.font = fontCross;
   pCtx.fillStyle = mixRgb(LIGHT_ACCENT, DARK_ACCENT, tb);
-  pCtx.fillText('×', cursorX + crossWidth * 0.5, 0);
-  cursorX += crossWidth + gap;
+  pCtx.fillText('×', cursorX + crossW * 0.5, -1);
+  cursorX += crossW + gap;
 
-  // "EHS"
   pCtx.font = fontMain;
   pCtx.fillStyle = mixRgb(LIGHT_RING, DARK_RING, tb);
-  pCtx.fillText('EHS', cursorX + ehsWidth * 0.5, 2);
+  pCtx.fillText('EHS', cursorX + ehsW * 0.5, 3);
 
+  pCtx.restore();
   pCtx.restore();
 }
 
-drawPortalScreen(0, 0, 0, 0);
+drawPortalScreen(0, 0, 0, 1);
 
 // =========================================================================
 // 3. THREE.JS SCENE: HIGH-DETAIL MACBOOK PRO 14" + 1K STUDIO HDRI + WAVE
@@ -667,7 +711,8 @@ const waveMat = new THREE.ShaderMaterial({
 });
 
 const particleWave = new THREE.Points(waveGeo, waveMat);
-particleWave.position.set(0.0, 0.12, -2.8);
+// Push wave cleanly behind the open MacBook screen so wave crests NEVER poke through the display
+particleWave.position.set(0.0, 0.12, -3.8);
 particleWave.rotation.set(0.14, 0.04, -0.46);
 scene.add(particleWave);
 
@@ -677,9 +722,9 @@ screenTexture.colorSpace = THREE.SRGBColorSpace;
 screenTexture.minFilter = THREE.LinearMipmapLinearFilter;
 screenTexture.magFilter = THREE.LinearFilter;
 screenTexture.generateMipmaps = true;
-screenTexture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+screenTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
 // New macbook.glb display mesh ('Object_107') uses glTF UV convention (v=0 top, v=1 bottom),
-// so flipY = false renders the portal ring canvas upright and un-mirrored 1:1.
+// so flipY = false renders the 2K portal ring canvas upright and un-mirrored 1:1.
 screenTexture.flipY = false;
 
 function createContactShadowTexture() {
@@ -1111,6 +1156,11 @@ function startSequence() {
   heroCopy.style.opacity = '0';
   heroBottomBar.style.opacity = '0';
   webglCanvas.style.opacity = '1';
+  if (portalVectorOverlay) {
+    portalVectorOverlay.style.opacity = '0';
+    portalVectorOverlay.style.visibility = 'hidden';
+  }
+  particleWave.visible = true;
   hexProgress.style.strokeDashoffset = String(HEX_LEN);
   if (lidPivot) {
     lidPivot.rotation.x = LID_CLOSED_X;
@@ -1201,13 +1251,14 @@ if (window.visualViewport) {
 
 const lightWaveColor = new THREE.Color(0x26262a);
 const darkWaveColor = new THREE.Color(0xebebf2);
+const projectedCenter = new THREE.Vector3();
 
 // =========================================================================
 // 5. MAIN ANIMATION LOOP (60fps)
 //    - Snappy 0.88s preloader synced with GLB + 1K HDRI ready state
 //    - Automatic MacBook sweep-in & lid opening independent of scroll
-//    - Mouse-reactive MacBook + 3D diagonal silk wave
-//    - Smooth scroll zoom straight into the real GLB screen center -> #about
+//    - 2048x1280 titanium/sapphire portal -> 4K SVG+HTML vector baton-pass
+//    - Rapid particle wave fade-out & visible=false for 0% screen bleed-through
 // =========================================================================
 let lastTime = performance.now();
 let elapsed = 0;
@@ -1270,12 +1321,22 @@ function animate(now) {
   const enterT = easeOutCubic(clamp01(introElapsed / 1.0));
   const autoOpenP = easeInOutCubic(clamp01((introElapsed - 0.14) / 1.30));
 
-  // Scroll drives pure 3D portal zoom straight into the "AI × EHS" ring -> clean var(--bg) -> #about
-  const zoomP = easeInOutCubic(clamp01((currentHeroP - 0.06) / 0.80));
-  const portalExpandP = easeInOutCubic(clamp01((currentHeroP - 0.56) / 0.34));
-  const stageFadeOutP = easeInOutCubic(clamp01((currentHeroP - 0.76) / 0.18));
+  // Scroll choreography:
+  // 0.04 -> 0.22: Particle wave rapidly fades to 0 & visible=false (zero dots bleed onto screen!)
+  // 0.06 -> 0.68: Camera zooms cleanly into MacBook display until all 4 bezels leave viewport
+  // 0.44 -> 0.56: Pixel-matched baton-pass from 2K Canvas -> 4K Vector SVG + HTML overlay
+  // 0.62 -> 0.74: WebGL canvas dissolves seamlessly into pure var(--bg)
+  // 0.54 -> 0.92: 4K Vector ring & HTML "AI × EHS" expand smoothly & fade to 0 -> #about
+  const zoomP = easeInOutCubic(clamp01((currentHeroP - 0.06) / 0.62));
+  const handoffP = easeInOutCubic(clamp01((currentHeroP - 0.44) / 0.12));
+  const stageFadeOutP = easeInOutCubic(clamp01((currentHeroP - 0.62) / 0.12));
+  const vectorFlyP = easeInOutCubic(clamp01((currentHeroP - 0.54) / 0.38));
+  const vectorFadeOutP = easeInOutCubic(clamp01((currentHeroP - 0.72) / 0.20));
 
-  drawPortalScreen(elapsed, smoothMouseX, smoothMouseY, portalExpandP);
+  // Fade out 2K canvas ring/text cleanly during baton-pass (background stays pure var(--bg))
+  const canvasPortalAlpha = 1 - handoffP;
+  const portalParallaxDamp = 1 - zoomP;
+  drawPortalScreen(elapsed, smoothMouseX, smoothMouseY, canvasPortalAlpha, portalParallaxDamp);
   screenTexture.needsUpdate = true;
 
   // Lid smoothly opens automatically, and levels to exact 90° vertical during zoom-in
@@ -1301,9 +1362,19 @@ function animate(now) {
     lerp(-0.04, 0, enterT) - smoothMouseX * 0.018 * parallaxWeight
   );
 
-  // Project mouse cursor onto the diagonal 3D wave's local plane for real-time ripples
+  // Rapid early fade-out & complete hide of diagonal particle wave so 0 dots bleed during zoom
+  const waveZoomFade = 1 - easeOutCubic(clamp01((currentHeroP - 0.04) / 0.18));
+  const desiredWaveOp = targetWaveOpacity * waveZoomFade;
+  waveUniforms.uOpacity.value = lerp(waveUniforms.uOpacity.value, desiredWaveOp, 0.28);
+  if (desiredWaveOp <= 0.002 && waveUniforms.uOpacity.value <= 0.008) {
+    waveUniforms.uOpacity.value = 0;
+    particleWave.visible = false;
+  } else {
+    particleWave.visible = true;
+  }
+
   const baseZ = framing.baseZ;
-  if (mouseActive) {
+  if (mouseActive && particleWave.visible) {
     const waveDist = baseZ - particleWave.position.z;
     const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5)) * waveDist;
     const halfW = halfH * camera.aspect;
@@ -1316,14 +1387,15 @@ function animate(now) {
       worldMX * cA - worldMY * sA,
       worldMX * sA + worldMY * cA
     );
-    waveUniforms.uMouseEnergy.value = smoothMouseEnergy * (1 - zoomP);
+    waveUniforms.uMouseEnergy.value = smoothMouseEnergy * waveZoomFade;
   }
 
-  particleWave.position.x = -smoothMouseX * 0.34 * parallaxWeight;
-  particleWave.position.y = 0.12 + smoothMouseY * 0.22 * parallaxWeight;
-  particleWave.rotation.x = 0.14 + smoothMouseY * 0.08 * parallaxWeight;
-  particleWave.rotation.y = 0.04 + smoothMouseX * 0.09 * parallaxWeight;
-  waveUniforms.uOpacity.value = lerp(waveUniforms.uOpacity.value, targetWaveOpacity * (1 - zoomP * 0.96), 0.12);
+  if (particleWave.visible) {
+    particleWave.position.x = -smoothMouseX * 0.34 * parallaxWeight;
+    particleWave.position.y = 0.12 + smoothMouseY * 0.22 * parallaxWeight;
+    particleWave.rotation.x = 0.14 + smoothMouseY * 0.08 * parallaxWeight;
+    particleWave.rotation.y = 0.04 + smoothMouseX * 0.09 * parallaxWeight;
+  }
 
   // Compute exact world-space center of the real GLB screen mesh for dead-center portal zoom-in
   macbookGroup.updateMatrixWorld(true);
@@ -1333,19 +1405,18 @@ function animate(now) {
     screenWorldCenter.set(0, macY + 1.0, -1.0);
   }
 
-  // Camera framing: clean eye-level Apple product perspective, then flies through the portal ring center
+  // Camera framing: clean eye-level Apple product perspective, then zooms cleanly past all 4 bezels
   const openCamY = lerp(framing.openCamY + 0.12, framing.openCamY, autoOpenP);
   const openLookY = lerp(framing.openLookY - 0.06, framing.openLookY, autoOpenP);
   const openLookZ = -0.5;
 
-  // Exact bezel-clearing zoom distance for ANY aspect ratio (16:9 desktop AND 375x812 portrait mobile)
   const tanHalfFov = Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5));
   const scaledScreenW = 2.815 * framing.macScale;
   const scaledScreenH = 1.808 * framing.macScale;
   const dVertFill = scaledScreenH / (2 * tanHalfFov);
   const dHorizFill = scaledScreenW / (2 * tanHalfFov * Math.max(0.35, camera.aspect));
   const dBezelCleared = Math.min(dVertFill, dHorizFill);
-  const zoomTargetZ = screenWorldCenter.z + dBezelCleared * 0.44;
+  const zoomTargetZ = screenWorldCenter.z + dBezelCleared * 0.80;
 
   const camX = lerp(0, screenWorldCenter.x, zoomP);
   const camY = lerp(openCamY, screenWorldCenter.y, zoomP);
@@ -1357,6 +1428,60 @@ function animate(now) {
 
   camera.position.set(camX, camY, camZ);
   camera.lookAt(lookX, lookY, lookZ);
+  camera.updateMatrixWorld(true);
+
+  // --- 4K VECTOR BATON-PASS OVERLAY (sub-pixel matched to 3D MacBook ring!) ---
+  const vectorOpacity = handoffP * (1 - vectorFadeOutP);
+  if (portalVectorOverlay && portalVectorStage) {
+    if (vectorOpacity > 0.002) {
+      const { vw, vh } = getViewportSize();
+
+      // Exact 3D->2D projection of screenWorldCenter + exact pixel radius of the 3D ring
+      projectedCenter.copy(screenWorldCenter).project(camera);
+      const centerXpx = (projectedCenter.x * 0.5 + 0.5) * vw;
+      const centerYpx = (-projectedCenter.y * 0.5 + 0.5) * vh;
+
+      const camDist = Math.max(0.15, camera.position.z - screenWorldCenter.z);
+      const visibleH = 2 * camDist * tanHalfFov;
+      const ringWorldRadius = scaledScreenH * (CANVAS_RING_RADIUS / portalCanvas.height);
+      const projectedRingRadiusPx = (ringWorldRadius / visibleH) * vh;
+
+      // Vector stage base ring radius = 220px -> exact 1:1 handoff scale, then smooth 4K portal expansion
+      const matchScale = projectedRingRadiusPx / 220;
+      const flyThroughMult = 1 + vectorFlyP * 2.65;
+      const finalScale = matchScale * flyThroughMult;
+
+      portalVectorOverlay.style.visibility = 'visible';
+      portalVectorOverlay.style.opacity = vectorOpacity.toFixed(4);
+      portalVectorStage.style.left = `${centerXpx.toFixed(2)}px`;
+      portalVectorStage.style.top = `${centerYpx.toFixed(2)}px`;
+      portalVectorStage.style.transform = `translate(-50%, -50%) scale(${finalScale.toFixed(4)})`;
+
+      // Sync continuous rotating metallic highlight clock angle with 2K canvas createConicGradient
+      const sweepDeg = ((elapsed * 0.52 - Math.PI * 0.35) * 180) / Math.PI + 189;
+      if (pvSweepGroup) {
+        pvSweepGroup.setAttribute('transform', `rotate(${sweepDeg.toFixed(2)} 400 400)`);
+      }
+
+      // Unified layered parallax inside vector overlay (exact match to canvas, relaxes to 0 on zoom)
+      const vpWeight = portalParallaxDamp;
+      if (pvLayerOuter) {
+        pvLayerOuter.setAttribute('transform', `translate(${(smoothMouseX * 9.4 * vpWeight).toFixed(2)} ${(smoothMouseY * 6.3 * vpWeight).toFixed(2)})`);
+      }
+      if (pvLayerMain) {
+        pvLayerMain.setAttribute('transform', `translate(${(smoothMouseX * 16.3 * vpWeight).toFixed(2)} ${(smoothMouseY * 11.3 * vpWeight).toFixed(2)})`);
+      }
+      if (pvLayerInner) {
+        pvLayerInner.setAttribute('transform', `translate(${(smoothMouseX * 19.5 * vpWeight).toFixed(2)} ${(smoothMouseY * 13.2 * vpWeight).toFixed(2)})`);
+      }
+      if (portalVectorLabel) {
+        portalVectorLabel.style.transform = `translate(calc(-50% + ${(smoothMouseX * 25.8 * vpWeight).toFixed(2)}px), calc(-50% + ${(smoothMouseY * 17.6 * vpWeight).toFixed(2)}px))`;
+      }
+    } else {
+      portalVectorOverlay.style.opacity = '0';
+      portalVectorOverlay.style.visibility = 'hidden';
+    }
+  }
 
   // Hero headline fades in smoothly as MacBook opens, fades out cleanly on scroll zoom
   const introCopyFade = easeOutCubic(clamp01((introElapsed - 0.12) / 0.65));
@@ -1367,7 +1492,7 @@ function animate(now) {
   heroCopy.style.transform = `translate(-50%, ${lerp(16, 0, introCopyFade) - zoomP * 32}px)`;
   heroBottomBar.style.opacity = (introCopyFade * (1 - clamp01((currentHeroP - 0.06) / 0.20))).toFixed(3);
 
-  // Seamless dissolve to pure var(--bg) before #about arrives (zero stretched overlay, zero top seam!)
+  // Seamless dissolve of 3D WebGL canvas into pure var(--bg) once bezels have cleared
   webglCanvas.style.opacity = (1 - stageFadeOutP).toFixed(3);
 
   renderer.render(scene, camera);
